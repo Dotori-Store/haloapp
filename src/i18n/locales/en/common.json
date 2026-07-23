@@ -1,0 +1,22 @@
+﻿{
+  "appName": "Halo",
+  "navigation": {
+    "home": "Home",
+    "settings": "Settings"
+  },
+  "settings": {
+    "title": "Language",
+    "description": "Choose the language you want to use in the app.",
+    "languageLabel": "App language",
+    "languages": {
+      "en": "English",
+      "ko": "Korean"
+    },
+    "save": "Save",
+    "saved": "Language updated."
+  },
+  "home": {
+    "title": "Welcome",
+    "subtitle": "This is a sample i18next setup for English and Korean."
+  }
+}
