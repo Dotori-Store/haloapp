@@ -1,0 +1,35 @@
+:root {
+  --color-primary: #01e47d;
+  --color-green-500: #00bb77;
+  --color-dark: #2c2c2c;
+  --color-stroke: #ebebeb;
+  --color-white: #ffffff;
+  --color-gray-100: #f6f6f6;
+  --color-gray-150: #f2f2f7;
+  --color-gray-200: #dedede;
+  --color-gray-250: #d3d5da;
+  --color-gray-300: #b4b7bf;
+  --color-gray-500: #7c7c7c;
+  --color-glass-blur: #ffffff;
+  --color-cafe: #f5db00;
+  --color-restaurant: #ff7832;
+  --color-gold: #d4af3d;
+  --color-prayer: #e5e5e5;
+
+  --color-point-primary: var(--color-primary);
+  --color-point-green: var(--color-green-500);
+  --color-point-cafe: var(--color-cafe);
+  --color-point-restaurant: var(--color-restaurant);
+  --color-point-gold: var(--color-gold);
+  --color-point-prayer: var(--color-prayer);
+
+  --color-text-primary: var(--color-dark);
+  --color-text-secondary: var(--color-gray-500);
+  --color-line-default: var(--color-stroke);
+  --color-surface-default: var(--color-white);
+  --color-surface-muted: var(--color-gray-100);
+  --color-surface-glass: var(--color-glass-blur);
+
+  --shadow-card: 0 10px 24px rgba(44, 44, 44, 0.12);
+  --shadow-floating: 0 18px 40px rgba(44, 44, 44, 0.16);
+}

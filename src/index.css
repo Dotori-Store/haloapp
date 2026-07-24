@@ -1,42 +1,37 @@
-﻿:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+:root {
+  --text: var(--color-text-secondary);
+  --text-h: var(--color-text-primary);
+  --bg: var(--color-surface-muted);
+  --border: var(--color-line-default);
+  --code-bg: var(--color-gray-150);
+  --accent: var(--color-primary);
+  --accent-bg: color-mix(in srgb, var(--color-primary) 12%, white);
+  --accent-border: color-mix(in srgb, var(--color-primary) 45%, white);
+  --social-bg: color-mix(in srgb, var(--color-gray-100) 70%, white);
+  --shadow: var(--shadow-card);
+  --shadow-nav: 0 6px 12px -1px rgba(12, 12, 13, 0.1), 0 0 6px -1px rgba(12, 12, 13, 0.08);
+  --shadow-ico: 0 2px 10px rgba(0, 0, 0, 0.18), 0 1px 4px rgba(0, 0, 0, 0.07);
+  --shadow-album: 0 8px 24px rgba(0, 0, 0, 0.08), 0 4px 2px -1px rgba(12, 12, 13, 0.05);
+  --shadow-label: 0 2px 4px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.05);
+  --shadow-edit-modal: 0 2px 10px rgba(0, 0, 0, 0.18), 0 1px 4px rgba(0, 0, 0, 0.07);
+  --blur-nav: blur(4px);
+  --blur-edit-modal: blur(10px);
+  --font-sans: 'Asta Sans', 'SF Pro', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', Roboto, 'Pretendard', sans-serif;
+  --font-head-title: 590 18px/16px var(--font-sans);
+  --font-section-title: 590 15px/100% var(--font-sans);
+  --tracking-tight: -0.02em;
+  --tracking-tighter: -0.025em;
+  --sans: var(--font-sans);
+  --heading: var(--font-sans);
   --mono: ui-monospace, Consolas, monospace;
-
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: light;
   color: var(--text);
-  background: linear-gradient(180deg, #f8f5ff 0%, #ffffff 32%, #ffffff 100%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
 }
 
 * {
@@ -46,13 +41,13 @@
 body {
   margin: 0;
   min-width: 320px;
-  background: var(--bg);
 }
 
 button,
 select,
 a {
   transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #root {

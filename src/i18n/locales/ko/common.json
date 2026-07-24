@@ -1,22 +1,16 @@
 ﻿{
   "appName": "Halo",
-  "navigation": {
-    "home": "홈",
-    "settings": "설정"
-  },
-  "settings": {
-    "title": "언어",
-    "description": "앱에서 사용할 언어를 선택하세요.",
-    "languageLabel": "앱 언어",
-    "languages": {
-      "en": "영어",
-      "ko": "한국어"
+  "map": {
+    "title": "지도 화면",
+    "myLocation": "내 위치",
+    "filterLabel": "카테고리 필터",
+    "filters": {
+      "all": "전체",
+      "food": "음식",
+      "cafe": "카페"
     },
-    "save": "저장",
-    "saved": "언어가 업데이트되었습니다."
-  },
-  "home": {
-    "title": "환영합니다",
-    "subtitle": "영어와 한국어를 위한 i18next 예시 설정입니다."
+    "searchPlaceholder": "장소 검색",
+    "visibleCount": "{{count}}개 표시 중",
+    "summary": "내보낸 자산과 필터 동작만 사용한 시연용 지도 화면입니다."
   }
 }
