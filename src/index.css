@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --text: var(--color-text-secondary);
   --text-h: var(--color-text-primary);
   --bg: var(--color-surface-muted);
@@ -16,15 +16,21 @@
   --shadow-edit-modal: 0 2px 10px rgba(0, 0, 0, 0.18), 0 1px 4px rgba(0, 0, 0, 0.07);
   --blur-nav: blur(4px);
   --blur-edit-modal: blur(10px);
-  --font-sans: 'Asta Sans', 'SF Pro', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', Roboto, 'Pretendard', sans-serif;
-  --font-head-title: 590 18px/16px var(--font-sans);
-  --font-section-title: 590 15px/100% var(--font-sans);
+  --font-sans: 'Asta Sans', 'SF Pro', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', Roboto, 'Asta Sans', sans-serif;
+  --font-head-title-weight: 590;
+  --font-head-title-size: 18px;
+  --font-head-title-line-height: 16px;
+  --font-section-title-weight: 590;
+  --font-section-title-size: 15px;
+  --font-section-title-line-height: 100%;
   --tracking-tight: -0.02em;
   --tracking-tighter: -0.025em;
   --sans: var(--font-sans);
   --heading: var(--font-sans);
   --mono: ui-monospace, Consolas, monospace;
-  font: 18px/145% var(--sans);
+  font-family: var(--sans);
+  font-size: 18px;
+  line-height: 145%;
   letter-spacing: 0.18px;
   color-scheme: light;
   color: var(--text);
@@ -71,3 +77,5 @@ p {
   margin: 0;
   color: var(--text);
 }
+
+
