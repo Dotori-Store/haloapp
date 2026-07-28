@@ -10,6 +10,8 @@ import navPlusActiveIcon from '../assets/icons/ico-nav-plus-active.svg'
 import navPlusIcon from '../assets/icons/ico-nav-plus.svg'
 import './BottomNav.css'
 
+export type BottomNavTab = 'map' | 'list' | 'explore' | 'my'
+
 type NavIconProps = {
   active: string
   inactive: string
@@ -24,30 +26,60 @@ function NavIcon({ active, inactive }: NavIconProps) {
   )
 }
 
-export function BottomNav() {
+type BottomNavProps = {
+  activeTab: BottomNavTab
+  onChangeTab: (tab: BottomNavTab) => void
+  onAdd: () => void
+}
+
+export function BottomNav({ activeTab, onChangeTab, onAdd }: BottomNavProps) {
   return (
     <div className="bottom-row">
       <nav className="bottom-nav" aria-label="Primary navigation">
         <div className="bottom-nav__items">
-          <button type="button" className="bottom-nav__item is-active" aria-label="Map">
+          <button
+            type="button"
+            className={`bottom-nav__item ${activeTab === 'map' ? 'is-active' : ''}`}
+            aria-label="Map"
+            aria-pressed={activeTab === 'map'}
+            onClick={() => onChangeTab('map')}
+          >
             <NavIcon active={navMapActiveIcon} inactive={navMapIcon} />
             <span>Map</span>
           </button>
-          <button type="button" className="bottom-nav__item" aria-label="List">
+          <button
+            type="button"
+            className={`bottom-nav__item ${activeTab === 'list' ? 'is-active' : ''}`}
+            aria-label="List"
+            aria-pressed={activeTab === 'list'}
+            onClick={() => onChangeTab('list')}
+          >
             <NavIcon active={navListActiveIcon} inactive={navListIcon} />
             <span>List</span>
           </button>
-          <button type="button" className="bottom-nav__item" aria-label="Explore">
+          <button
+            type="button"
+            className={`bottom-nav__item ${activeTab === 'explore' ? 'is-active' : ''}`}
+            aria-label="Explore"
+            aria-pressed={activeTab === 'explore'}
+            onClick={() => onChangeTab('explore')}
+          >
             <NavIcon active={navExploreActiveIcon} inactive={navExploreIcon} />
             <span>Explore</span>
           </button>
-          <button type="button" className="bottom-nav__item" aria-label="My">
+          <button
+            type="button"
+            className={`bottom-nav__item ${activeTab === 'my' ? 'is-active' : ''}`}
+            aria-label="My"
+            aria-pressed={activeTab === 'my'}
+            onClick={() => onChangeTab('my')}
+          >
             <NavIcon active={navMyActiveIcon} inactive={navMyIcon} />
             <span>My</span>
           </button>
         </div>
       </nav>
-      <button type="button" className="bottom-nav__add" aria-label="Add">
+      <button type="button" className="bottom-nav__add" aria-label="Add restaurant" onClick={onAdd}>
         <img src={navPlusIcon} alt="" aria-hidden="true" className="bottom-nav__add-inactive" />
         <img src={navPlusActiveIcon} alt="" aria-hidden="true" className="bottom-nav__add-active" />
       </button>

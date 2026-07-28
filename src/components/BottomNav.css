@@ -1,13 +1,14 @@
-﻿.bottom-row {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  bottom: 16px;
+.bottom-row {
+  position: fixed;
+  left: 50%;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   z-index: 5;
   display: grid;
   grid-template-columns: 1fr 60px;
   align-items: center;
   gap: 10px;
+  width: min(calc(100% - 32px), 480px);
+  transform: translateX(-50%);
 }
 
 .bottom-nav {
@@ -118,5 +119,3 @@
 .bottom-nav__add:hover .bottom-nav__add-inactive {
   opacity: 0;
 }
-
-

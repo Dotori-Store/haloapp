@@ -1,0 +1,33 @@
+.popular-restaurant-page {
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+  min-height: 0;
+  overflow: hidden;
+  background: #fff;
+}
+
+.popular-restaurant-page__header {
+  position: relative;
+  flex: 0 0 auto;
+  height: 60px;
+  padding: 0 16px;
+}
+
+.popular-restaurant-page__content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 16px 95px 16px;
+  scrollbar-width: none;
+}
+
+.popular-restaurant-page__content::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.popular-restaurant-page__list {
+  display: grid;
+}

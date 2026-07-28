@@ -1,0 +1,157 @@
+.curation-detail {
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #fff;
+  scrollbar-width: none;
+}
+
+.curation-detail::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.curation-detail__hero {
+  position: relative;
+  flex: 0 0 auto;
+  height: 248px;
+  overflow: hidden;
+  background: #1d1d1f;
+}
+
+.curation-detail__hero-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.curation-detail__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(16, 16, 18, 0.15) 0%, rgba(16, 16, 18, 0.48) 100%);
+  pointer-events: none;
+}
+
+.curation-detail__hero-header {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 2;
+}
+
+.curation-detail__hero-copy {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 18px;
+  z-index: 2;
+  display: grid;
+  gap: 6px;
+  color: #fff;
+}
+
+.curation-detail__title {
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.curation-detail__author {
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.curation-detail__pagination {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(18, 18, 18, 0.7);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.curation-detail__content {
+  display: grid;
+  gap: 28px;
+  padding: 24px 16px 128px;
+}
+
+.curation-detail__section {
+  display: grid;
+  gap: 12px;
+}
+
+.curation-detail__text {
+  color: var(--color-gray-500);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.curation-detail__gallery {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--color-gray-100);
+}
+
+.curation-detail__slider {
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.curation-detail__slider::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.curation-detail__slide {
+  position: relative;
+  flex: 0 0 100%;
+  aspect-ratio: 16 / 9;
+  scroll-snap-align: start;
+}
+
+.curation-detail__slide-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.curation-detail__restaurants {
+  display: grid;
+}
+
+.curation-detail__restaurant-item {
+  padding-left: 0;
+  padding-right: 0;
+}

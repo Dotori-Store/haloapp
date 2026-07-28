@@ -1,0 +1,89 @@
+.list-add-page {
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+  min-height: 0;
+  overflow: hidden;
+  background: #fff;
+}
+
+.list-add-page__header {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+}
+
+.list-add-page__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 28px 16px 120px;
+  scrollbar-width: none;
+}
+
+.list-add-page__content::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.list-add-page__cover-button {
+  display: grid;
+  place-items: center;
+  align-self: center;
+  width: 208px;
+  height: 208px;
+  border: 0;
+  padding: 0;
+  border-radius: 8px;
+  margin-bottom: 0;
+  background: var(--color-gray-250);
+  box-shadow: 0 12px 28px rgba(18, 18, 18, 0.1);
+  cursor: pointer;
+}
+
+.list-add-page__cover-icon {
+  width: 60px;
+  height: 60px;
+}
+
+.list-add-page__field {
+  margin-top: 36px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 52px;
+  border-radius: 14px;
+  background: #eef0f5;
+}
+
+.list-add-page__field input {
+  width: 100%;
+  border: 0;
+  padding: 0 16px;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  text-align: center;
+  outline: none;
+}
+
+.list-add-page__field input::placeholder {
+  color: rgba(58, 58, 67, 0.45);
+}
+
+.list-add-page__settings {
+  margin-top: 36px;
+  display: grid;
+  border-top: 1px solid rgba(222, 222, 222, 0.92);
+  border-bottom: 1px solid rgba(222, 222, 222, 0.92);
+}
+
+.list-add-page__row {
+  border-bottom: 0;
+}

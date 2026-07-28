@@ -1,0 +1,103 @@
+.list-page {
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+  min-height: 0;
+  overflow: hidden;
+  background: #fff;
+}
+
+.list-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  height: 60px;
+  padding: 12px 16px;
+}
+
+.list-page__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.list-page__menu-wrap {
+  position: relative;
+}
+
+.list-page__menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.list-page__menu {
+  position: absolute;
+  top: 46px;
+  right: 0;
+  z-index: 6;
+  display: grid;
+  gap: 4px;
+  min-width: 150px;
+  padding: 14px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 12px 28px rgba(18, 18, 18, 0.14);
+}
+
+.list-page__menu-item {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 38px;
+  border: 0;
+  padding: 0 2px;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  text-align: left;
+  cursor: pointer;
+}
+
+.list-page__menu-icon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+}
+
+.list-page__menu-icon img {
+  width: 20px;
+  height: 20px;
+}
+
+.list-page__content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 16px 95px 16px;
+  scrollbar-width: none;
+}
+
+.list-page__content::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.list-page__grid {
+  gap: 20px 10px;
+}
