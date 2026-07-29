@@ -10,6 +10,7 @@ type LovedListPageProps = {
   onBack: () => void
   onAddToList: () => void
   onReportIncorrect: () => void
+  onViewListOnMap: (listItem: LovedListItem) => void
 }
 
 const lovedLists: LovedListItem[] = [
@@ -19,7 +20,7 @@ const lovedLists: LovedListItem[] = [
   { id: 'loved-4', title: 'green street', owner: 'James', date: '2026.08.19', count: 3, image: albumCover },
 ]
 
-export function LovedListPage({ onBack, onAddToList, onReportIncorrect }: LovedListPageProps) {
+export function LovedListPage({ onBack, onAddToList, onReportIncorrect, onViewListOnMap }: LovedListPageProps) {
   const [selectedList, setSelectedList] = useState<LovedListItem | null>(null)
 
   if (selectedList) {
@@ -31,6 +32,7 @@ export function LovedListPage({ onBack, onAddToList, onReportIncorrect }: LovedL
         }}
         onAddToList={onAddToList}
         onReportIncorrect={onReportIncorrect}
+        onViewOnMap={onViewListOnMap}
       />
     )
   }

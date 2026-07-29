@@ -30,9 +30,29 @@ type BottomNavProps = {
   activeTab: BottomNavTab
   onChangeTab: (tab: BottomNavTab) => void
   onAdd: () => void
+  variant?: 'default' | 'compactList'
 }
 
-export function BottomNav({ activeTab, onChangeTab, onAdd }: BottomNavProps) {
+export function BottomNav({ activeTab, onChangeTab, onAdd, variant = 'default' }: BottomNavProps) {
+  if (variant === 'compactList') {
+    return (
+      <div className="bottom-row bottom-row--compact-list">
+        <nav className="bottom-nav bottom-nav--compact-list" aria-label="Primary navigation">
+          <div className="bottom-nav__items bottom-nav__items--compact-list">
+            <div className="bottom-nav__item is-active" aria-label="List">
+              <NavIcon active={navListActiveIcon} inactive={navListIcon} />
+              <span>List</span>
+            </div>
+          </div>
+        </nav>
+        <button type="button" className="bottom-nav__add" aria-label="Add restaurant" onClick={onAdd}>
+          <img src={navPlusIcon} alt="" aria-hidden="true" className="bottom-nav__add-inactive" />
+          <img src={navPlusActiveIcon} alt="" aria-hidden="true" className="bottom-nav__add-active" />
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div className="bottom-row">
       <nav className="bottom-nav" aria-label="Primary navigation">

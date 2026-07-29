@@ -1,0 +1,322 @@
+.list-edit-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.list-edit-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background: var(--bottom-sheet-backdrop);
+  cursor: default;
+}
+
+.list-edit-sheet__panel {
+  position: absolute;
+  inset: var(--bottom-sheet-top) 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--bottom-sheet-radius);
+  background: var(--bottom-backgrond);
+  backdrop-filter: var(--blur-bottom-sheet);
+  box-shadow: var(--bottom-sheet-shadow);
+}
+
+.list-edit-sheet__handle {
+  align-self: center;
+  width: 64px;
+  height: 4px;
+  margin: 10px 0 6px;
+  border-radius: 999px;
+  background: var(--bottom-sheet-handle);
+}
+
+.list-edit-sheet__header {
+  flex: 0 0 auto;
+  padding: 0 16px;
+}
+
+.list-edit-sheet__confirm {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  background: var(--color-stroke);
+  cursor: pointer;
+}
+
+.list-edit-sheet__confirm img {
+  width: 24px;
+  height: 24px;
+}
+
+.list-edit-sheet__confirm.is-active {
+  background: var(--color-primary);
+}
+
+.list-edit-sheet__confirm:disabled {
+  cursor: default;
+}
+
+.list-edit-sheet__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px 16px 110px;
+  scrollbar-width: none;
+}
+
+.list-edit-sheet__body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.list-edit-sheet__hero {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 6px 0 14px 0;
+}
+
+.list-edit-sheet__cover {
+  width: 208px;
+  height: 208px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 10px 22px rgba(18, 18, 18, 0.12);
+}
+
+.list-edit-sheet__title-block {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.list-edit-sheet__title-button,
+.list-edit-sheet__title-input {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.list-edit-sheet__title-button {
+  cursor: pointer;
+}
+
+.list-edit-sheet__title-input {
+  width: min(100%, 260px);
+  outline: none;
+}
+
+.list-edit-sheet__owner,
+.list-edit-sheet__date {
+  margin: 0;
+  color: var(--color-gray-500);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.list-edit-sheet__settings {
+  display: grid;
+  gap: 0;
+  margin-top: 14px;
+}
+
+.list-edit-sheet__row {
+  min-height: 62px;
+  border-bottom: 1px solid var(--color-stroke);
+}
+
+.list-edit-sheet__restaurants {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.list-edit-sheet__list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 34px;
+}
+
+.list-edit-sheet__select-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--color-gray-500);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.list-edit-sheet__select-all-check {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+}
+
+.list-edit-sheet__select-all-check img {
+  width: 24px;
+  height: 24px;
+}
+
+.list-edit-sheet__selected-count {
+  color: var(--color-dark);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.list-edit-sheet__items {
+  display: grid;
+}
+
+.list-edit-sheet__item {
+  display: grid;
+  grid-template-columns: 24px 48px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 72px;
+  border: 0;
+  border-bottom: 1px solid var(--color-stroke);
+  padding: 12px 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+}
+
+.list-edit-sheet__item.is-dragging {
+  opacity: 0.65;
+}
+
+.list-edit-sheet__item:last-child {
+  border-bottom-color: transparent;
+}
+
+.list-edit-sheet__item-check {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+}
+
+.list-edit-sheet__item-check img {
+  width: 24px;
+  height: 24px;
+}
+
+.list-edit-sheet__item-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--place-icon-bg, var(--color-point-restaurant));
+}
+
+.list-edit-sheet__item-icon img {
+  width: 24px;
+  height: 24px;
+}
+
+.list-edit-sheet__item-content {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.list-edit-sheet__item-title {
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-edit-sheet__item-meta {
+  overflow: hidden;
+  color: var(--color-gray-500);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-edit-sheet__item-sort {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.list-edit-sheet__item-sort img {
+  width: 24px;
+  height: 24px;
+}
+
+.list-edit-sheet__trash {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 41;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(18, 18, 18, 0.12);
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.list-edit-sheet__trash:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.list-edit-sheet__trash img {
+  width: 28px;
+  height: 28px;
+}

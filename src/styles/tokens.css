@@ -31,6 +31,57 @@
   --color-surface-muted: var(--color-gray-100);
   --color-surface-glass: var(--color-glass-blur);
 
+  --bottom-backgrond: rgba(255, 255, 255, 0.7);
+  --bottom-background: var(--bottom-backgrond);
+  --bottom-sheet-backdrop: rgba(0 0 0 / 35%);
+  --bottom-sheet-radius: 24px 24px 0 0;
+  --bottom-sheet-shadow: 0 -18px 40px rgba(18, 18, 18, 0.14);
+  --bottom-sheet-handle: rgba(18, 18, 18, 0.2);
+  --bottom-sheet-top: 16px;
+  --bottom-sheet-enter-duration: 160ms;
+  --bottom-sheet-enter-distance: 12px;
+  --blur-bottom-sheet: blur(8px);
+
   --shadow-card: 0 10px 24px rgba(44, 44, 44, 0.12);
   --shadow-floating: 0 18px 40px rgba(44, 44, 44, 0.16);
+
+  --body-bottom: 45px;
+}
+
+@keyframes bottom-sheet-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--bottom-sheet-enter-distance));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bottom-sheet-backdrop-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+:is(.add-list-sheet, .loved-list-import-sheet, .list-edit-sheet, .list-collaboration-sheet, .my-settings-sheet, .my-notice-sheet) {
+  animation: bottom-sheet-backdrop-enter var(--bottom-sheet-enter-duration) ease-out both;
+}
+
+:is(.add-list-sheet__panel, .loved-list-import-sheet__panel, .list-edit-sheet__panel, .list-collaboration-sheet__panel, .my-settings-sheet__panel, .my-notice-sheet__panel) {
+  animation: bottom-sheet-panel-enter var(--bottom-sheet-enter-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.add-list-sheet, .loved-list-import-sheet, .list-edit-sheet, .list-collaboration-sheet, .my-settings-sheet, .my-notice-sheet),
+  :is(.add-list-sheet__panel, .loved-list-import-sheet__panel, .list-edit-sheet__panel, .list-collaboration-sheet__panel, .my-settings-sheet__panel, .my-notice-sheet__panel) {
+    animation: none;
+  }
 }

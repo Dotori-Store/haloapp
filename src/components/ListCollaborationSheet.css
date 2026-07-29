@@ -1,0 +1,231 @@
+.list-collaboration-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.list-collaboration-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background: var(--bottom-sheet-backdrop);
+  cursor: default;
+}
+
+.list-collaboration-sheet__panel {
+  position: absolute;
+  inset: var(--bottom-sheet-top) 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--bottom-sheet-radius);
+  background: var(--bottom-backgrond);
+  backdrop-filter: var(--blur-bottom-sheet);
+  box-shadow: var(--bottom-sheet-shadow);
+}
+
+.list-collaboration-sheet__header {
+  flex: 0 0 auto;
+  padding: 0 16px;
+  margin-top: 12px;
+}
+
+.list-collaboration-sheet__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px 16px 16px;
+  scrollbar-width: none;
+}
+
+.list-collaboration-sheet__body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.list-collaboration-sheet__hero {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  margin: 16px 0 24px 0;
+}
+
+.list-collaboration-sheet__hero-card {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 110px;
+  height: 110px;
+  border-radius: 8px;
+  box-shadow: 0 10px 22px rgba(18, 18, 18, 0.08);
+  overflow: hidden; 
+}
+
+.list-collaboration-sheet__cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   
+}
+
+.list-collaboration-sheet__count {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(18, 18, 18, 0.1);
+}
+
+.list-collaboration-sheet__title-block {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.list-collaboration-sheet__title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.list-collaboration-sheet__owner {
+  margin: 0;
+  color: var(--color-gray-500);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.list-collaboration-sheet__invite {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 58px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 18px 0 16px;
+  background: #fff;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+}
+
+.list-collaboration-sheet__invite-icon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+}
+
+.list-collaboration-sheet__invite-icon img {
+  width: 20px;
+  height: 20px;
+}
+
+.list-collaboration-sheet__card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  padding: 8px 12px;
+  background: #fff;
+}
+
+.list-collaboration-sheet__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 8px;
+}
+
+.list-collaboration-sheet__section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.list-collaboration-sheet__section-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.list-collaboration-sheet__section-icon img {
+  width: 18px;
+  height: 18px;
+}
+
+.list-collaboration-sheet__stop {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: #ef4d55;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.list-collaboration-sheet__members {
+  display: grid;
+}
+
+.list-collaboration-sheet__member {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  border-top: 1px solid var(--color-stroke);
+  padding: 12px 8px;
+}
+
+.list-collaboration-sheet__member-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.list-collaboration-sheet__member-name {
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+}

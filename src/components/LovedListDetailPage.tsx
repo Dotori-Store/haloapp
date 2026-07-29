@@ -34,6 +34,7 @@ type LovedListDetailPageProps = {
   onBack: () => void
   onAddToList: () => void
   onReportIncorrect: () => void
+  onViewOnMap?: (listItem: LovedListItem) => void
 }
 
 type LovedListRestaurant = {
@@ -71,7 +72,7 @@ const restaurants: LovedListRestaurant[] = [
 const getIconBackground = (category: LovedListRestaurantCategory) =>
   category === 'Cafe' ? 'var(--color-point-cafe)' : 'var(--color-point-restaurant)'
 
-export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportIncorrect }: LovedListDetailPageProps) {
+export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportIncorrect, onViewOnMap }: LovedListDetailPageProps) {
   const [isWishActive, setIsWishActive] = useState(false)
   const [isHeaderMenuOpen, setIsHeaderMenuOpen] = useState(false)
   const [openRestaurantMenuId, setOpenRestaurantMenuId] = useState<string | null>(null)
@@ -205,7 +206,7 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
               <img src={isWishActive ? wishHeartActiveIcon : wishHeartIcon} alt="" aria-hidden="true" />
             </button>
 
-            <button type="button" className="loved-list-detail-page__view-map">
+            <button type="button" className="loved-list-detail-page__view-map" onClick={() => onViewOnMap?.(listItem)}>
               <img src={mapIcon} alt="" aria-hidden="true" />
               <span>View on map</span>
             </button>
@@ -291,7 +292,7 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
               <span className="loved-list-detail-page__header-menu-icon" aria-hidden="true">
                 <img src={headerImportIcon} alt="" aria-hidden="true" />
               </span>
-              <span>가져오기</span>
+              <span>Get List</span>
             </button>
             <button
               type="button"
@@ -305,7 +306,7 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
               <span className="loved-list-detail-page__header-menu-icon" aria-hidden="true">
                 <img src={reportIcon} alt="" aria-hidden="true" />
               </span>
-              <span>?좉퀬?섍린</span>
+              <span>Report List</span>
             </button>
           </div>
         </>

@@ -1,4 +1,5 @@
 ﻿import { useState } from 'react'
+import { useEffect } from 'react'
 import alarmBellIcon from '../assets/icons/ico-alarm-bell.svg'
 import settingIcon from '../assets/icons/ico-setting.svg'
 import closeIcon from '../assets/icons/ico-close-xs.svg'
@@ -128,9 +129,20 @@ const noticeItems = [
 type MyPageProps = {
   onReportIncorrect: () => void
   onAddToList: () => void
+  onViewListOnMap: (listItem: LovedListItem) => void
+  onBottomNavVisibilityChange: (isVisible: boolean) => void
+  restoreListItem: LovedListItem | null
+  onRestoreListItemHandled: () => void
 }
 
-export function MyPage({ onReportIncorrect, onAddToList }: MyPageProps) {
+export function MyPage({
+  onReportIncorrect,
+  onAddToList,
+  onViewListOnMap,
+  onBottomNavVisibilityChange,
+  restoreListItem,
+  onRestoreListItemHandled,
+}: MyPageProps) {
   const [isPrayerExpanded, setIsPrayerExpanded] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [peoplePage, setPeoplePage] = useState<'follower' | 'following' | null>(null)
@@ -149,6 +161,44 @@ export function MyPage({ onReportIncorrect, onAddToList }: MyPageProps) {
   )
   const allNoticesRead = noticeItems.every((notice) => noticeReadMap[notice.id])
 
+  useEffect(() => {
+    const isRootPage =
+      !selectedUserList &&
+      !selectedUser &&
+      !peoplePage &&
+      !isEditOpen &&
+      !isSettingsOpen &&
+      !isNoticeOpen &&
+      !isUserNetworkOpen
+
+    onBottomNavVisibilityChange(isRootPage)
+  }, [
+    onBottomNavVisibilityChange,
+    isEditOpen,
+    isNoticeOpen,
+    isSettingsOpen,
+    isUserNetworkOpen,
+    peoplePage,
+    selectedUser,
+    selectedUserList,
+  ])
+
+  useEffect(() => {
+    if (!restoreListItem) {
+      return
+    }
+
+    setSelectedUserList(restoreListItem)
+    setSelectedUser(null)
+    setPeoplePage(null)
+    setIsUserNetworkOpen(false)
+    setIsUserMenuOpen(false)
+    setIsEditOpen(false)
+    setIsSettingsOpen(false)
+    setIsNoticeOpen(false)
+    onRestoreListItemHandled()
+  }, [onRestoreListItemHandled, restoreListItem])
+
   if (selectedUserList) {
     return (
       <LovedListDetailPage
@@ -156,6 +206,7 @@ export function MyPage({ onReportIncorrect, onAddToList }: MyPageProps) {
         onBack={() => setSelectedUserList(null)}
         onAddToList={onAddToList}
         onReportIncorrect={onReportIncorrect}
+        onViewOnMap={onViewListOnMap}
       />
     )
   }

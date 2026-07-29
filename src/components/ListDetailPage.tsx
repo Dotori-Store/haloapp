@@ -1,4 +1,4 @@
-import { useMemo, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import backArrowIcon from '../assets/icons/ico-back-arrow.svg'
 import shareIconLg from '../assets/icons/ico-share-lg.svg'
 import moreDotsIconLg from '../assets/icons/ico-more-dots-lg.svg'
@@ -15,35 +15,21 @@ import itemDeleteIcon from '../assets/icons/ico-delete-xs.svg'
 import itemShareIcon from '../assets/icons/ico-share.svg'
 import moreDotsIcon from '../assets/icons/ico-more-dots.svg'
 import { type LovedListItem } from './LovedListDetailPage'
+import { ListCollaborationSheet } from './ListCollaborationSheet'
+import { ListEditSheet, type ListEditRestaurant } from './ListEditSheet'
 import './ExplorePage.css'
 import './ListDetailPage.css'
-
-type ListRestaurantCategory = 'Cafe' | 'Restaurant'
-
-type ListRestaurant = {
-  id: string
-  name: string
-  category: ListRestaurantCategory
-  address: string
-  icon: string
-}
-
-type RecommendPlace = {
-  id: string
-  name: string
-  category: ListRestaurantCategory
-  address: string
-  icon: string
-}
 
 type ListDetailPageProps = {
   listItem: LovedListItem
   onBack: () => void
-  onAddRestaurant: () => void
+  onAddRestaurant: (listId: string) => void
   onAddToList: () => void
+  onViewOnMap: (listItem: LovedListItem) => void
+  onSaveList: (listItem: LovedListItem) => void
 }
 
-const restaurants: ListRestaurant[] = [
+const initialRestaurants: ListEditRestaurant[] = [
   {
     id: 'list-restaurant-1',
     name: 'Ondal korean restaurant',
@@ -60,7 +46,7 @@ const restaurants: ListRestaurant[] = [
   },
 ]
 
-const recommendPlaces: RecommendPlace[] = [
+const recommendPlaces: ListEditRestaurant[] = [
   {
     id: 'recommend-1',
     name: 'Dajunghan restaurant',
@@ -77,17 +63,28 @@ const recommendPlaces: RecommendPlace[] = [
   },
 ]
 
-const getIconBackground = (category: ListRestaurantCategory) =>
+const getIconBackground = (category: ListEditRestaurant['category']) =>
   category === 'Cafe' ? 'var(--color-point-cafe)' : 'var(--color-point-restaurant)'
 
-export function ListDetailPage({ listItem, onBack, onAddRestaurant, onAddToList }: ListDetailPageProps) {
+export function ListDetailPage({ listItem, onBack, onAddRestaurant, onAddToList, onViewOnMap, onSaveList }: ListDetailPageProps) {
   const [isHeaderMenuOpen, setIsHeaderMenuOpen] = useState(false)
   const [openRestaurantMenuId, setOpenRestaurantMenuId] = useState<string | null>(null)
+  const [isCollaborationSheetOpen, setIsCollaborationSheetOpen] = useState(false)
+  const [isEditSheetOpen, setIsEditSheetOpen] = useState(false)
+  const [restaurants, setRestaurants] = useState<ListEditRestaurant[]>(initialRestaurants)
 
   const openRestaurantMenuItem = useMemo(
     () => restaurants.find((item) => item.id === openRestaurantMenuId) ?? null,
     [openRestaurantMenuId],
   )
+
+  useEffect(() => {
+    setRestaurants(initialRestaurants)
+    setIsHeaderMenuOpen(false)
+    setOpenRestaurantMenuId(null)
+    setIsCollaborationSheetOpen(false)
+    setIsEditSheetOpen(false)
+  }, [listItem.id])
 
   return (
     <div className="list-detail-page popular-restaurant-page" onClick={() => setIsHeaderMenuOpen(false)}>
@@ -122,13 +119,31 @@ export function ListDetailPage({ listItem, onBack, onAddRestaurant, onAddToList 
                   onClick={() => setIsHeaderMenuOpen(false)}
                 />
                 <div className="list-detail-page__menu" role="menu" aria-label={`${listItem.title} options`}>
-                  <button type="button" className="list-detail-page__menu-item" role="menuitem" onClick={() => setIsHeaderMenuOpen(false)}>
+                  <button
+                    type="button"
+                    className="list-detail-page__menu-item"
+                    role="menuitem"
+                    onClick={() => {
+                      setIsHeaderMenuOpen(false)
+                      setOpenRestaurantMenuId(null)
+                      setIsCollaborationSheetOpen(true)
+                    }}
+                  >
                     <span className="list-detail-page__menu-icon" aria-hidden="true">
                       <img src={headerInviteIcon} alt="" aria-hidden="true" />
                     </span>
-                    <span>Invite collaborators</span>
+                    <span>Collaboration</span>
                   </button>
-                  <button type="button" className="list-detail-page__menu-item" role="menuitem" onClick={() => setIsHeaderMenuOpen(false)}>
+                  <button
+                    type="button"
+                    className="list-detail-page__menu-item"
+                    role="menuitem"
+                    onClick={() => {
+                      setIsHeaderMenuOpen(false)
+                      setOpenRestaurantMenuId(null)
+                      setIsEditSheetOpen(true)
+                    }}
+                  >
                     <span className="list-detail-page__menu-icon" aria-hidden="true">
                       <img src={headerEditIcon} alt="" aria-hidden="true" />
                     </span>
@@ -162,7 +177,7 @@ export function ListDetailPage({ listItem, onBack, onAddRestaurant, onAddToList 
           </div>
 
           <div className="list-detail-page__actions">
-            <button type="button" className="list-detail-page__view-map">
+            <button type="button" className="list-detail-page__view-map" onClick={() => onViewOnMap(listItem)}>
               <img src={mapIcon} alt="" aria-hidden="true" />
               <span>View on map</span>
             </button>
@@ -220,7 +235,7 @@ export function ListDetailPage({ listItem, onBack, onAddRestaurant, onAddToList 
               </article>
             ))}
           </div>
-          <button type="button" className="list-detail-page__add-restaurant" onClick={onAddRestaurant}>
+          <button type="button" className="list-detail-page__add-restaurant" onClick={() => onAddRestaurant(listItem.id)}>
             <span className="list-detail-page__add-restaurant-icon" aria-hidden="true">
               <img src={addItemIcon} alt="" aria-hidden="true" />
             </span>
@@ -257,6 +272,22 @@ export function ListDetailPage({ listItem, onBack, onAddRestaurant, onAddToList 
           onClick={() => setOpenRestaurantMenuId(null)}
         />
       )}
+
+      <ListEditSheet
+        open={isEditSheetOpen}
+        listItem={listItem}
+        restaurants={restaurants}
+        onClose={() => setIsEditSheetOpen(false)}
+        onSave={({ listItem: updatedListItem, restaurants: updatedRestaurants }) => {
+          setRestaurants(updatedRestaurants)
+          onSaveList({
+            ...updatedListItem,
+            count: updatedRestaurants.length,
+          })
+        }}
+      />
+
+      <ListCollaborationSheet open={isCollaborationSheetOpen} listItem={listItem} onClose={() => setIsCollaborationSheetOpen(false)} />
     </div>
   )
 }

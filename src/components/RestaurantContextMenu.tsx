@@ -19,7 +19,7 @@ export function RestaurantContextMenu({ itemName, onAdd, onReport }: RestaurantC
         <span className="explore-popular-item__menu-icon explore-popular-item__menu-icon--add" aria-hidden="true">
           <img src={addToIcon} alt="" aria-hidden="true" />
         </span>
-        <span>추가</span>
+        <span>Add to list</span>
       </button>
       <button
         type="button"
@@ -30,7 +30,7 @@ export function RestaurantContextMenu({ itemName, onAdd, onReport }: RestaurantC
         <span className="explore-popular-item__menu-icon explore-popular-item__menu-icon--report" aria-hidden="true">
           <img src={reportIcon} alt="" aria-hidden="true" />
         </span>
-        <span>신고</span>
+        <span>Report</span>
       </button>
     </div>
   )

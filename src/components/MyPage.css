@@ -380,7 +380,7 @@
   align-items: center;
   justify-content: space-between;
   min-height: 62px;
-  border-bottom: 1px solid rgba(222, 222, 222, 0.92);
+  border-bottom: 1px solid var(--color-stroke);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 14px;
@@ -610,7 +610,7 @@
   align-items: center;
   justify-content: space-between;
   min-height: 62px;
-  border-bottom: 1px solid rgba(222, 222, 222, 0.92);
+  border-bottom: 1px solid var(--color-stroke);
   margin-top: 44px;
   color: var(--color-text-primary);
   font-family: var(--font-sans);
@@ -913,19 +913,19 @@
   position: fixed;
   inset: 0;
   z-index: 30;
-  background: rgba(0, 0, 0, 0.26);
+  background: var(--bottom-sheet-backdrop);
 }
 
 .my-settings-sheet__panel {
   position: absolute;
-  inset: 16px 0 0;
+  inset: var(--bottom-sheet-top) 0 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 28px 28px 0 0;
-  background: rgba(255, 255, 255, 0.88);
+  border-radius: var(--bottom-sheet-radius);
+  background: var(--bottom-backgrond);
   backdrop-filter: var(--blur-bottom-sheet);
-  box-shadow: 0 -8px 36px rgba(18, 18, 18, 0.18);
+  box-shadow: var(--bottom-sheet-shadow);
 }
 
 .my-settings-sheet__header {
@@ -973,7 +973,7 @@
   align-items: center;
   justify-content: space-between;
   min-height: 72px;
-  border-bottom: 1px solid rgba(222, 222, 222, 0.92);
+  border-bottom: 1px solid var(--color-stroke);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 14px;
@@ -1154,19 +1154,19 @@
   position: fixed;
   inset: 0;
   z-index: 31;
-  background: rgba(0, 0, 0, 0.26);
+  background: var(--bottom-sheet-backdrop);
 }
 
 .my-notice-sheet__panel {
   position: absolute;
-  inset: 16px 0 0;
+  inset: var(--bottom-sheet-top) 0 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 28px 28px 0 0;
-  background: rgba(255, 255, 255, 0.88);
+  border-radius: var(--bottom-sheet-radius);
+  background: var(--bottom-backgrond);
   backdrop-filter: var(--blur-bottom-sheet);
-  box-shadow: 0 -8px 36px rgba(18, 18, 18, 0.18);
+  box-shadow: var(--bottom-sheet-shadow);
 }
 
 .my-notice-sheet__header {

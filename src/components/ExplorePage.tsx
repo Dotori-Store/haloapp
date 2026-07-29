@@ -1,4 +1,4 @@
-import { useMemo, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import foodIcon from '../assets/icons/ico-cat-food.svg'
 import cafeIcon from '../assets/icons/ico-cat-cafe.svg'
 import arrowMoreIcon from '../assets/icons/ico-arrow-more_xs.svg'
@@ -9,7 +9,7 @@ import curationCoverImage from '../assets/dummy/photo-cover.jpg'
 import friendAvatarImage from '../assets/dummy/thumb-user.jpg'
 import friendAvatarImageAlt from '../assets/dummy/thumb-user-2.jpg'
 import { ExploreCurationDetail } from './ExploreCurationDetail'
-import { LovedListDetailPage } from './LovedListDetailPage'
+import { LovedListDetailPage, type LovedListItem } from './LovedListDetailPage'
 import { LovedListPage } from './LovedListPage'
 import { PopularRestaurantPage } from './PopularRestaurantPage'
 import { RestaurantContextMenu } from './RestaurantContextMenu'
@@ -50,6 +50,10 @@ type Friend = {
 type ExplorePageProps = {
   onAddToList: () => void
   onReportIncorrect: () => void
+  onViewListOnMap: (listItem: LovedListItem) => void
+  onBottomNavVisibilityChange: (isVisible: boolean) => void
+  restoreListItem: LovedListItem | null
+  onRestoreListItemHandled: () => void
 }
 
 const curationCards: CurationCard[] = [
@@ -126,11 +130,19 @@ const friends: Friend[] = [
 const getIconBackground = (category: PopularCategory) =>
   category === 'Cafe' ? 'var(--color-point-cafe)' : 'var(--color-point-restaurant)'
 
-export function ExplorePage({ onAddToList, onReportIncorrect }: ExplorePageProps) {
+export function ExplorePage({
+  onAddToList,
+  onReportIncorrect,
+  onViewListOnMap,
+  onBottomNavVisibilityChange,
+  restoreListItem,
+  onRestoreListItemHandled,
+}: ExplorePageProps) {
   const [selectedCurationId, setSelectedCurationId] = useState<string | null>(null)
   const [selectedPopularScreen, setSelectedPopularScreen] = useState(false)
   const [selectedLovedListScreen, setSelectedLovedListScreen] = useState(false)
   const [selectedLovedListId, setSelectedLovedListId] = useState<string | null>(null)
+  const [restoredLovedList, setRestoredLovedList] = useState<LovedListItem | null>(null)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const selectedCuration = curationCards.find((card) => card.id === selectedCurationId) ?? null
   const selectedLovedList = lovedLists.find((item) => item.id === selectedLovedListId) ?? null
@@ -138,6 +150,38 @@ export function ExplorePage({ onAddToList, onReportIncorrect }: ExplorePageProps
     () => popularRestaurants.find((item) => item.id === openMenuId) ?? null,
     [openMenuId],
   )
+
+  useEffect(() => {
+    const isRootScreen =
+      !selectedCurationId &&
+      !selectedPopularScreen &&
+      !selectedLovedListScreen &&
+      !selectedLovedListId &&
+      !restoredLovedList
+
+    onBottomNavVisibilityChange(isRootScreen)
+  }, [
+    onBottomNavVisibilityChange,
+    restoredLovedList,
+    selectedCurationId,
+    selectedLovedListId,
+    selectedLovedListScreen,
+    selectedPopularScreen,
+  ])
+
+  useEffect(() => {
+    if (!restoreListItem) {
+      return
+    }
+
+    setSelectedCurationId(null)
+    setSelectedPopularScreen(false)
+    setSelectedLovedListScreen(false)
+    setSelectedLovedListId(null)
+    setOpenMenuId(null)
+    setRestoredLovedList(restoreListItem)
+    onRestoreListItemHandled()
+  }, [onRestoreListItemHandled, restoreListItem])
 
   if (selectedPopularScreen) {
     return (
@@ -159,19 +203,28 @@ export function ExplorePage({ onAddToList, onReportIncorrect }: ExplorePageProps
         }}
         onAddToList={onAddToList}
         onReportIncorrect={onReportIncorrect}
+        onViewListOnMap={onViewListOnMap}
       />
     )
   }
 
-  if (selectedLovedList) {
+  if (selectedLovedList || restoredLovedList) {
+    const detailListItem = selectedLovedList ?? restoredLovedList
+
+    if (!detailListItem) {
+      return null
+    }
+
     return (
       <LovedListDetailPage
-        listItem={selectedLovedList}
+        listItem={detailListItem}
         onBack={() => {
           setSelectedLovedListId(null)
+          setRestoredLovedList(null)
         }}
         onAddToList={onAddToList}
         onReportIncorrect={onReportIncorrect}
+        onViewOnMap={onViewListOnMap}
       />
     )
   }

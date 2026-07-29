@@ -80,8 +80,8 @@
 .list-add-page__settings {
   margin-top: 36px;
   display: grid;
-  border-top: 1px solid rgba(222, 222, 222, 0.92);
-  border-bottom: 1px solid rgba(222, 222, 222, 0.92);
+  border-top: 1px solid var(--color-stroke);
+  border-bottom: 1px solid var(--color-stroke);
 }
 
 .list-add-page__row {

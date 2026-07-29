@@ -5,7 +5,6 @@ import cafeIcon from './assets/icons/ico-cat-cafe.svg'
 import prayerIcon from './assets/icons/ico-cat-prayer.svg'
 import myLocationIcon from './assets/icons/ico-my-location.svg'
 import keepIcon from './assets/icons/ico-keep.svg'
-import keepActiveIcon from './assets/icons/ico-keep-active.svg'
 import checkActiveIcon from './assets/icons/ico-check-xs-active.svg'
 import cautionIcon from './assets/icons/ico-caution-lg.svg'
 import rightArrowIcon from './assets/icons/ico-right-arrow.svg'
@@ -25,11 +24,14 @@ import { ListPage } from './components/ListPage'
 import { RestaurantAddPage } from './components/RestaurantAddPage'
 import { MyPage } from './components/MyPage'
 import { PlaceDetailSheet } from './components/PlaceDetailSheet'
+import { type LovedListItem } from './components/LovedListDetailPage'
 import { nearbyPlaces, searchResultPlaces, type NearbyPlace } from './data/places'
 import './App.css'
 
 type Category = 'all' | 'food' | 'cafe' | 'prayer'
 type SheetMode = 'collapsed' | 'expanded' | 'search'
+type ListMapMode = 'summary' | 'expanded' | 'search'
+type ListMapReturnTarget = 'list' | 'explore' | 'my'
 
 type Place = {
   id: string
@@ -38,14 +40,64 @@ type Place = {
   x: number
   y: number
   icon: string
+  detailPlaceId: 'nearby-1' | 'nearby-2' | 'nearby-3'
+}
+
+type ListMapPlace = NearbyPlace & {
+  category: Exclude<Category, 'all'>
+  x: number
+  y: number
 }
 
 const places: Place[] = [
-  { id: 'food-1', name: 'Korean BBQ', category: 'food', x: 22, y: 51, icon: foodIcon },
-  { id: 'food-2', name: 'Tasty Noodle', category: 'food', x: 71, y: 58, icon: foodIcon },
-  { id: 'cafe-1', name: 'Morning Bean', category: 'cafe', x: 61, y: 40, icon: cafeIcon },
-  { id: 'cafe-2', name: 'Quiet Brew', category: 'cafe', x: 35, y: 68, icon: cafeIcon },
-  { id: 'prayer-1', name: 'Peace Place', category: 'prayer', x: 80, y: 34, icon: prayerIcon },
+  { id: 'food-1', name: 'Korean BBQ', category: 'food', x: 22, y: 51, icon: foodIcon, detailPlaceId: 'nearby-1' },
+  { id: 'food-2', name: 'Tasty Noodle', category: 'food', x: 71, y: 58, icon: foodIcon, detailPlaceId: 'nearby-2' },
+  { id: 'cafe-1', name: 'Morning Bean', category: 'cafe', x: 61, y: 40, icon: cafeIcon, detailPlaceId: 'nearby-3' },
+  { id: 'cafe-2', name: 'Quiet Brew', category: 'cafe', x: 35, y: 68, icon: cafeIcon, detailPlaceId: 'nearby-1' },
+  { id: 'prayer-1', name: 'Peace Place', category: 'prayer', x: 80, y: 34, icon: prayerIcon, detailPlaceId: 'nearby-2' },
+]
+
+const listMapPlaces: ListMapPlace[] = [
+  {
+    id: 'list-map-1',
+    name: 'Dajunghan Korean Restaurant',
+    status: 'Open',
+    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
+    detailType: 1,
+    category: 'food',
+    x: 22,
+    y: 53,
+  },
+  {
+    id: 'list-map-2',
+    name: 'Andong Galbi Korean Restaurant',
+    status: 'Open',
+    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
+    detailType: 2,
+    category: 'food',
+    x: 62,
+    y: 42,
+  },
+  {
+    id: 'list-map-3',
+    name: 'oozycoffee',
+    status: 'Open',
+    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
+    detailType: 3,
+    category: 'cafe',
+    x: 70,
+    y: 58,
+  },
+  {
+    id: 'list-map-4',
+    name: 'Sunny Mood Cafe',
+    status: 'Open',
+    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
+    detailType: 2,
+    category: 'cafe',
+    x: 40,
+    y: 66,
+  },
 ]
 
 const DRAG_START_THRESHOLD = 24
@@ -79,8 +131,11 @@ function App() {
   const [activeTab, setActiveTab] = useState<BottomNavTab>('map')
   const [activeFilter, setActiveFilter] = useState<Category>('all')
   const [sheetMode, setSheetMode] = useState<SheetMode>('collapsed')
+  const [listMapMode, setListMapMode] = useState<ListMapMode>('summary')
+  const [listMapItem, setListMapItem] = useState<LovedListItem | null>(null)
+  const [isListMapSummaryVisible, setIsListMapSummaryVisible] = useState(true)
+  const [listMapSearchQuery, setListMapSearchQuery] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
-  const [keptSearchResultIds, setKeptSearchResultIds] = useState<string[]>([])
   const [wishedPlaceIds, setWishedPlaceIds] = useState<string[]>([])
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null)
   const [isDetailExpanded, setIsDetailExpanded] = useState(false)
@@ -88,6 +143,12 @@ function App() {
   const [isAddToListOpen, setIsAddToListOpen] = useState(false)
   const [isReportModalOpen, setIsReportModalOpen] = useState(false)
   const [isRestaurantAddOpen, setIsRestaurantAddOpen] = useState(false)
+  const [isBottomNavVisible, setIsBottomNavVisible] = useState(true)
+  const [restaurantAddReturnListId, setRestaurantAddReturnListId] = useState<string | null>(null)
+  const [pendingListDetailId, setPendingListDetailId] = useState<string | null>(null)
+  const [listMapReturnTarget, setListMapReturnTarget] = useState<ListMapReturnTarget>('list')
+  const [pendingExploreListDetail, setPendingExploreListDetail] = useState<LovedListItem | null>(null)
+  const [pendingMyListDetail, setPendingMyListDetail] = useState<LovedListItem | null>(null)
   const [reportComment, setReportComment] = useState('')
   const [selectedListId, setSelectedListId] = useState<string>('')
   const [savedListToast, setSavedListToast] = useState<{ title: string; phase: 'enter' | 'visible' | 'exit' } | null>(null)
@@ -112,6 +173,16 @@ function App() {
       searchInputRef.current?.focus()
     })
   }, [sheetMode])
+
+  useEffect(() => {
+    if (listMapMode !== 'search') {
+      return
+    }
+
+    window.requestAnimationFrame(() => {
+      searchInputRef.current?.focus()
+    })
+  }, [listMapMode])
 
   useEffect(() => {
     if (!savedListToast) {
@@ -157,20 +228,39 @@ function App() {
   }, [])
 
   const visiblePlaces = useMemo(() => {
+    const mapPlaces = listMapItem ? listMapPlaces : places
+
     if (activeFilter === 'all') {
-      return places
+      return mapPlaces
     }
 
-    return places.filter((place) => place.category === activeFilter)
-  }, [activeFilter])
+    return mapPlaces.filter((place) => place.category === activeFilter)
+  }, [activeFilter, listMapItem])
+
+  const visibleListMapPlaces = useMemo(() => {
+    const filteredPlaces =
+      activeFilter === 'all' ? listMapPlaces : listMapPlaces.filter((place) => place.category === activeFilter)
+
+    return listMapSearchQuery.trim() ? filteredPlaces.slice(0, 2) : filteredPlaces
+  }, [activeFilter, listMapSearchQuery])
 
   const selectedPlace = nearbyPlaces.find((place) => place.id === selectedPlaceId) ?? null
   const isDetail = selectedPlace !== null
+  const isListMap = listMapItem !== null
+  const isListMapPanelOpen = isListMap && !isDetail && listMapMode !== 'summary'
   const isExpanded = sheetMode === 'expanded'
-  const isSearch = sheetMode === 'search' && !isDetail
+  const isSearch = sheetMode === 'search' && !isDetail && !isListMapPanelOpen
   const hasSearchQuery = searchQuery.trim().length > 0
   const detailSheetHeight = selectedPlace?.photoUrl ? '480px' : '430px'
-  const sheetHeight = isDetail ? detailSheetHeight : sheetMode === 'collapsed' ? '168px' : '450px'
+  const sheetHeight = isDetail
+    ? detailSheetHeight
+    : isListMap && !isListMapPanelOpen
+      ? '0px'
+      : isListMapPanelOpen
+        ? '450px'
+        : sheetMode === 'collapsed'
+          ? '168px'
+          : '450px'
   const stageStyle = { '--map-sheet-height': sheetHeight } as CSSProperties
 
   const resetDrag = () => {
@@ -188,7 +278,7 @@ function App() {
     didDragSheet.current = false
 
     const interactiveTarget = event.target instanceof HTMLElement
-      ? event.target.closest('.map-search, .nearby-item, .place-detail, button, input')
+      ? event.target.closest('.map-search, .nearby-item, .place-detail, .list-map-sheet, .list-map-summary, button, input')
       : null
 
     if (!interactiveTarget) {
@@ -234,6 +324,28 @@ function App() {
       return
     }
 
+    if (isListMap) {
+      if (dragDistance > SHEET_SNAP_THRESHOLD && listMapMode === 'summary') {
+        setListMapMode('expanded')
+      }
+
+      if (dragDistance > SHEET_SNAP_THRESHOLD && listMapMode === 'expanded') {
+        setListMapMode('search')
+      }
+
+      if (dragDistance < -SHEET_SNAP_THRESHOLD && listMapMode === 'search') {
+        setListMapMode('expanded')
+      }
+
+      if (dragDistance < -SHEET_SNAP_THRESHOLD && listMapMode === 'expanded') {
+        setIsListMapSummaryVisible(true)
+        setListMapMode('summary')
+      }
+
+      resetDrag()
+      return
+    }
+
     if (dragDistance > SHEET_SNAP_THRESHOLD && sheetMode === 'collapsed') {
       setSheetMode('expanded')
     }
@@ -250,6 +362,16 @@ function App() {
   }
 
   const openSearch = () => {
+    if (listMapItem) {
+      setSelectedPlaceId(null)
+      setIsDetailExpanded(false)
+      setListMapMode('search')
+      window.requestAnimationFrame(() => {
+        searchInputRef.current?.focus()
+      })
+      return
+    }
+
     setActiveTab('map')
     setSelectedPlaceId(null)
     setIsDetailExpanded(false)
@@ -259,6 +381,14 @@ function App() {
   }
 
   const closeSearch = () => {
+    if (listMapItem) {
+      setListMapSearchQuery('')
+      setSelectedPlaceId(null)
+      setIsDetailExpanded(false)
+      setListMapMode('expanded')
+      return
+    }
+
     setActiveTab('map')
     setSearchQuery('')
     setSelectedPlaceId(null)
@@ -276,17 +406,24 @@ function App() {
     setIsPhotoModalOpen(false)
     setIsAddToListOpen(false)
     setIsReportModalOpen(false)
-    setSheetMode('expanded')
+    if (!listMapItem) {
+      setSheetMode('expanded')
+    }
   }
 
   const closePlaceDetail = () => {
-    setActiveTab('map')
     setSelectedPlaceId(null)
     setIsDetailExpanded(false)
     setIsPhotoModalOpen(false)
     setIsAddToListOpen(false)
     setIsReportModalOpen(false)
-    setSheetMode('expanded')
+    if (listMapItem) {
+      setActiveTab('map')
+      return
+    }
+
+    setActiveTab('map')
+    setSheetMode('collapsed')
   }
 
   const openPhotoModal = () => {
@@ -359,11 +496,13 @@ function App() {
     setSelectedListId('')
   }
 
-  const openRestaurantAddPage = () => {
+  const openRestaurantAddPage = (returnListId: string | null = null) => {
     setIsPhotoModalOpen(false)
     setIsAddToListOpen(false)
     setIsReportModalOpen(false)
     setSavedListToast(null)
+    setRestaurantAddReturnListId(returnListId)
+    setIsBottomNavVisible(false)
     if (toastTimerRef.current !== null) {
       window.clearTimeout(toastTimerRef.current)
       toastTimerRef.current = null
@@ -377,6 +516,14 @@ function App() {
 
   const closeRestaurantAddPage = () => {
     setIsRestaurantAddOpen(false)
+    if (restaurantAddReturnListId) {
+      setActiveTab('list')
+      setPendingListDetailId(restaurantAddReturnListId)
+      setIsBottomNavVisible(false)
+      return
+    }
+
+    setIsBottomNavVisible(true)
   }
 
   const closeSavedListToast = () => {
@@ -397,17 +544,105 @@ function App() {
     )
   }
 
+  const getMapPlaceIcon = (category: Exclude<Category, 'all'>) => {
+    if (category === 'cafe') {
+      return cafeIcon
+    }
+
+    if (category === 'prayer') {
+      return prayerIcon
+    }
+
+    return foodIcon
+  }
+
+  const getMapPlaceIconClass = (category: Exclude<Category, 'all'>) => {
+    if (category === 'cafe') {
+      return 'map-marker-cafe'
+    }
+
+    if (category === 'prayer') {
+      return 'map-marker-prayer'
+    }
+
+    return 'map-marker-food'
+  }
+
+  const getListMapDetailPlaceId = (place: ListMapPlace) => {
+    if (place.detailType === 1) {
+      return 'nearby-1'
+    }
+
+    if (place.detailType === 3) {
+      return 'nearby-3'
+    }
+
+    return 'nearby-2'
+  }
+
+  const openListOnMap = (listItem: LovedListItem, returnTarget: ListMapReturnTarget = 'list') => {
+    setActiveTab('map')
+    setListMapItem(listItem)
+    setListMapReturnTarget(returnTarget)
+    setIsListMapSummaryVisible(true)
+    setListMapMode('summary')
+    setListMapSearchQuery('')
+    setSheetMode('collapsed')
+    setSelectedPlaceId(null)
+    setIsDetailExpanded(false)
+    setIsPhotoModalOpen(false)
+    setIsAddToListOpen(false)
+    setIsReportModalOpen(false)
+    setSearchQuery('')
+    setIsBottomNavVisible(true)
+  }
+
+  const closeListOnMap = () => {
+    const currentListMapItem = listMapItem
+    setListMapItem(null)
+    setIsListMapSummaryVisible(true)
+    setListMapMode('summary')
+    setListMapSearchQuery('')
+    setSelectedPlaceId(null)
+    setIsDetailExpanded(false)
+
+    if (listMapReturnTarget === 'explore' && currentListMapItem) {
+      setActiveTab('explore')
+      setPendingExploreListDetail(currentListMapItem)
+      setIsBottomNavVisible(false)
+      return
+    }
+
+    if (listMapReturnTarget === 'my' && currentListMapItem) {
+      setActiveTab('my')
+      setPendingMyListDetail(currentListMapItem)
+      setIsBottomNavVisible(false)
+      return
+    }
+
+    setActiveTab('list')
+    if (currentListMapItem) {
+      setPendingListDetailId(currentListMapItem.id)
+      setIsBottomNavVisible(false)
+    }
+  }
+
+  const collapseListMapNav = () => {
+    setListMapItem(null)
+    setIsListMapSummaryVisible(true)
+    setListMapMode('summary')
+    setListMapSearchQuery('')
+    setSelectedPlaceId(null)
+    setIsDetailExpanded(false)
+    setActiveTab('map')
+    setSheetMode('collapsed')
+    setIsBottomNavVisible(true)
+  }
+
   const handlePlaceClick = (place: NearbyPlace) => {
     if (place.id === 'nearby-1' || place.id === 'nearby-2' || place.id === 'nearby-3') {
       openPlaceDetail(place.id)
     }
-  }
-
-  const handleSearchResultKeepClick = (event: MouseEvent<HTMLButtonElement>, placeId: string) => {
-    event.stopPropagation()
-    setKeptSearchResultIds((currentIds) =>
-      currentIds.includes(placeId) ? currentIds.filter((id) => id !== placeId) : [...currentIds, placeId],
-    )
   }
 
   const renderKeepButton = (place: NearbyPlace) => (
@@ -440,13 +675,59 @@ function App() {
       </div>
       <button
         type="button"
-        className={`nearby-item__keep ${keptSearchResultIds.includes(place.id) ? 'is-active' : ''}`}
-        aria-label={`${keptSearchResultIds.includes(place.id) ? 'Unkeep' : 'Keep'} ${place.name}`}
-        aria-pressed={keptSearchResultIds.includes(place.id)}
-        onClick={(event) => handleSearchResultKeepClick(event, place.id)}
+        className="nearby-item__keep"
+        aria-label={`Save ${place.name} to list`}
+        aria-haspopup="dialog"
+        onClick={(event) => {
+          event.stopPropagation()
+          openListSheet()
+        }}
       >
-        <img src={keptSearchResultIds.includes(place.id) ? keepActiveIcon : keepIcon} alt="" aria-hidden="true" />
+        <img src={keepIcon} alt="" aria-hidden="true" />
       </button>
+    </article>
+  )
+
+  const renderListMapPlaceItem = (place: ListMapPlace) => (
+    <article
+      className="nearby-item list-map-place-item is-clickable"
+      key={place.id}
+      role="button"
+      tabIndex={0}
+      onClick={() => openPlaceDetail(getListMapDetailPlaceId(place))}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          openPlaceDetail(getListMapDetailPlaceId(place))
+        }
+      }}
+    >
+      <span
+        className="nearby-item__icon"
+        style={
+          {
+            '--place-icon-bg':
+              place.category === 'cafe'
+                ? 'var(--color-point-cafe)'
+                : place.category === 'prayer'
+                  ? 'var(--color-point-prayer)'
+                  : 'var(--color-point-restaurant)',
+          } as CSSProperties
+        }
+      >
+        <img src={getMapPlaceIcon(place.category)} alt="" aria-hidden="true" />
+      </span>
+      <div className="nearby-item__content">
+        <h3>{place.name}</h3>
+        <p>
+          <span className={place.status === 'Open' ? 'is-open' : 'is-closed'}>{place.status}</span>
+          <span className="text-dot" aria-hidden="true" />
+          {place.address}
+        </p>
+      </div>
+      <span className="list-map-place-item__arrow" aria-hidden="true">
+        <img src={rightArrowIcon} alt="" aria-hidden="true" />
+      </span>
     </article>
   )
 
@@ -481,6 +762,12 @@ function App() {
 
   const openExplore = () => {
     setActiveTab('explore')
+    setListMapItem(null)
+    setPendingMyListDetail(null)
+    setPendingListDetailId(null)
+    setIsListMapSummaryVisible(true)
+    setListMapMode('summary')
+    setListMapSearchQuery('')
     setSheetMode('collapsed')
     setSelectedPlaceId(null)
     setIsDetailExpanded(false)
@@ -488,10 +775,17 @@ function App() {
     setIsAddToListOpen(false)
     setIsReportModalOpen(false)
     setSearchQuery('')
+    setIsBottomNavVisible(true)
   }
 
   const openListTab = () => {
     setActiveTab('list')
+    setListMapItem(null)
+    setPendingExploreListDetail(null)
+    setPendingMyListDetail(null)
+    setIsListMapSummaryVisible(true)
+    setListMapMode('summary')
+    setListMapSearchQuery('')
     setSheetMode('collapsed')
     setSelectedPlaceId(null)
     setIsDetailExpanded(false)
@@ -499,10 +793,17 @@ function App() {
     setIsAddToListOpen(false)
     setIsReportModalOpen(false)
     setSearchQuery('')
+    setIsBottomNavVisible(true)
   }
 
   const openMy = () => {
     setActiveTab('my')
+    setListMapItem(null)
+    setPendingExploreListDetail(null)
+    setPendingListDetailId(null)
+    setIsListMapSummaryVisible(true)
+    setListMapMode('summary')
+    setListMapSearchQuery('')
     setSheetMode('collapsed')
     setSelectedPlaceId(null)
     setIsDetailExpanded(false)
@@ -510,15 +811,29 @@ function App() {
     setIsAddToListOpen(false)
     setIsReportModalOpen(false)
     setSearchQuery('')
+    setIsBottomNavVisible(true)
   }
 
   const openMap = () => {
     setActiveTab('map')
+    setListMapItem(null)
+    setPendingExploreListDetail(null)
+    setPendingMyListDetail(null)
+    setPendingListDetailId(null)
+    setIsListMapSummaryVisible(true)
+    setListMapMode('summary')
+    setListMapSearchQuery('')
     setSheetMode('collapsed')
+    setIsBottomNavVisible(true)
   }
 
   const handleBottomNavChange = (tab: BottomNavTab) => {
     setIsRestaurantAddOpen(false)
+
+    if (listMapItem && tab === 'list') {
+      collapseListMapNav()
+      return
+    }
 
     if (tab === 'explore') {
       openExplore()
@@ -545,14 +860,35 @@ function App() {
       {isRestaurantAddOpen ? (
         <RestaurantAddPage onClose={closeRestaurantAddPage} />
       ) : activeTab === 'explore' ? (
-        <ExplorePage onAddToList={openListSheet} onReportIncorrect={openReportModal} />
+        <ExplorePage
+          onAddToList={openListSheet}
+          onReportIncorrect={openReportModal}
+          onViewListOnMap={(listItem) => openListOnMap(listItem, 'explore')}
+          onBottomNavVisibilityChange={setIsBottomNavVisible}
+          restoreListItem={pendingExploreListDetail}
+          onRestoreListItemHandled={() => setPendingExploreListDetail(null)}
+        />
       ) : activeTab === 'list' ? (
-        <ListPage onAddRestaurant={openRestaurantAddPage} onAddToList={openListSheet} />
+      <ListPage
+          onAddRestaurant={openRestaurantAddPage}
+          onAddToList={openListSheet}
+          onViewListOnMap={(listItem) => openListOnMap(listItem, 'list')}
+          onBottomNavVisibilityChange={setIsBottomNavVisible}
+          restoreSelectedListId={pendingListDetailId}
+          onRestoreSelectedListIdHandled={() => setPendingListDetailId(null)}
+        />
       ) : activeTab === 'my' ? (
-        <MyPage onReportIncorrect={openReportModal} onAddToList={openListSheet} />
+        <MyPage
+          onReportIncorrect={openReportModal}
+          onAddToList={openListSheet}
+          onViewListOnMap={(listItem) => openListOnMap(listItem, 'my')}
+          onBottomNavVisibilityChange={setIsBottomNavVisible}
+          restoreListItem={pendingMyListDetail}
+          onRestoreListItemHandled={() => setPendingMyListDetail(null)}
+        />
       ) : (
         <section
-          className={`map-stage ${isSearch ? 'is-searching' : ''} ${isDetail ? 'is-detail' : ''}`}
+          className={`map-stage ${isSearch ? 'is-searching' : ''} ${isDetail ? 'is-detail' : ''} ${isListMap ? 'is-list-map' : ''} ${isListMapPanelOpen ? 'is-list-map-panel-open' : ''} ${listMapMode === 'search' ? 'is-list-map-searching' : ''}`}
           aria-label={copy.title}
           style={stageStyle}
         >
@@ -563,17 +899,15 @@ function App() {
               <button
                 key={place.id}
                 type="button"
-                className={`map-marker map-marker-${place.category}`}
+                className={`map-marker ${getMapPlaceIconClass(place.category)}`}
                 style={{ left: `${place.x}%`, top: `${place.y}%` }}
                 aria-label={place.name}
-                onClick={() => {
-                  if (place.id === 'food-1') {
-                    openPlaceDetail('nearby-1')
-                  }
-                }}
+                onClick={() =>
+                  openPlaceDetail('detailPlaceId' in place ? place.detailPlaceId : getListMapDetailPlaceId(place))
+                }
               >
                 <span className="map-marker-inner">
-                  <img src={place.icon} alt="" aria-hidden="true" />
+                  <img src={'icon' in place ? place.icon : getMapPlaceIcon(place.category)} alt="" aria-hidden="true" />
                 </span>
               </button>
             ))}
@@ -626,8 +960,54 @@ function App() {
             </button>
           </div>
 
+          {listMapItem && !isDetail && listMapMode === 'summary' && isListMapSummaryVisible && (
+            <article
+              className="list-map-summary"
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                setIsListMapSummaryVisible(false)
+                setListMapMode('expanded')
+              }}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  setIsListMapSummaryVisible(false)
+                  setListMapMode('expanded')
+                }
+              }}
+            >
+              <span className="list-map-summary__thumb">
+                <img src={albumCover} alt="" aria-hidden="true" />
+                <span className="list-map-summary__count">{listMapItem.count}</span>
+              </span>
+              <span className="list-map-summary__copy">
+                <span className="list-map-summary__title">{listMapItem.title}</span>
+                <span className="list-map-summary__owner">{listMapItem.owner}</span>
+              </span>
+              <button
+                type="button"
+                className="list-map-summary__close"
+                aria-label="Close list map"
+                onClick={(event) => {
+                  event.stopPropagation()
+                  closeListOnMap()
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    closeListOnMap()
+                  }
+                }}
+              >
+                <img src={closeIcon} alt="" aria-hidden="true" />
+              </button>
+            </article>
+          )}
+
           <div
-            className={`map-sheet ${isSearch ? 'is-searching' : ''} ${isDetail ? 'is-detail' : ''} ${isDetailExpanded ? 'is-detail-expanded' : ''}`}
+            className={`map-sheet ${isSearch ? 'is-searching' : ''} ${isDetail ? 'is-detail' : ''} ${isDetailExpanded ? 'is-detail-expanded' : ''} ${isListMapPanelOpen ? 'is-list-map-sheet' : ''} ${listMapMode === 'search' ? 'is-list-map-searching' : ''}`}
             onPointerDown={startSheetDrag}
             onPointerMove={moveSheetDrag}
             onPointerUp={finishSheetDrag}
@@ -646,6 +1026,55 @@ function App() {
                   onAddToList={openListSheet}
                   onReportIncorrect={openReportModal}
                 />
+              ) : isListMapPanelOpen && listMapItem ? (
+                <section className="list-map-sheet" aria-label={`${listMapItem.title} map list`}>
+                  {listMapMode === 'search' ? (
+                    <div className="map-search search-field list-map-sheet__search">
+                      <img src={glassIcon} alt="" aria-hidden="true" />
+                        <input
+                          ref={searchInputRef}
+                          aria-label={`Search in ${listMapItem.title}`}
+                          className="search-input"
+                          type="search"
+                          value={listMapSearchQuery}
+                          onChange={(event) => setListMapSearchQuery(event.target.value)}
+                        />
+                        {listMapSearchQuery && (
+                          <button
+                            type="button"
+                            className="search-clear"
+                            aria-label="Clear search"
+                            onClick={(event) => {
+                              event.stopPropagation()
+                              setListMapSearchQuery('')
+                            }}
+                          >
+                            <img src={deleteTextIcon} alt="" aria-hidden="true" />
+                          </button>
+                        )}
+                    </div>
+                  ) : (
+                    <button type="button" className="map-search list-map-sheet__search" onClick={openSearch}>
+                      <img src={glassIcon} alt="" aria-hidden="true" />
+                      <span>{copy.searchPlaceholder}</span>
+                    </button>
+                  )}
+
+                  <div className="list-map-sheet__meta">
+                    <p>
+                      <span>{listMapItem.title}</span>
+                      <span className="text-dot" aria-hidden="true" />
+                      <span>{listMapItem.owner}</span>
+                    </p>
+                    <span>{visibleListMapPlaces.length} places</span>
+                  </div>
+
+                  <div className="list-map-sheet__results">
+                    <div className="nearby-list list-map-sheet__list">
+                      {visibleListMapPlaces.map(renderListMapPlaceItem)}
+                    </div>
+                  </div>
+                </section>
               ) : isSearch ? (
                 <>
                   <div className="map-search search-field">
@@ -671,16 +1100,18 @@ function App() {
                       </button>
                     )}
                   </div>
-                  <div className="search-results">
-                    {hasSearchQuery ? (
-                      <div className="no-results" role="status">
-                        <img src={unhappyIcon} alt="" aria-hidden="true" />
-                        <p>No Result found</p>
-                      </div>
-                    ) : (
-                      <div className="nearby-list nearby-list--search">{searchResultPlaces.map(renderSearchResultItem)}</div>
-                    )}
-                  </div>
+                  {hasSearchQuery && (
+                    <div className="search-results">
+                      {searchResultPlaces.length > 0 ? (
+                        <div className="nearby-list nearby-list--search">{searchResultPlaces.map(renderSearchResultItem)}</div>
+                      ) : (
+                        <div className="no-results" role="status">
+                          <img src={unhappyIcon} alt="" aria-hidden="true" />
+                          <p>No Result found</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                   <div className="recommend-bottom">
                     <button type="button" className="recommend-button">
                       <img src={handLikeIcon} alt="" aria-hidden="true" />
@@ -716,7 +1147,14 @@ function App() {
           </div>
         </section>
       )}
-      <BottomNav activeTab={activeTab} onChangeTab={handleBottomNavChange} onAdd={openRestaurantAddPage} />
+          {isBottomNavVisible && !isRestaurantAddOpen && (
+        <BottomNav
+          activeTab={isListMap ? 'list' : activeTab}
+          variant={isListMap && !isDetail && listMapMode === 'summary' && isListMapSummaryVisible ? 'compactList' : 'default'}
+          onChangeTab={handleBottomNavChange}
+          onAdd={() => openRestaurantAddPage()}
+        />
+      )}
 
         {isPhotoModalOpen && (
           <div className="photo-modal-backdrop" role="presentation" onMouseDown={closePhotoModal}>

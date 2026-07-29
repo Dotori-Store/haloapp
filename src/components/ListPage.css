@@ -69,6 +69,10 @@
   cursor: pointer;
 }
 
+.list-page__menu-item.is-active {
+  color: var(--color-primary);
+}
+
 .list-page__menu-icon {
   display: grid;
   place-items: center;
@@ -100,4 +104,36 @@
 
 .list-page__grid {
   gap: 20px 10px;
+}
+
+.list-page.is-editing .my-list-card {
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  -webkit-user-drag: none;
+}
+
+.list-page.is-editing .my-list-card.is-dragging {
+  opacity: 0.7;
+}
+
+.list-page.is-editing .my-list-card__delete {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.list-page.is-editing .my-list-card__delete img {
+  width: 28px;
+  height: 28px;
 }
