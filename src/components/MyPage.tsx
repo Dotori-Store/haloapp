@@ -1,5 +1,6 @@
 ﻿import { useState } from 'react'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import alarmBellIcon from '../assets/icons/ico-alarm-bell.svg'
 import settingIcon from '../assets/icons/ico-setting.svg'
 import closeIcon from '../assets/icons/ico-close-xs.svg'
@@ -48,9 +49,9 @@ type ProfileUser = {
 
 type NoticeItem = {
   id: string
-  title: string
-  description: string
-  time: string
+  titleKey: string
+  descriptionKey: string
+  timeKey: string
   icon: string
   read: boolean
 }
@@ -102,25 +103,25 @@ const otherProfileLists: LovedListItem[] = [
 const noticeItems = [
   {
     id: 'like',
-    title: 'Like',
-    description: "Zo's liked the restaurant you registered.",
-    time: '2hours',
+    titleKey: 'notice.like',
+    descriptionKey: 'notice.likeDescription',
+    timeKey: 'notice.twoHours',
     icon: noticeHeartIcon,
     read: false,
   },
   {
     id: 'follow',
-    title: 'New Follower',
-    description: 'Olivia followed you.',
-    time: '1day',
+    titleKey: 'notice.newFollower',
+    descriptionKey: 'notice.followDescription',
+    timeKey: 'notice.oneDay',
     icon: noticeFollowIcon,
     read: false,
   },
   {
     id: 'keep',
-    title: 'Add List',
-    description: "Zo's liked the restaurant you registered.",
-    time: '5hours',
+    titleKey: 'notice.addList',
+    descriptionKey: 'notice.addListDescription',
+    timeKey: 'notice.fiveHours',
     icon: noticeKeepIcon,
     read: false,
   },
@@ -143,6 +144,7 @@ export function MyPage({
   restoreListItem,
   onRestoreListItemHandled,
 }: MyPageProps) {
+  const { t, i18n } = useTranslation()
   const [isPrayerExpanded, setIsPrayerExpanded] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [peoplePage, setPeoplePage] = useState<'follower' | 'following' | null>(null)
@@ -152,7 +154,6 @@ export function MyPage({
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isNoticeOpen, setIsNoticeOpen] = useState(false)
-  const [language, setLanguage] = useState<'english' | 'korean'>('english')
   const [isNewContentNotificationOn, setIsNewContentNotificationOn] = useState(true)
   const [isActivityNotificationOn, setIsActivityNotificationOn] = useState(false)
   const [isMyPageExposed, setIsMyPageExposed] = useState(true)
@@ -160,6 +161,13 @@ export function MyPage({
     () => Object.fromEntries(noticeItems.map((notice) => [notice.id, notice.read])) as Record<string, boolean>,
   )
   const allNoticesRead = noticeItems.every((notice) => noticeReadMap[notice.id])
+  const language = i18n.language.startsWith('ko') ? 'korean' : 'english'
+
+  const setAppLanguage = (nextLanguage: 'english' | 'korean') => {
+    const nextCode = nextLanguage === 'korean' ? 'ko' : 'en'
+    localStorage.setItem('language', nextCode)
+    void i18n.changeLanguage(nextCode)
+  }
 
   useEffect(() => {
     const isRootPage =
@@ -236,9 +244,9 @@ export function MyPage({
         <div className="my-page my-page--people">
           <header className="my-people__header screen-header">
             <div className="screen-header__slot">
-              <button type="button" className="screen-header__button" aria-label="Back" onClick={() => setIsUserNetworkOpen(false)}>
-                <img src={backArrowIcon} alt="" aria-hidden="true" />
-              </button>
+            <button type="button" className="screen-header__button" aria-label={t('shared.back')} onClick={() => setIsUserNetworkOpen(false)}>
+              <img src={backArrowIcon} alt="" aria-hidden="true" />
+            </button>
             </div>
             <div className="screen-header__title">
               <h1 className="head-title">{selectedUser.name}</h1>
@@ -247,8 +255,8 @@ export function MyPage({
           </header>
 
           <main className="my-user-network__content">
-            <section className="my-user-network__section" aria-label="Follower">
-              <h2>Follower</h2>
+            <section className="my-user-network__section" aria-label={t('my.follower')}>
+              <h2>{t('my.follower')}</h2>
               <div className="my-people__list">
                 {otherProfileFollowers.map((user) => (
                   <button type="button" className="my-people__item" key={user.id}>
@@ -259,8 +267,8 @@ export function MyPage({
               </div>
             </section>
 
-            <section className="my-user-network__section" aria-label="Following">
-              <h2>Following</h2>
+            <section className="my-user-network__section" aria-label={t('my.following')}>
+              <h2>{t('my.following')}</h2>
               <div className="my-people__list">
                 {otherProfileFollowing.map((user) => (
                   <button type="button" className="my-people__item" key={user.id}>
@@ -278,14 +286,14 @@ export function MyPage({
     return (
       <div className="my-page my-page--user-profile">
         <header className="my-user-profile__header">
-          <button type="button" className="screen-header__button" aria-label="Back" onClick={() => setSelectedUser(null)}>
+          <button type="button" className="screen-header__button" aria-label={t('shared.back')} onClick={() => setSelectedUser(null)}>
             <img src={backArrowIcon} alt="" aria-hidden="true" />
           </button>
           <div className="my-user-profile__menu-wrap">
             <button
               type="button"
               className="screen-header__button"
-              aria-label="More options"
+              aria-label={t('shared.moreOptions')}
               aria-expanded={isUserMenuOpen}
               onClick={() => setIsUserMenuOpen((current) => !current)}
             >
@@ -295,7 +303,7 @@ export function MyPage({
               <div className="my-user-profile__context" role="menu">
                 <button type="button" role="menuitem">
                   <img src={contextShareIcon} alt="" aria-hidden="true" />
-                  <span>Share profile</span>
+                  <span>{t('my.shareProfile')}</span>
                 </button>
                 <button
                   type="button"
@@ -307,7 +315,7 @@ export function MyPage({
                   }}
                 >
                   <img src={contextReportIcon} alt="" aria-hidden="true" />
-                  <span>Report user</span>
+                  <span>{t('my.reportUser')}</span>
                 </button>
               </div>
             )}
@@ -318,16 +326,16 @@ export function MyPage({
           <section className="my-user-profile__summary" aria-label={`${selectedUser.name} profile`}>
             <img src={selectedUser.image} alt="" aria-hidden="true" className="my-user-profile__avatar" />
             <h1>{selectedUser.name}</h1>
-            <div className="my-user-profile__stats" aria-label="Profile stats">
-              <button type="button" onClick={() => setIsUserNetworkOpen(true)}>Follower 2</button>
+            <div className="my-user-profile__stats" aria-label={t('my.profileStats')}>
+              <button type="button" onClick={() => setIsUserNetworkOpen(true)}>{`${t('my.follower')} 2`}</button>
               <span className="text-dot" aria-hidden="true" />
-              <button type="button" onClick={() => setIsUserNetworkOpen(true)}>Following 3</button>
+              <button type="button" onClick={() => setIsUserNetworkOpen(true)}>{`${t('my.following')} 3`}</button>
             </div>
-            <button type="button" className="my-user-profile__follow">follow</button>
+            <button type="button" className="my-user-profile__follow">{t('my.follow')}</button>
           </section>
 
-          <section className="my-user-profile__share-list" aria-label="Share List">
-            <h2>Share List</h2>
+          <section className="my-user-profile__share-list" aria-label={t('my.shareList')}>
+            <h2>{t('my.shareList')}</h2>
             <div className="my-user-profile__album-grid">
               {otherProfileLists.map((listItem) => (
                 <button
@@ -354,14 +362,14 @@ export function MyPage({
   }
 
   if (peoplePage) {
-    const title = peoplePage === 'following' ? 'Following' : 'Follower'
+    const title = peoplePage === 'following' ? t('my.following') : t('my.follower')
     const users = peoplePage === 'following' ? followingUsers : followerUsers
 
     return (
       <div className="my-page my-page--people">
         <header className="my-people__header screen-header">
           <div className="screen-header__slot">
-            <button type="button" className="screen-header__button" aria-label="Back" onClick={() => setPeoplePage(null)}>
+              <button type="button" className="screen-header__button" aria-label={t('shared.back')} onClick={() => setPeoplePage(null)}>
               <img src={backArrowIcon} alt="" aria-hidden="true" />
             </button>
           </div>
@@ -372,7 +380,7 @@ export function MyPage({
         </header>
 
         <main className="my-people__content">
-          <section className="my-people__section" aria-label={title}>
+            <section className="my-people__section" aria-label={title}>
             <h2>{title}</h2>
             <div className="my-people__list">
               {users.map((user) => (
@@ -398,11 +406,11 @@ export function MyPage({
 
           {peoplePage === 'follower' && (
             <div className="my-people__exposure">
-              <span>Exposure to My Page</span>
+              <span>{t('my.exposureToMyPage')}</span>
               <button
                 type="button"
                 className={`my-people__switch ${isMyPageExposed ? 'is-on' : ''}`}
-                aria-label="Exposure to My Page"
+                aria-label={t('my.exposureToMyPage')}
                 aria-pressed={isMyPageExposed}
                 onClick={() => setIsMyPageExposed((current) => !current)}
               >
@@ -420,36 +428,36 @@ export function MyPage({
       <div className="my-page my-page--edit">
         <header className="my-edit__header screen-header">
           <div className="screen-header__slot">
-            <button type="button" className="screen-header__button" aria-label="Back" onClick={() => setIsEditOpen(false)}>
+            <button type="button" className="screen-header__button" aria-label={t('shared.back')} onClick={() => setIsEditOpen(false)}>
               <img src={backArrowIcon} alt="" aria-hidden="true" />
             </button>
           </div>
           <div className="screen-header__title">
-            <h1 className="head-title">Edit</h1>
+            <h1 className="head-title">{t('my.edit')}</h1>
           </div>
           <div className="screen-header__slot">
-            <button type="button" className="screen-header__button my-edit__confirm" aria-label="Save profile" onClick={() => setIsEditOpen(false)}>
+            <button type="button" className="screen-header__button my-edit__confirm" aria-label={t('shared.save')} onClick={() => setIsEditOpen(false)}>
               <img src={topCheckIcon} alt="" aria-hidden="true" />
             </button>
           </div>
         </header>
 
         <main className="my-edit__content">
-          <button type="button" className="my-edit__photo" aria-label="Edit profile photo">
+          <button type="button" className="my-edit__photo" aria-label={t('my.edit')}>
             <img src={grayCameraIcon} alt="" aria-hidden="true" />
           </button>
 
           <div className="my-edit__rows">
             <div className="my-edit__row">
-              <span>Name</span>
+              <span>{t('my.name')}</span>
               <span>Khadija</span>
             </div>
             <div className="my-edit__row">
-              <span>Exposure to My Page</span>
+              <span>{t('my.exposureToMyPage')}</span>
               <button
                 type="button"
                 className={`my-edit__switch ${isMyPageExposed ? 'is-on' : ''}`}
-                aria-label="Exposure to My Page"
+                aria-label={t('my.exposureToMyPage')}
                 aria-pressed={isMyPageExposed}
                 onClick={() => setIsMyPageExposed((current) => !current)}
               >
@@ -458,8 +466,8 @@ export function MyPage({
             </div>
           </div>
 
-          <section className="my-edit__share-list" aria-label="Share List">
-            <h2>Share List</h2>
+          <section className="my-edit__share-list" aria-label={t('my.shareList')}>
+            <h2>{t('my.shareList')}</h2>
             <div className="my-edit__album-grid">
               {shareLists.map((listItem) => (
                 <article className="my-edit__album" key={listItem.id}>
@@ -487,40 +495,40 @@ export function MyPage({
   return (
     <div className="my-page">
       <header className="my-page__header">
-        <h1 className="page-title">My</h1>
+        <h1 className="page-title">{t('my.title')}</h1>
         <div className="my-page__header-actions">
-          <button type="button" className="my-page__icon-button my-page__alarm" aria-label="Notifications" onClick={openNoticeSheet}>
+          <button type="button" className="my-page__icon-button my-page__alarm" aria-label={t('my.notice')} onClick={openNoticeSheet}>
             <img src={alarmBellIcon} alt="" aria-hidden="true" />
           </button>
-          <button type="button" className="my-page__icon-button" aria-label="Settings" onClick={() => setIsSettingsOpen(true)}>
+          <button type="button" className="my-page__icon-button" aria-label={t('my.settings')} onClick={() => setIsSettingsOpen(true)}>
             <img src={settingIcon} alt="" aria-hidden="true" />
           </button>
         </div>
       </header>
 
       <main className="my-page__content">
-        <section className="my-page__profile" aria-label="Profile">
+        <section className="my-page__profile" aria-label={t('my.profile')}>
           <img src={profileImage} alt="" aria-hidden="true" className="my-page__avatar" />
           <h2>Khadija</h2>
-          <div className="my-page__stats" aria-label="Profile stats">
-            <button type="button" onClick={() => setPeoplePage('follower')}>Follower 2</button>
+          <div className="my-page__stats" aria-label={t('my.profileStats')}>
+            <button type="button" onClick={() => setPeoplePage('follower')}>{`${t('my.follower')} 2`}</button>
             <span className="text-dot" aria-hidden="true" />
-            <button type="button" onClick={() => setPeoplePage('following')}>Following 32</button>
+            <button type="button" onClick={() => setPeoplePage('following')}>{`${t('my.following')} 32`}</button>
           </div>
-          <button type="button" className="my-page__edit" onClick={() => setIsEditOpen(true)}>edit</button>
+          <button type="button" className="my-page__edit" onClick={() => setIsEditOpen(true)}>{t('my.edit')}</button>
         </section>
 
-        <section className={`my-page__prayer ${isPrayerExpanded ? 'is-expanded' : ''}`} aria-label="Prayer time">
+        <section className={`my-page__prayer ${isPrayerExpanded ? 'is-expanded' : ''}`} aria-label={t('my.prayerTime')}>
           <header className="my-page__prayer-header">
             <div className="my-page__prayer-label">
               <img src={prayerIcon} alt="" aria-hidden="true" className="my-page__prayer-icon" />
-              <span>Prayer time</span>
+              <span>{t('my.prayerTime')}</span>
             </div>
             <time dateTime="2026-07-14">2026.07.14</time>
           </header>
 
           <div className="my-page__next-prayer">
-            <span>Next</span>
+            <span>{t('my.next')}</span>
             <strong>Isha</strong>
             <time dateTime="21:36">21:36</time>
           </div>
@@ -543,7 +551,7 @@ export function MyPage({
             onClick={() => setIsPrayerExpanded((current) => !current)}
           >
             <span className="my-page__chevron" aria-hidden="true" />
-            <span>{isPrayerExpanded ? 'Collapse' : 'Expand'}</span>
+            <span>{isPrayerExpanded ? t('my.collapse') : t('my.expand')}</span>
           </button>
         </section>
 
@@ -552,14 +560,14 @@ export function MyPage({
             <span className="my-page__qibla-icon">
               <img src={qiblaIcon} alt="" aria-hidden="true" />
             </span>
-            <span>Qibla Direction</span>
+            <span>{t('my.qiblaDirection')}</span>
           </span>
           <img src={goldArrow} alt="" aria-hidden="true" className="my-page__qibla-arrow" />
         </button>
 
         <button type="button" className="my-page__find-users">
           <img src={peoplesIcon} alt="" aria-hidden="true" />
-          <span>Find more users</span>
+          <span>{t('my.findMoreUsers')}</span>
         </button>
       </main>
 
@@ -573,47 +581,47 @@ export function MyPage({
             onMouseDown={(event) => event.stopPropagation()}
           >
             <header className="my-settings-sheet__header">
-              <h2 id="my-settings-title" className="page-title">Settings</h2>
-              <button type="button" className="my-settings-sheet__close" aria-label="Close settings" onClick={() => setIsSettingsOpen(false)}>
+              <h2 id="my-settings-title" className="page-title">{t('my.settings')}</h2>
+              <button type="button" className="my-settings-sheet__close" aria-label={t('shared.close')} onClick={() => setIsSettingsOpen(false)}>
                 <img src={closeIcon} alt="" aria-hidden="true" />
               </button>
             </header>
 
             <div className="my-settings-sheet__content">
               <div className="my-settings-sheet__row">
-                <span>Language Settings</span>
+                <span>{t('my.languageSettings')}</span>
                 <div
                   className={`my-settings-sheet__language ${language === 'korean' ? 'is-korean' : ''}`}
                   role="group"
-                  aria-label="Language Settings"
+                  aria-label={t('my.languageSettings')}
                 >
                   <button
                     type="button"
                     className={language === 'english' ? 'is-active' : ''}
                     aria-pressed={language === 'english'}
-                    onClick={() => setLanguage('english')}
+                    onClick={() => setAppLanguage('english')}
                   >
-                    English
+                    {t('my.english')}
                   </button>
                   <button
                     type="button"
                     className={language === 'korean' ? 'is-active' : ''}
                     aria-pressed={language === 'korean'}
-                    onClick={() => setLanguage('korean')}
+                    onClick={() => setAppLanguage('korean')}
                   >
-                    Korean
+                    {t('my.korean')}
                   </button>
                 </div>
               </div>
 
-              <section className="my-settings-sheet__section" aria-label="Notification settings">
-                <h3>Notification settings</h3>
+              <section className="my-settings-sheet__section" aria-label={t('my.notificationSettings')}>
+                <h3>{t('my.notificationSettings')}</h3>
                 <div className="my-settings-sheet__row">
-                  <span>New content notifications</span>
+                  <span>{t('my.newContentNotifications')}</span>
                   <button
                     type="button"
                     className={`my-settings-sheet__switch ${isNewContentNotificationOn ? 'is-on' : ''}`}
-                    aria-label="New content notifications"
+                    aria-label={t('my.newContentNotifications')}
                     aria-pressed={isNewContentNotificationOn}
                     onClick={() => setIsNewContentNotificationOn((current) => !current)}
                   >
@@ -621,11 +629,11 @@ export function MyPage({
                   </button>
                 </div>
                 <div className="my-settings-sheet__row">
-                  <span>Notifications about my activity</span>
+                  <span>{t('my.notificationsAboutMyActivity')}</span>
                   <button
                     type="button"
                     className={`my-settings-sheet__switch ${isActivityNotificationOn ? 'is-on' : ''}`}
-                    aria-label="Notifications about my activity"
+                    aria-label={t('my.notificationsAboutMyActivity')}
                     aria-pressed={isActivityNotificationOn}
                     onClick={() => setIsActivityNotificationOn((current) => !current)}
                   >
@@ -636,8 +644,8 @@ export function MyPage({
 
               <button type="button" className="my-settings-sheet__privacy">
                 <span>
-                  <strong>Privacy and Terms and Conditions</strong>
-                  <small>This application contains personal informati...</small>
+                  <strong>{t('my.privacyAndTerms')}</strong>
+                  <small>{t('my.privacyDescription')}</small>
                 </span>
                 <span aria-hidden="true" className="my-settings-sheet__privacy-arrow">
                   <img src={arrowMoreIcon} alt="" aria-hidden="true" />
@@ -645,8 +653,8 @@ export function MyPage({
               </button>
 
               <div className="my-settings-sheet__footer">
-                <button type="button" className="my-settings-sheet__logout">Logout</button>
-                <button type="button" className="my-settings-sheet__withdrawal">Withdrawal of membership</button>
+                <button type="button" className="my-settings-sheet__logout">{t('my.logout')}</button>
+                <button type="button" className="my-settings-sheet__withdrawal">{t('my.withdrawalOfMembership')}</button>
               </div>
             </div>
           </section>
@@ -663,8 +671,8 @@ export function MyPage({
             onMouseDown={(event) => event.stopPropagation()}
           >
             <header className="my-notice-sheet__header">
-              <h2 id="my-notice-title" className="page-title">Notice</h2>
-              <button type="button" className="my-notice-sheet__close" aria-label="Close notice" onClick={() => setIsNoticeOpen(false)}>
+              <h2 id="my-notice-title" className="page-title">{t('my.notice')}</h2>
+              <button type="button" className="my-notice-sheet__close" aria-label={t('shared.close')} onClick={() => setIsNoticeOpen(false)}>
                 <img src={closeIcon} alt="" aria-hidden="true" />
               </button>
             </header>
@@ -677,11 +685,11 @@ export function MyPage({
                   onClick={markAllNoticesRead}
                   disabled={allNoticesRead}
                 >
-                  Check all
+                  {t('my.checkAll')}
                 </button>
               </div>
 
-              <div className="my-notice-sheet__list" role="list" aria-label="Notice list">
+              <div className="my-notice-sheet__list" role="list" aria-label={t('my.notice')}>
                 {noticeItems.map((notice) => {
                   const isRead = noticeReadMap[notice.id]
 
@@ -698,11 +706,11 @@ export function MyPage({
                       </span>
                       <span className="my-notice-sheet__copy">
                         <span className="my-notice-sheet__title-row">
-                          <span className="my-notice-sheet__title">{notice.title}</span>
+                          <span className="my-notice-sheet__title">{t(notice.titleKey)}</span>
                         </span>
-                        <span className="my-notice-sheet__description">{notice.description}</span>
+                        <span className="my-notice-sheet__description">{t(notice.descriptionKey)}</span>
                       </span>
-                      <span className="my-notice-sheet__time">{notice.time}</span>
+                      <span className="my-notice-sheet__time">{t(notice.timeKey)}</span>
                     </button>
                   )
                 })}

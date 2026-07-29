@@ -8,6 +8,7 @@ import coverLikeImage from '../assets/images/album-cover-like.png'
 import albumCover from '../assets/dummy/album-cover.jpg'
 import curationCoverImage from '../assets/dummy/photo-cover.jpg'
 import curationFoodImage from '../assets/dummy/photo-food.jpg'
+import { useTranslation } from 'react-i18next'
 import './LovedListImportSheet.css'
 import './ExplorePage.css'
 
@@ -42,21 +43,21 @@ const destinationLists: DestinationList[] = [
 const importRestaurants: ImportRestaurant[] = [
   {
     id: 'import-1',
-    name: 'Dajunghan restaurant',
+    name: '다정한 식당',
     category: 'Restaurant',
-    address: '107, 1F, 2129-1, Jang-an-gu, Suwon-si',
+    address: '수원시 장안구 서부로 2129-1, 1층 107호',
   },
   {
     id: 'import-2',
     name: 'Hankuk restaurant',
     category: 'Restaurant',
-    address: '107, 1F, 2129-1, Jang-an-gu, Suwon-si',
+    address: '수원시 장안구 서부로 2129-1, 1층 107호',
   },
   {
     id: 'import-3',
     name: 'Seoul Korean restaurant',
     category: 'Restaurant',
-    address: '107, 1F, 2129-1, Jang-an-gu, Suwon-si',
+    address: '수원시 장안구 서부로 2129-1, 1층 107호',
   },
 ]
 
@@ -64,6 +65,7 @@ const getIconBackground = (category: ImportRestaurant['category']) =>
   category === 'Cafe' ? 'var(--color-point-cafe)' : 'var(--color-point-restaurant)'
 
 export function LovedListImportSheet({ open, onClose, onComplete }: LovedListImportSheetProps) {
+  const { t } = useTranslation()
   const [step, setStep] = useState<'destination' | 'import'>('destination')
   const [selectedDestinationId, setSelectedDestinationId] = useState<string | null>(null)
   const [selectedImportIds, setSelectedImportIds] = useState<string[]>([])
@@ -113,20 +115,20 @@ export function LovedListImportSheet({ open, onClose, onComplete }: LovedListImp
 
   return (
     <div className="loved-list-import-sheet" role="presentation">
-      <button type="button" className="loved-list-import-sheet__backdrop" aria-label="Close import sheet" onClick={onClose} />
+      <button type="button" className="loved-list-import-sheet__backdrop" aria-label={t('shared.close')} onClick={onClose} />
 
-      <section className="loved-list-import-sheet__panel" role="dialog" aria-modal="true" aria-label="Get List">
+      <section className="loved-list-import-sheet__panel" role="dialog" aria-modal="true" aria-label={t('list.getList')}>
         <div className="loved-list-import-sheet__handle" aria-hidden="true" />
 
         <header className="loved-list-import-sheet__header screen-header">
           <div className="screen-header__slot">
-            <button type="button" className="screen-header__button" aria-label="Close" onClick={onClose}>
+            <button type="button" className="screen-header__button" aria-label={t('shared.close')} onClick={onClose}>
               <img src={closeIcon} alt="" aria-hidden="true" />
             </button>
           </div>
 
           <div className="screen-header__title">
-            <h1 className="head-title">Get List</h1>
+            <h1 className="head-title">{t('list.getList')}</h1>
           </div>
 
           {step === 'destination' ? (
@@ -134,7 +136,7 @@ export function LovedListImportSheet({ open, onClose, onComplete }: LovedListImp
               <button
                 type="button"
                 className={`loved-list-import-sheet__confirm ${selectedDestination ? 'is-active' : ''}`}
-                aria-label="Confirm list"
+                aria-label={t('shared.confirm')}
                 disabled={!selectedDestination}
                 onClick={() => {
                   if (!selectedDestination) {
@@ -189,7 +191,7 @@ export function LovedListImportSheet({ open, onClose, onComplete }: LovedListImp
           ) : (
             <div className="loved-list-import-sheet__import-step">
               {selectedDestination && (
-                <section className="loved-list-import-sheet__destination-preview" aria-label="Selected destination">
+                <section className="loved-list-import-sheet__destination-preview" aria-label={selectedDestination.title}>
                   <img className="loved-list-import-sheet__destination-preview-image" src={coverLikeImage} alt="" aria-hidden="true" />
                   <h2 className="loved-list-import-sheet__destination-preview-title">{selectedDestination.title}</h2>
                   <p className="loved-list-import-sheet__destination-preview-owner">{selectedDestination.owner}</p>
@@ -197,13 +199,13 @@ export function LovedListImportSheet({ open, onClose, onComplete }: LovedListImp
                 </section>
               )}
 
-              <section className="loved-list-import-sheet__import-area" aria-label="Import restaurants">
+              <section className="loved-list-import-sheet__import-area" aria-label={t('list.getList')}>
                 <header className="loved-list-import-sheet__import-header">
                   <div className="loved-list-import-sheet__import-copy">
-                    <h2>Get list</h2>
-                    <p>Select the list you want to import</p>
+                    <h2>{t('list.getList')}</h2>
+                    <p>{t('list.selectListToImport')}</p>
                   </div>
-                  <div className="loved-list-import-sheet__import-count">Selected {selectedImportCount}</div>
+                  <div className="loved-list-import-sheet__import-count">{t('shared.selected', { count: selectedImportCount })}</div>
                 </header>
 
                 <button
@@ -215,7 +217,7 @@ export function LovedListImportSheet({ open, onClose, onComplete }: LovedListImp
                   <span className="loved-list-import-sheet__select-all-check" aria-hidden="true">
                     <img src={allSelected ? checkActiveIcon : checkDefaultIcon} alt="" aria-hidden="true" />
                   </span>
-                  <span className="loved-list-import-sheet__select-all-label">Select ALL</span>
+                  <span className="loved-list-import-sheet__select-all-label">{t('shared.selectAll')}</span>
                 </button>
 
                 <div className="loved-list-import-sheet__items">
@@ -242,7 +244,7 @@ export function LovedListImportSheet({ open, onClose, onComplete }: LovedListImp
                         <span className="loved-list-import-sheet__item-content">
                           <span className="loved-list-import-sheet__item-title">{item.name}</span>
                           <span className="loved-list-import-sheet__item-meta">
-                            <span>{item.category}</span>
+                            <span>{item.category === 'Cafe' ? t('map.filters.cafe') : t('map.filters.food')}</span>
                             <span className="text-dot" aria-hidden="true" />
                             {item.address}
                           </span>
@@ -264,7 +266,7 @@ export function LovedListImportSheet({ open, onClose, onComplete }: LovedListImp
               disabled={selectedImportCount === 0}
               onClick={completeImport}
             >
-              {selectedImportCount} Place Get
+              {t('list.placeGet', { count: selectedImportCount })}
             </button>
           </footer>
         )}

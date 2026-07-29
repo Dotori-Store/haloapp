@@ -1,0 +1,16 @@
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  width: min(100%, 480px);
+  margin: 0 auto;
+  background: radial-gradient(circle at 50% 40%, #01cb81 0%, #01bb77 60%);
+}
+
+.splash-screen img {
+  display: block;
+  width: 250px;
+  height: auto;
+}

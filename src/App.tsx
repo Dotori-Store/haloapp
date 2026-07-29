@@ -18,105 +18,34 @@ import deleteTextIcon from './assets/icons/ico-delete-text.svg'
 import closeIcon from './assets/icons/ico-close-xs.svg'
 import unhappyIcon from './assets/icons/ico-unhappy.svg'
 import albumCover from './assets/dummy/album-cover.jpg'
+import { useTranslation } from 'react-i18next'
 import { BottomNav, type BottomNavTab } from './components/BottomNav'
 import { ExplorePage } from './components/ExplorePage'
 import { ListPage } from './components/ListPage'
+import { OnboardingScreen } from './components/OnboardingScreen'
+import { SplashScreen } from './components/SplashScreen'
 import { RestaurantAddPage } from './components/RestaurantAddPage'
 import { MyPage } from './components/MyPage'
 import { PlaceDetailSheet } from './components/PlaceDetailSheet'
 import { type LovedListItem } from './components/LovedListDetailPage'
-import { nearbyPlaces, searchResultPlaces, type NearbyPlace } from './data/places'
+import {
+  listMapPlaces,
+  mapPlaces as appMapPlaces,
+  nearbyPlacesData as nearbyPlaces,
+  searchResultPlacesData as searchResultPlaces,
+  type ListMapPlace,
+  type NearbyPlace,
+} from './data/mapPlaces'
 import './App.css'
+import './components/MapSheet.css'
 
 type Category = 'all' | 'food' | 'cafe' | 'prayer'
 type SheetMode = 'collapsed' | 'expanded' | 'search'
 type ListMapMode = 'summary' | 'expanded' | 'search'
 type ListMapReturnTarget = 'list' | 'explore' | 'my'
 
-type Place = {
-  id: string
-  name: string
-  category: Exclude<Category, 'all'>
-  x: number
-  y: number
-  icon: string
-  detailPlaceId: 'nearby-1' | 'nearby-2' | 'nearby-3'
-}
-
-type ListMapPlace = NearbyPlace & {
-  category: Exclude<Category, 'all'>
-  x: number
-  y: number
-}
-
-const places: Place[] = [
-  { id: 'food-1', name: 'Korean BBQ', category: 'food', x: 22, y: 51, icon: foodIcon, detailPlaceId: 'nearby-1' },
-  { id: 'food-2', name: 'Tasty Noodle', category: 'food', x: 71, y: 58, icon: foodIcon, detailPlaceId: 'nearby-2' },
-  { id: 'cafe-1', name: 'Morning Bean', category: 'cafe', x: 61, y: 40, icon: cafeIcon, detailPlaceId: 'nearby-3' },
-  { id: 'cafe-2', name: 'Quiet Brew', category: 'cafe', x: 35, y: 68, icon: cafeIcon, detailPlaceId: 'nearby-1' },
-  { id: 'prayer-1', name: 'Peace Place', category: 'prayer', x: 80, y: 34, icon: prayerIcon, detailPlaceId: 'nearby-2' },
-]
-
-const listMapPlaces: ListMapPlace[] = [
-  {
-    id: 'list-map-1',
-    name: 'Dajunghan Korean Restaurant',
-    status: 'Open',
-    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
-    detailType: 1,
-    category: 'food',
-    x: 22,
-    y: 53,
-  },
-  {
-    id: 'list-map-2',
-    name: 'Andong Galbi Korean Restaurant',
-    status: 'Open',
-    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
-    detailType: 2,
-    category: 'food',
-    x: 62,
-    y: 42,
-  },
-  {
-    id: 'list-map-3',
-    name: 'oozycoffee',
-    status: 'Open',
-    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
-    detailType: 3,
-    category: 'cafe',
-    x: 70,
-    y: 58,
-  },
-  {
-    id: 'list-map-4',
-    name: 'Sunny Mood Cafe',
-    status: 'Open',
-    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
-    detailType: 2,
-    category: 'cafe',
-    x: 40,
-    y: 66,
-  },
-]
-
 const DRAG_START_THRESHOLD = 24
 const SHEET_SNAP_THRESHOLD = 140
-
-const copy = {
-  title: 'Map screen',
-  myLocation: 'My location',
-  filterLabel: 'Category filter',
-  filters: {
-    all: 'All',
-    food: 'Restaurant',
-    cafe: 'Cafe',
-    prayer: 'Prayer',
-  },
-  searchPlaceholder: 'Search',
-  nearbyTitle: 'Nearby places',
-  recommend: "Can't find it? Recommend!",
-}
 
 const savedLists = [
   { id: 'list-1', title: 'Rainy Day Cafe' },
@@ -128,6 +57,9 @@ const savedLists = [
 const getPlaceIconBackground = () => 'var(--color-point-restaurant)'
 
 function App() {
+  const { t, i18n } = useTranslation()
+  const [isSplashVisible, setIsSplashVisible] = useState(true)
+  const [isOnboardingVisible, setIsOnboardingVisible] = useState(true)
   const [activeTab, setActiveTab] = useState<BottomNavTab>('map')
   const [activeFilter, setActiveFilter] = useState<Category>('all')
   const [sheetMode, setSheetMode] = useState<SheetMode>('collapsed')
@@ -160,8 +92,33 @@ function App() {
   const toastExitTimerRef = useRef<number | null>(null)
   const confirmListTimerRef = useRef<number | null>(null)
 
+  const copy = {
+    title: t('map.title'),
+    myLocation: t('map.myLocation'),
+    filterLabel: t('map.filterLabel'),
+    filters: {
+      all: t('map.filters.all'),
+      food: t('map.filters.food'),
+      cafe: t('map.filters.cafe'),
+      prayer: t('map.filters.prayer'),
+    },
+    searchPlaceholder: t('map.searchPlaceholder'),
+    nearbyTitle: t('map.nearbyTitle'),
+    recommend: t('map.recommend'),
+  }
+
   useEffect(() => {
-    document.documentElement.lang = navigator.language.startsWith('ko') ? 'ko' : 'en'
+    document.documentElement.lang = i18n.language.startsWith('ko') ? 'ko' : 'en'
+  }, [i18n.language])
+
+  useEffect(() => {
+    const splashTimer = window.setTimeout(() => {
+      setIsSplashVisible(false)
+    }, 1400)
+
+    return () => {
+      window.clearTimeout(splashTimer)
+    }
   }, [])
 
   useEffect(() => {
@@ -228,13 +185,13 @@ function App() {
   }, [])
 
   const visiblePlaces = useMemo(() => {
-    const mapPlaces = listMapItem ? listMapPlaces : places
+    const visibleMapPlaces = listMapItem ? listMapPlaces : appMapPlaces
 
     if (activeFilter === 'all') {
-      return mapPlaces
+      return visibleMapPlaces
     }
 
-    return mapPlaces.filter((place) => place.category === activeFilter)
+    return visibleMapPlaces.filter((place) => place.category === activeFilter)
   }, [activeFilter, listMapItem])
 
   const visibleListMapPlaces = useMemo(() => {
@@ -649,7 +606,7 @@ function App() {
     <button
       type="button"
       className="nearby-item__keep"
-      aria-label={`Save ${place.name} to list`}
+      aria-label={t('listDetail.addToList', { name: place.name })}
       aria-haspopup="dialog"
       onClick={(event) => {
         event.stopPropagation()
@@ -668,7 +625,7 @@ function App() {
       <div className="nearby-item__content">
         <h3>{place.name}</h3>
         <p>
-          <span className={place.status === 'Open' ? 'is-open' : 'is-closed'}>{place.status}</span>
+          <span className={place.status === 'Open' ? 'is-open' : 'is-closed'}>{place.status === 'Open' ? t('map.openStatus') : t('map.closedStatus')}</span>
           <span className="text-dot" aria-hidden="true" />
           {place.address}
         </p>
@@ -676,7 +633,7 @@ function App() {
       <button
         type="button"
         className="nearby-item__keep"
-        aria-label={`Save ${place.name} to list`}
+        aria-label={t('listDetail.addToList', { name: place.name })}
         aria-haspopup="dialog"
         onClick={(event) => {
           event.stopPropagation()
@@ -720,7 +677,7 @@ function App() {
       <div className="nearby-item__content">
         <h3>{place.name}</h3>
         <p>
-          <span className={place.status === 'Open' ? 'is-open' : 'is-closed'}>{place.status}</span>
+          <span className={place.status === 'Open' ? 'is-open' : 'is-closed'}>{place.status === 'Open' ? t('map.openStatus') : t('map.closedStatus')}</span>
           <span className="text-dot" aria-hidden="true" />
           {place.address}
         </p>
@@ -751,7 +708,7 @@ function App() {
       <div className="nearby-item__content">
         <h3>{place.name}</h3>
         <p>
-          <span className={place.status === 'Open' ? 'is-open' : 'is-closed'}>{place.status}</span>
+          <span className={place.status === 'Open' ? 'is-open' : 'is-closed'}>{place.status === 'Open' ? t('map.openStatus') : t('map.closedStatus')}</span>
           <span className="text-dot" aria-hidden="true" />
           {place.address}
         </p>
@@ -857,6 +814,10 @@ function App() {
 
   return (
     <div className="map-shell">
+      <SplashScreen visible={isSplashVisible} />
+
+      <OnboardingScreen visible={!isSplashVisible && isOnboardingVisible} onFinish={() => setIsOnboardingVisible(false)} />
+
       {isRestaurantAddOpen ? (
         <RestaurantAddPage onClose={closeRestaurantAddPage} />
       ) : activeTab === 'explore' ? (
@@ -988,7 +949,7 @@ function App() {
               <button
                 type="button"
                 className="list-map-summary__close"
-                aria-label="Close list map"
+                aria-label={t('map.closeListMap')}
                 onClick={(event) => {
                   event.stopPropagation()
                   closeListOnMap()
@@ -1033,7 +994,7 @@ function App() {
                       <img src={glassIcon} alt="" aria-hidden="true" />
                         <input
                           ref={searchInputRef}
-                          aria-label={`Search in ${listMapItem.title}`}
+                          aria-label={t('map.searchInList', { title: listMapItem.title })}
                           className="search-input"
                           type="search"
                           value={listMapSearchQuery}
@@ -1043,7 +1004,7 @@ function App() {
                           <button
                             type="button"
                             className="search-clear"
-                            aria-label="Clear search"
+                            aria-label={t('restaurantAdd.clearSearch')}
                             onClick={(event) => {
                               event.stopPropagation()
                               setListMapSearchQuery('')
@@ -1066,7 +1027,7 @@ function App() {
                       <span className="text-dot" aria-hidden="true" />
                       <span>{listMapItem.owner}</span>
                     </p>
-                    <span>{visibleListMapPlaces.length} places</span>
+                    <span>{t('map.placesCount', { count: visibleListMapPlaces.length })}</span>
                   </div>
 
                   <div className="list-map-sheet__results">
@@ -1078,12 +1039,12 @@ function App() {
               ) : isSearch ? (
                 <>
                   <div className="map-search search-field">
-                    <button type="button" className="search-back" aria-label="Close search" onClick={closeSearch}>
+                    <button type="button" className="search-back" aria-label={t('map.closeSearch')} onClick={closeSearch}>
                       <img src={searchBackIcon} alt="" aria-hidden="true" />
                     </button>
                     <input
                       ref={searchInputRef}
-                      aria-label="Search places"
+                      aria-label={t('map.searchPlaces')}
                       className="search-input"
                       type="search"
                       value={searchQuery}
@@ -1093,7 +1054,7 @@ function App() {
                       <button
                         type="button"
                         className="search-clear"
-                        aria-label="Clear search"
+                        aria-label={t('restaurantAdd.clearSearch')}
                         onClick={() => setSearchQuery('')}
                       >
                         <img src={deleteTextIcon} alt="" aria-hidden="true" />
@@ -1107,7 +1068,7 @@ function App() {
                       ) : (
                         <div className="no-results" role="status">
                           <img src={unhappyIcon} alt="" aria-hidden="true" />
-                          <p>No Result found</p>
+                          <p>{t('map.noResult')}</p>
                         </div>
                       )}
                     </div>
@@ -1162,16 +1123,16 @@ function App() {
               className="photo-modal"
               role="dialog"
               aria-modal="true"
-              aria-label="Add Photo"
+              aria-label={t('map.addPhoto')}
               onMouseDown={(event) => event.stopPropagation()}
             >
-              <button type="button" className="photo-modal__option" aria-label="Open photo library">
+              <button type="button" className="photo-modal__option" aria-label={t('map.photoLibrary')}>
                 <img src={cameraIcon} alt="" aria-hidden="true" />
-                <span>Photo Library</span>
+                <span>{t('map.photoLibrary')}</span>
               </button>
-              <button type="button" className="photo-modal__option" aria-label="Open file library">
+              <button type="button" className="photo-modal__option" aria-label={t('map.fileLibrary')}>
                 <img src={fileIcon} alt="" aria-hidden="true" />
-                <span>File Library</span>
+                <span>{t('map.fileLibrary')}</span>
               </button>
             </div>
           </div>
@@ -1183,32 +1144,30 @@ function App() {
               className="report-modal"
               role="dialog"
               aria-modal="true"
-              aria-label="Report incorrect information"
+              aria-label={t('map.incorrectInformation')}
               onMouseDown={(event) => event.stopPropagation()}
             >
-              <button type="button" className="report-modal__close" aria-label="Close" onClick={closeReportModal}>
+              <button type="button" className="report-modal__close" aria-label={t('shared.close')} onClick={closeReportModal}>
                 <img src={closeIcon} alt="" aria-hidden="true" />
               </button>
 
               <img className="report-modal__icon" src={cautionIcon} alt="" aria-hidden="true" />
               <div className="report-modal__content">
-                <h2 className="report-modal__title">What&apos;s Problem?</h2>
-                <p className="report-modal__description">
-                  Please write down the reason why you think it is incorrect information.
-                </p>
+                <h2 className="report-modal__title">{t('map.whatsProblem')}</h2>
+                <p className="report-modal__description">{t('map.reportReason')}</p>
               </div>
 
               <input
                 className="report-modal__field"
                 type="text"
-                aria-label="Leave a comment"
-                placeholder="Leave a comment..."
+                aria-label={t('map.leaveComment')}
+                placeholder={t('map.leaveComment')}
                 value={reportComment}
                 onChange={(event) => setReportComment(event.target.value)}
               />
 
               <button type="button" className="report-modal__confirm" onClick={closeReportModal}>
-                Confirm
+                {t('shared.confirm')}
               </button>
             </div>
           </div>
@@ -1220,17 +1179,17 @@ function App() {
               className="add-list-sheet__panel"
               role="dialog"
               aria-modal="true"
-              aria-label="Add to list"
+              aria-label={t('shared.addToList')}
               onPointerDown={(event) => event.stopPropagation()}
             >
               <header className="add-list-sheet__header">
-                <h2 className="page-title">Add to list</h2>
-                <button type="button" className="add-list-sheet__close" aria-label="Close" onClick={closeAddToList}>
+                <h2 className="page-title">{t('shared.addToList')}</h2>
+                <button type="button" className="add-list-sheet__close" aria-label={t('shared.close')} onClick={closeAddToList}>
                   <img src={closeIcon} alt="" aria-hidden="true" />
                 </button>
               </header>
 
-              <div className="add-list-sheet__list" role="list" aria-label="Saved lists">
+              <div className="add-list-sheet__list" role="list" aria-label={t('list.savedLists')}>
                 {savedLists.map((listItem) => {
                   const isSelected = selectedListId === listItem.id
 
@@ -1263,13 +1222,13 @@ function App() {
             type="button"
             className={`saved-list-toast saved-list-toast--${savedListToast.phase}`}
             onClick={closeSavedListToast}
-            aria-label="Open saved list"
+            aria-label={t('shared.openSavedList')}
           >
             <span className="saved-list-toast__thumb">
               <img src={albumCover} alt="" aria-hidden="true" />
             </span>
             <span className="saved-list-toast__copy">
-              <span className="saved-list-toast__eyebrow">1 item added</span>
+              <span className="saved-list-toast__eyebrow">{t('list.itemAdded', { count: 1 })}</span>
               <span className="saved-list-toast__title">{savedListToast.title}</span>
             </span>
             <img src={rightArrowIcon} alt="" aria-hidden="true" className="saved-list-toast__arrow" />

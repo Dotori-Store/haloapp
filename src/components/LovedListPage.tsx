@@ -4,6 +4,7 @@ import albumCover from '../assets/dummy/album-cover.jpg'
 import curationCoverImage from '../assets/dummy/photo-cover.jpg'
 import curationFoodImage from '../assets/dummy/photo-food.jpg'
 import { LovedListDetailPage, type LovedListItem } from './LovedListDetailPage'
+import { useTranslation } from 'react-i18next'
 import './ExplorePage.css'
 
 type LovedListPageProps = {
@@ -21,6 +22,7 @@ const lovedLists: LovedListItem[] = [
 ]
 
 export function LovedListPage({ onBack, onAddToList, onReportIncorrect, onViewListOnMap }: LovedListPageProps) {
+  const { t } = useTranslation()
   const [selectedList, setSelectedList] = useState<LovedListItem | null>(null)
 
   if (selectedList) {
@@ -41,12 +43,12 @@ export function LovedListPage({ onBack, onAddToList, onReportIncorrect, onViewLi
     <div className="loved-list-page popular-restaurant-page">
       <div className="popular-restaurant-page__header screen-header">
         <div className="screen-header__slot">
-          <button type="button" className="screen-header__button" aria-label="Back" onClick={onBack}>
+          <button type="button" className="screen-header__button" aria-label={t('shared.back')} onClick={onBack}>
             <img src={backArrowIcon} alt="" aria-hidden="true" />
           </button>
         </div>
         <div className="screen-header__title">
-          <h1 className="head-title">Loved List</h1>
+          <h1 className="head-title">{t('explore.lovedListTitle')}</h1>
         </div>
         <div className="screen-header__slot screen-header__slot--empty" aria-hidden="true" />
       </div>

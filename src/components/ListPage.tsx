@@ -10,6 +10,7 @@ import { ListAddPage } from './ListAddPage'
 import { ListDetailPage } from './ListDetailPage'
 import { type LovedListItem } from './LovedListDetailPage'
 import { useLongPress } from '../hooks/useLongPress'
+import { useTranslation } from 'react-i18next'
 import './ExplorePage.css'
 import './ListPage.css'
 
@@ -78,6 +79,7 @@ function ListCard({
   onMoveDrag,
   onEndDrag,
 }: ListCardProps) {
+  const { t } = useTranslation()
   const longPress = useLongPress(
     (event) => {
       onEnterEdit(listItem.id, event)
@@ -145,7 +147,7 @@ function ListCard({
           <button
             type="button"
             className="my-list-card__delete"
-            aria-label={`Delete ${listItem.title}`}
+            aria-label={t('listDetail.delete', { name: listItem.title })}
             onClick={(event) => {
               event.stopPropagation()
               onDelete(listItem.id)
@@ -171,6 +173,7 @@ export function ListPage({
   restoreSelectedListId,
   onRestoreSelectedListIdHandled,
 }: ListPageProps) {
+  const { t } = useTranslation()
   const [myLists, setMyLists] = useState<LovedListItem[]>(initialLists)
   const [selectedListId, setSelectedListId] = useState<string | null>(null)
   const [isAddListOpen, setIsAddListOpen] = useState(false)
@@ -321,13 +324,13 @@ export function ListPage({
   return (
     <div className={`list-page popular-restaurant-page ${isEditingLists ? 'is-editing' : ''}`} onClick={() => setIsHeaderMenuOpen(false)}>
       <header className="list-page__header">
-        <h1 className="page-title">List</h1>
+        <h1 className="page-title">{t('list.title')}</h1>
 
         <div className="list-page__actions" onClick={(event) => event.stopPropagation()}>
           <button
             type="button"
             className="screen-header__button"
-            aria-label="Add list"
+            aria-label={t('list.newList')}
             onClick={() => {
               setIsHeaderMenuOpen(false)
               setIsAddListOpen(true)
@@ -340,7 +343,7 @@ export function ListPage({
             <button
               type="button"
               className="screen-header__button"
-              aria-label="More options"
+              aria-label={t('shared.moreOptions')}
               aria-expanded={isHeaderMenuOpen}
               onClick={() => setIsHeaderMenuOpen((current) => !current)}
             >
@@ -352,10 +355,10 @@ export function ListPage({
                 <button
                   type="button"
                   className="list-page__menu-backdrop"
-                  aria-label="Close list menu"
+                  aria-label={t('list.closeListMenu')}
                   onClick={() => setIsHeaderMenuOpen(false)}
                 />
-                <div className="list-page__menu" role="menu" aria-label="List options">
+                <div className="list-page__menu" role="menu" aria-label={t('list.listOptions')}>
                   <button
                     type="button"
                     className={`list-page__menu-item ${isEditingLists ? 'is-active' : ''}`}
@@ -369,7 +372,7 @@ export function ListPage({
                     <span className="list-page__menu-icon" aria-hidden="true">
                       <img src={editIcon} alt="" aria-hidden="true" />
                     </span>
-                    <span>edit list</span>
+                    <span>{t('list.editListMenu')}</span>
                   </button>
                 </div>
               </>

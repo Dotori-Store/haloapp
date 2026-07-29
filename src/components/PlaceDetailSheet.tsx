@@ -8,7 +8,8 @@ import wishHeartIcon from '../assets/icons/ico-wish-heart.svg'
 import wishHeartActiveIcon from '../assets/icons/ico-wish-heart-active.svg'
 import commentUserThumb from '../assets/dummy/thumb-user-2.jpg'
 import thumbUser from '../assets/dummy/thumb-user.jpg'
-import type { NearbyPlace } from '../data/places'
+import type { NearbyPlace } from '../data/mapPlaces'
+import { useTranslation } from 'react-i18next'
 import './PlaceDetailSheet.css'
 
 type PlaceDetailSheetProps = {
@@ -32,12 +33,13 @@ export function PlaceDetailSheet({
   onAddToList,
   onReportIncorrect,
 }: PlaceDetailSheetProps) {
+  const { t } = useTranslation()
   const showCommentThread = place.detailType === 2 || (place.detailType === 1 && isExpanded)
   const showCommentComposer = place.detailType !== 1 || isExpanded
 
   return (
     <section className="place-detail" aria-label={`${place.name} detail`}>
-      <button type="button" className="place-detail__close" aria-label="Close detail" onClick={onClose}>
+      <button type="button" className="place-detail__close" aria-label={t('shared.close')} onClick={onClose}>
         <img src={closeIcon} alt="" aria-hidden="true" />
       </button>
 
@@ -48,7 +50,7 @@ export function PlaceDetailSheet({
         <div className="place-detail__title-block">
           <h2>{place.name}</h2>
           <p>
-            <span>{place.status}</span>
+            <span>{place.status === 'Open' ? t('map.openStatus') : t('map.closedStatus')}</span>
             <span className="text-dot" aria-hidden="true" />
             {place.address}
           </p>
@@ -61,21 +63,21 @@ export function PlaceDetailSheet({
         <div className="place-detail__actions">
           <button type="button" className="place-detail__map-button place-detail__map-button--naver">
             <img src={naverMapIcon} alt="" aria-hidden="true" />
-            <span>NAVER MAP</span>
+            <span>{t('placeDetail.naverMap')}</span>
           </button>
           <button type="button" className="place-detail__map-button place-detail__map-button--google">
             <img src={googleMapIcon} alt="" aria-hidden="true" />
-            <span>Google MAP</span>
+            <span>{t('placeDetail.googleMap')}</span>
           </button>
         </div>
 
         <footer className="place-detail__footer">
-          <p>20 people like this</p>
+          <p>{t('placeDetail.likeCount')}</p>
           <div className="place-detail__icon-actions">
             <button
               type="button"
               className="place-detail__icon-button"
-              aria-label={`${isWished ? 'Unlike' : 'Like'} ${place.name}`}
+              aria-label={`${isWished ? t('placeDetail.unlike') : t('placeDetail.like')} ${place.name}`}
               aria-pressed={isWished}
               onClick={onToggleWish}
             >
@@ -84,7 +86,7 @@ export function PlaceDetailSheet({
             <button
               type="button"
               className="place-detail__icon-button"
-              aria-label={`Save ${place.name} to list`}
+              aria-label={`${t('shared.add')} ${place.name} to list`}
               aria-haspopup="dialog"
               onClick={onAddToList}
             >
@@ -94,17 +96,17 @@ export function PlaceDetailSheet({
         </footer>
 
         {(showCommentThread || showCommentComposer) && (
-          <section className="place-detail__community" aria-label="Comments">
+          <section className="place-detail__community" aria-label={t('placeDetail.comments')}>
             {showCommentThread && (
               <article className="place-detail__comment">
                 <img src={commentUserThumb} alt="" aria-hidden="true" />
                 <div>
                   <p className="place-detail__comment-meta">
-                    <span>Jameson</span>
+                    <span>{t('placeDetail.commentAuthor')}</span>
                     <span className="text-dot" aria-hidden="true" />
-                    <span>1h</span>
+                    <span>{t('placeDetail.commentTime')}</span>
                   </p>
-                  <p className="place-detail__comment-text">wow! very nice~</p>
+                  <p className="place-detail__comment-text">{t('placeDetail.commentText')}</p>
                 </div>
               </article>
             )}
@@ -112,7 +114,7 @@ export function PlaceDetailSheet({
             {showCommentComposer && (
               <div className="place-detail__comment-input">
                 <img src={thumbUser} alt="" aria-hidden="true" />
-                <input type="text" aria-label="Leave a comment" placeholder="Leave a comment..." />
+                <input type="text" aria-label={t('placeDetail.leaveComment')} placeholder={t('placeDetail.leaveComment')} />
               </div>
             )}
           </section>
@@ -122,11 +124,11 @@ export function PlaceDetailSheet({
           <div className="place-detail__expanded-content">
             <dl className="place-detail__meta-list">
               <div>
-                <dt>Recommend user</dt>
+                <dt>{t('placeDetail.recommendUser')}</dt>
                 <dd>halo</dd>
               </div>
               <div>
-                <dt>Recommend Date</dt>
+                <dt>{t('placeDetail.recommendDate')}</dt>
                 <dd>2026.08.15</dd>
               </div>
             </dl>
@@ -137,14 +139,14 @@ export function PlaceDetailSheet({
               onClick={onAddPhoto}
             >
               <img src={photoIcon} alt="" aria-hidden="true" />
-              <span>Add Photo</span>
+              <span>{t('placeDetail.addPhoto')}</span>
             </button>
             <button
               type="button"
               className="place-detail__wide-button place-detail__wide-button--danger"
               onClick={onReportIncorrect}
             >
-              Incorrect Information
+              {t('placeDetail.incorrectInformation')}
             </button>
           </div>
         )}

@@ -13,13 +13,14 @@ import { LovedListDetailPage, type LovedListItem } from './LovedListDetailPage'
 import { LovedListPage } from './LovedListPage'
 import { PopularRestaurantPage } from './PopularRestaurantPage'
 import { RestaurantContextMenu } from './RestaurantContextMenu'
+import { useTranslation } from 'react-i18next'
 import './ExplorePage.css'
 
 type PopularCategory = 'Cafe' | 'Restaurant'
 
 type CurationCard = {
   id: string
-  title: string
+  titleKey: 'explore.curationCard1Title' | 'explore.curationCard2Title'
   author: string
   image: string
 }
@@ -59,13 +60,13 @@ type ExplorePageProps = {
 const curationCards: CurationCard[] = [
   {
     id: 'curation-1',
-    title: 'Recommended Restaurants near Sungkyunkwan University',
+    titleKey: 'explore.curationCard1Title',
     author: 'halo',
     image: curationFoodImage,
   },
   {
     id: 'curation-2',
-    title: 'Recommended Cafes near Han River Park',
+    titleKey: 'explore.curationCard2Title',
     author: 'halo',
     image: curationCoverImage,
   },
@@ -74,30 +75,30 @@ const curationCards: CurationCard[] = [
 const popularRestaurants: PopularRestaurant[] = [
   {
     id: 'popular-1',
-    name: 'oozycoffee',
+    name: '오지커피',
     category: 'Cafe',
-    address: '107, 1F, 2129-1, Seobu-ro, Suwon-si',
+    address: '수원시 장안구 서부로 2129-1, 1층 107호',
     icon: cafeIcon,
   },
   {
     id: 'popular-2',
-    name: 'Dajunghan restaurant',
+    name: '다정한 식당',
     category: 'Restaurant',
-    address: '107, 1F, 2129-1, Seobu-ro, Suwon-si',
+    address: '수원시 장안구 서부로 2129-1, 1층 107호',
     icon: foodIcon,
   },
   {
     id: 'popular-3',
-    name: 'Betterday coffee',
+    name: '베러데이 커피',
     category: 'Cafe',
-    address: '107, 1F, 2129-1, Seobu-ro, Suwon-si',
+    address: '수원시 장안구 서부로 2129-1, 1층 107호',
     icon: cafeIcon,
   },
   {
     id: 'popular-4',
-    name: 'Ondal korean restaurant',
+    name: '온달 한식당',
     category: 'Restaurant',
-    address: '107, 1F, 2129-1, Seobu-ro, Suwon-si',
+    address: '수원시 장안구 서부로 2129-1, 1층 107호',
     icon: foodIcon,
   },
 ]
@@ -138,6 +139,7 @@ export function ExplorePage({
   restoreListItem,
   onRestoreListItemHandled,
 }: ExplorePageProps) {
+  const { t } = useTranslation()
   const [selectedCurationId, setSelectedCurationId] = useState<string | null>(null)
   const [selectedPopularScreen, setSelectedPopularScreen] = useState(false)
   const [selectedLovedListScreen, setSelectedLovedListScreen] = useState(false)
@@ -245,21 +247,21 @@ export function ExplorePage({
   return (
     <div className="explore-page" onClick={() => setOpenMenuId(null)}>
       <header className="explore-page__header">
-        <h1 className="page-title">Explore</h1>
+        <h1 className="page-title">{t('explore.title')}</h1>
       </header>
 
       <div className="explore-page__content">
         <section className="explore-curation">
-          <h2 className="section-title explore-curation__title">halo Curation</h2>
+          <h2 className="section-title explore-curation__title">{t('explore.curationTitle')}</h2>
           <div className="explore-curation__viewport">
-            <div className="explore-curation__track" aria-label="Curated places">
+            <div className="explore-curation__track" aria-label={t('explore.curatedPlaces')}>
               {curationCards.map((card) => (
                 <article
                   className="explore-curation-card"
                   key={card.id}
                   role="button"
                   tabIndex={0}
-                  aria-label={`Open ${card.title}`}
+                  aria-label={t(card.titleKey)}
                   onClick={() => setSelectedCurationId(card.id)}
                   onKeyDown={(event) => {
                     if (event.key === 'Enter' || event.key === ' ') {
@@ -270,7 +272,7 @@ export function ExplorePage({
                 >
                   <img src={card.image} alt="" aria-hidden="true" />
                   <div className="explore-curation-card__overlay">
-                    <h2>{card.title}</h2>
+                    <h2>{t(card.titleKey)}</h2>
                     <p>{card.author}</p>
                   </div>
                 </article>
@@ -279,14 +281,14 @@ export function ExplorePage({
           </div>
         </section>
 
-        <section className="explore-section" aria-label="Popular Restaurant">
+        <section className="explore-section" aria-label={t('explore.popularRestaurantTitle')}>
           <button
             type="button"
             className="explore-section__header"
             style={{ width: '100%', border: 0, padding: 0, background: 'transparent', cursor: 'pointer' }}
             onClick={() => setSelectedPopularScreen(true)}
           >
-            <h2 className="section-title">Popular Restaurant</h2>
+            <h2 className="section-title">{t('explore.popularRestaurantTitle')}</h2>
             <img src={arrowMoreIcon} alt="" aria-hidden="true" className="explore-section__arrow" />
           </button>
 
@@ -302,7 +304,7 @@ export function ExplorePage({
                 <div className="explore-popular-item__content">
                   <h3>{item.name}</h3>
                   <p>
-                    <span>{item.category}</span>
+                    <span>{item.category === 'Cafe' ? t('map.filters.cafe') : t('map.filters.food')}</span>
                     <span className="text-dot" aria-hidden="true" />
                     {item.address}
                   </p>
@@ -310,7 +312,7 @@ export function ExplorePage({
                 <button
                   type="button"
                   className="explore-popular-item__more"
-                  aria-label={`More actions for ${item.name}`}
+                  aria-label={t('listDetail.moreActionsFor', { name: item.name })}
                   aria-expanded={openMenuId === item.id}
                   onClick={(event) => {
                     event.stopPropagation()
@@ -338,14 +340,14 @@ export function ExplorePage({
           </div>
         </section>
 
-        <section className="explore-section" aria-label="Loved List">
+        <section className="explore-section" aria-label={t('explore.lovedListTitle')}>
           <button
             type="button"
             className="explore-section__header"
             style={{ width: '100%', border: 0, padding: 0, background: 'transparent', cursor: 'pointer' }}
             onClick={() => setSelectedLovedListScreen(true)}
           >
-            <h2 className="section-title">Loved List</h2>
+            <h2 className="section-title">{t('explore.lovedListTitle')}</h2>
             <img src={arrowMoreIcon} alt="" aria-hidden="true" className="explore-section__arrow" />
           </button>
 
@@ -379,7 +381,7 @@ export function ExplorePage({
 
         <section className="explore-section explore-friends" aria-label="halo friend">
           <header className="explore-section__header">
-            <h2 className="section-title">halo friend</h2>
+            <h2 className="section-title">{t('explore.friendsTitle')}</h2>
           </header>
 
           <div className="explore-friends__rail">
@@ -397,7 +399,7 @@ export function ExplorePage({
         <button
           type="button"
           className="explore-popular-item__backdrop"
-          aria-label={`Close actions for ${openMenuItem.name}`}
+          aria-label={t('listDetail.closeActionsFor', { name: openMenuItem.name })}
           onClick={() => setOpenMenuId(null)}
         />
       )}

@@ -1,4 +1,30 @@
+import foodIcon from '../assets/icons/ico-cat-food.svg'
+import cafeIcon from '../assets/icons/ico-cat-cafe.svg'
+import prayerIcon from '../assets/icons/ico-cat-prayer.svg'
 import photoFood from '../assets/dummy/photo-food.jpg'
+
+type Category = 'all' | 'food' | 'cafe' | 'prayer'
+
+export type MapPlace = {
+  id: string
+  name: string
+  category: Exclude<Category, 'all'>
+  x: number
+  y: number
+  icon: string
+  detailPlaceId: 'nearby-1' | 'nearby-2' | 'nearby-3'
+}
+
+export type ListMapPlace = {
+  id: string
+  name: string
+  status: 'Open' | 'Closed'
+  address: string
+  detailType: 1 | 2 | 3
+  category: Exclude<Category, 'all'>
+  x: number
+  y: number
+}
 
 export type NearbyPlace = {
   id: string
@@ -9,7 +35,58 @@ export type NearbyPlace = {
   photoUrl?: string
 }
 
-export const nearbyPlaces: NearbyPlace[] = [
+export const mapPlaces: MapPlace[] = [
+  { id: 'food-1', name: '불고기마당', category: 'food', x: 22, y: 51, icon: foodIcon, detailPlaceId: 'nearby-1' },
+  { id: 'food-2', name: '면맛집', category: 'food', x: 71, y: 58, icon: foodIcon, detailPlaceId: 'nearby-2' },
+  { id: 'cafe-1', name: '모닝빈', category: 'cafe', x: 61, y: 40, icon: cafeIcon, detailPlaceId: 'nearby-3' },
+  { id: 'cafe-2', name: '퀴엇브루', category: 'cafe', x: 35, y: 68, icon: cafeIcon, detailPlaceId: 'nearby-1' },
+  { id: 'prayer-1', name: '평화공간', category: 'prayer', x: 80, y: 34, icon: prayerIcon, detailPlaceId: 'nearby-2' },
+]
+
+export const listMapPlaces: ListMapPlace[] = [
+  {
+    id: 'list-map-1',
+    name: '다정한한식당',
+    status: 'Open',
+    address: '서부로 2129-1, 1층 107호, 장안구',
+    detailType: 1,
+    category: 'food',
+    x: 22,
+    y: 53,
+  },
+  {
+    id: 'list-map-2',
+    name: '안동갈비한식당',
+    status: 'Open',
+    address: '서부로 2129-1, 1층 107호, 장안구',
+    detailType: 2,
+    category: 'food',
+    x: 62,
+    y: 42,
+  },
+  {
+    id: 'list-map-3',
+    name: '오지커피',
+    status: 'Open',
+    address: '서부로 2129-1, 1층 107호, 장안구',
+    detailType: 3,
+    category: 'cafe',
+    x: 70,
+    y: 58,
+  },
+  {
+    id: 'list-map-4',
+    name: '써니무드카페',
+    status: 'Open',
+    address: '서부로 2129-1, 1층 107호, 장안구',
+    detailType: 2,
+    category: 'cafe',
+    x: 40,
+    y: 66,
+  },
+]
+
+export const nearbyPlacesData: NearbyPlace[] = [
   {
     id: 'nearby-1',
     name: '하늘한식당',
@@ -63,7 +140,7 @@ export const nearbyPlaces: NearbyPlace[] = [
   },
 ]
 
-export const searchResultPlaces: NearbyPlace[] = [
+export const searchResultPlacesData: NearbyPlace[] = [
   {
     id: 'search-1',
     name: '다정한한식당',

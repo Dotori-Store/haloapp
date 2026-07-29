@@ -923,7 +923,7 @@
   flex-direction: column;
   overflow: hidden;
   border-radius: var(--bottom-sheet-radius);
-  background: var(--bottom-backgrond);
+  background: var(--bottom-background);
   backdrop-filter: var(--blur-bottom-sheet);
   box-shadow: var(--bottom-sheet-shadow);
 }
@@ -1164,7 +1164,7 @@
   flex-direction: column;
   overflow: hidden;
   border-radius: var(--bottom-sheet-radius);
-  background: var(--bottom-backgrond);
+  background: var(--bottom-background);
   backdrop-filter: var(--blur-bottom-sheet);
   box-shadow: var(--bottom-sheet-shadow);
 }

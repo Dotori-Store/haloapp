@@ -7,6 +7,7 @@ import alignIcon from '../assets/icons/ico-align.svg'
 import deleteIcon from '../assets/icons/ico-context-delete.svg'
 import coverImage from '../assets/images/album-cover-like.png'
 import { type LovedListItem } from './LovedListDetailPage'
+import { useTranslation } from 'react-i18next'
 import './ExplorePage.css'
 import './MyPage.css'
 import './ListEditSheet.css'
@@ -53,6 +54,7 @@ const moveItem = (items: ListEditRestaurant[], draggedId: string, targetId: stri
 }
 
 export function ListEditSheet({ open, listItem, restaurants, onClose, onSave }: ListEditSheetProps) {
+  const { t } = useTranslation()
   const [draftTitle, setDraftTitle] = useState(listItem.title)
   const [isTitleEditing, setIsTitleEditing] = useState(false)
   const [isPublished, setIsPublished] = useState(true)
@@ -230,14 +232,14 @@ export function ListEditSheet({ open, listItem, restaurants, onClose, onSave }: 
 
   return (
     <div className="list-edit-sheet" role="presentation">
-      <button type="button" className="list-edit-sheet__backdrop" aria-label="Close edit sheet" onClick={onClose} />
+      <button type="button" className="list-edit-sheet__backdrop" aria-label={t('shared.close')} onClick={onClose} />
 
-      <section className="list-edit-sheet__panel" role="dialog" aria-modal="true" aria-label="Edit list">
+      <section className="list-edit-sheet__panel" role="dialog" aria-modal="true" aria-label={t('listDetail.edit')}>
         <div className="list-edit-sheet__handle" aria-hidden="true" />
 
         <header className="list-edit-sheet__header screen-header">
           <div className="screen-header__slot">
-            <button type="button" className="screen-header__button" aria-label="Close" onClick={onClose}>
+            <button type="button" className="screen-header__button" aria-label={t('shared.close')} onClick={onClose}>
               <img src={closeIcon} alt="" aria-hidden="true" />
             </button>
           </div>
@@ -246,7 +248,7 @@ export function ListEditSheet({ open, listItem, restaurants, onClose, onSave }: 
             <button
               type="button"
               className={`list-edit-sheet__confirm ${hasChanges ? 'is-active' : ''}`}
-              aria-label="Save list"
+              aria-label={t('shared.save')}
               disabled={!hasChanges}
               onClick={commitSave}
             >
@@ -284,13 +286,13 @@ export function ListEditSheet({ open, listItem, restaurants, onClose, onSave }: 
             </div>
           </section>
 
-          <section className="list-edit-sheet__settings" aria-label="List settings">
+          <section className="list-edit-sheet__settings" aria-label={t('list.listSettings')}>
             <div className="my-edit__row list-edit-sheet__row">
-              <span>Publish list</span>
+              <span>{t('list.publishList')}</span>
               <button
                 type="button"
                 className={`my-edit__switch ${isPublished ? 'is-on' : ''}`}
-                aria-label="Publish list"
+                aria-label={t('list.publishList')}
                 aria-pressed={isPublished}
                 onClick={() => setIsPublished((current) => !current)}
               >
@@ -299,15 +301,15 @@ export function ListEditSheet({ open, listItem, restaurants, onClose, onSave }: 
             </div>
           </section>
 
-          <section className="list-edit-sheet__restaurants" aria-label="Restaurants">
+          <section className="list-edit-sheet__restaurants" aria-label={t('listDetail.restaurants')}>
             <header className="list-edit-sheet__list-header">
               <button type="button" className="list-edit-sheet__select-all" aria-pressed={allSelected} onClick={toggleSelectAll}>
                 <span className="list-edit-sheet__select-all-check" aria-hidden="true">
                   <img src={allSelected ? checkActiveIcon : checkDefaultIcon} alt="" aria-hidden="true" />
                 </span>
-                <span className="list-edit-sheet__select-all-label">Select ALL</span>
+                <span className="list-edit-sheet__select-all-label">{t('shared.selectAll')}</span>
               </button>
-              <div className="list-edit-sheet__selected-count">Selected {selectedCount}</div>
+              <div className="list-edit-sheet__selected-count">{t('shared.selected', { count: selectedCount })}</div>
             </header>
 
             <div className="list-edit-sheet__items">
@@ -345,7 +347,7 @@ export function ListEditSheet({ open, listItem, restaurants, onClose, onSave }: 
                     <span className="list-edit-sheet__item-content">
                       <span className="list-edit-sheet__item-title">{item.name}</span>
                       <span className="list-edit-sheet__item-meta">
-                        <span>{item.category}</span>
+                      <span>{item.category === 'Cafe' ? t('map.filters.cafe') : t('map.filters.food')}</span>
                         <span className="text-dot" aria-hidden="true" />
                         {item.address}
                       </span>
@@ -353,7 +355,7 @@ export function ListEditSheet({ open, listItem, restaurants, onClose, onSave }: 
                     <button
                       type="button"
                       className="list-edit-sheet__item-sort"
-                      aria-label={`Reorder ${item.name}`}
+                      aria-label={t('list.reorderRestaurant', { name: item.name })}
                       data-drag-handle-for={item.id}
                       onPointerDown={(event) => startPointerDrag(event, item.id)}
                       onPointerMove={updatePointerDrag}
@@ -373,7 +375,7 @@ export function ListEditSheet({ open, listItem, restaurants, onClose, onSave }: 
         <button
           type="button"
           className="list-edit-sheet__trash"
-          aria-label="Delete selected restaurants"
+          aria-label={t('list.deleteSelectedRestaurants')}
           disabled={selectedCount === 0}
           onClick={deleteSelectedRestaurants}
         >

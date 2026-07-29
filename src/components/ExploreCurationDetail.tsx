@@ -4,12 +4,13 @@ import backArrowIcon from '../assets/icons/ico-back-arrow.svg'
 import moreDotsIcon from '../assets/icons/ico-more-dots.svg'
 import curationSlideImage2 from '../assets/dummy/photo-cover.jpg'
 import { RestaurantContextMenu } from './RestaurantContextMenu'
+import { useTranslation } from 'react-i18next'
 import './ExplorePage.css'
 import './ExploreCurationDetail.css'
 
 type CurationCard = {
   id: string
-  title: string
+  titleKey: 'explore.curationCard1Title' | 'explore.curationCard2Title'
   author: string
   image: string
 }
@@ -32,16 +33,16 @@ type MentionedRestaurant = {
 const mentionedRestaurants: MentionedRestaurant[] = [
   {
     id: 'mentioned-1',
-    name: 'Dajunghan restaurant',
+    name: '다정한 식당',
     category: 'Restaurant',
-    address: '107, 1F, 2129-1, Jangan-gu, Suwon-si',
+    address: '수원시 장안구 서부로 2129-1, 1층 107호',
     icon: foodIcon,
   },
   {
     id: 'mentioned-2',
-    name: 'Ondal korean restaurant',
+    name: '온달 한식당',
     category: 'Restaurant',
-    address: '107, 1F, 2129-1, Jangan-gu, Suwon-si',
+    address: '수원시 장안구 서부로 2129-1, 1층 107호',
     icon: foodIcon,
   },
 ]
@@ -50,6 +51,7 @@ const getIconBackground = (category: MentionedRestaurant['category']) =>
   category === 'Cafe' ? 'var(--color-point-cafe)' : 'var(--color-point-restaurant)'
 
 export function ExploreCurationDetail({ card, onBack, onAddToList, onReportIncorrect }: ExploreCurationDetailProps) {
+  const { t } = useTranslation()
   const slides = useMemo(() => [card.image, curationSlideImage2, card.image], [card.image])
   const sliderRef = useRef<HTMLDivElement | null>(null)
   const rafRef = useRef<number | null>(null)
@@ -86,7 +88,7 @@ export function ExploreCurationDetail({ card, onBack, onAddToList, onReportIncor
 
   return (
     <div className="curation-detail">
-      <section className="curation-detail__hero" aria-label={card.title}>
+      <section className="curation-detail__hero" aria-label={t(card.titleKey)}>
         <img src={card.image} alt="" aria-hidden="true" className="curation-detail__hero-image" />
         <div className="curation-detail__overlay" aria-hidden="true" />
 
@@ -95,32 +97,28 @@ export function ExploreCurationDetail({ card, onBack, onAddToList, onReportIncor
               <button
                 type="button"
                 className="screen-header__button screen-header__button--light"
-                aria-label="Back"
+                aria-label={t('shared.back')}
                 onClick={onBack}
               >
                 <img src={backArrowIcon} alt="" aria-hidden="true" />
               </button>
             </div>
           <div className="screen-header__title screen-header__title--light">
-            <h1 className="head-title">halo Curation</h1>
+            <h1 className="head-title">{t('explore.curationTitle')}</h1>
           </div>
           <div className="screen-header__slot screen-header__slot--empty" aria-hidden="true" />
         </div>
 
         <div className="curation-detail__hero-copy">
-          <h2 className="curation-detail__title">{card.title}</h2>
+          <h2 className="curation-detail__title">{t(card.titleKey)}</h2>
           <p className="curation-detail__author">{card.author}</p>
         </div>
       </section>
 
       <div className="curation-detail__content">
         <section className="curation-detail__section">
-          <h2 className="section-title">Introduction</h2>
-          <p className="curation-detail__text">
-            This is a hidden gem near the Sungkyunkwan University shuttle bus stop that offers both great value
-            and taste. Thanks to the generous hospitality typical of a university district and a cozy atmosphere,
-            it is highly popular for solo diners as well as for casual meals with friends.
-          </p>
+          <h2 className="section-title">{t('explore.introduction')}</h2>
+          <p className="curation-detail__text">{t('explore.introductionText')}</p>
         </section>
 
         <section className="curation-detail__section">
@@ -139,8 +137,8 @@ export function ExploreCurationDetail({ card, onBack, onAddToList, onReportIncor
           </div>
         </section>
 
-        <section className="curation-detail__section" aria-label="Mentioned Restaurant">
-          <h2 className="section-title">Mentioned Restaurant</h2>
+        <section className="curation-detail__section" aria-label={t('explore.mentionedRestaurant')}>
+          <h2 className="section-title">{t('explore.mentionedRestaurant')}</h2>
           <div className="explore-popular curation-detail__restaurants">
             {mentionedRestaurants.map((item) => (
               <article className="explore-popular-item curation-detail__restaurant-item" key={item.id}>
@@ -153,7 +151,7 @@ export function ExploreCurationDetail({ card, onBack, onAddToList, onReportIncor
                 <div className="explore-popular-item__content">
                   <h3>{item.name}</h3>
                   <p>
-                    <span>{item.category}</span>
+                    <span>{item.category === 'Cafe' ? t('map.filters.cafe') : t('map.filters.food')}</span>
                     <span className="text-dot" aria-hidden="true" />
                     {item.address}
                   </p>
@@ -161,7 +159,7 @@ export function ExploreCurationDetail({ card, onBack, onAddToList, onReportIncor
                 <button
                   type="button"
                   className="explore-popular-item__more"
-                  aria-label={`More actions for ${item.name}`}
+                  aria-label={t('listDetail.moreActionsFor', { name: item.name })}
                   aria-expanded={openMenuId === item.id}
                   onClick={(event) => {
                     event.stopPropagation()
@@ -194,7 +192,7 @@ export function ExploreCurationDetail({ card, onBack, onAddToList, onReportIncor
         <button
           type="button"
           className="explore-popular-item__backdrop"
-          aria-label={`Close actions for ${openMenuItem.name}`}
+          aria-label={t('listDetail.closeActionsFor', { name: openMenuItem.name })}
           onClick={() => setOpenMenuId(null)}
         />
       )}

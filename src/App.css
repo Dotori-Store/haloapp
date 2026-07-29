@@ -1,4 +1,5 @@
 .map-shell {
+  position: relative;
   width: min(100%, 480px);
   margin: 0 auto;
   min-height: 100svh;
@@ -184,8 +185,6 @@
   height: var(--map-sheet-height, 168px);
   padding: 13px 16px 90px 16px;
   border-radius: var(--bottom-sheet-radius);
-  background: var(--bottom-backgrond);
-  backdrop-filter: var(--blur-bottom-sheet);
   box-shadow: var(--bottom-sheet-shadow);
   touch-action: none;
   transition: height 0.24s ease;
@@ -891,7 +890,7 @@
   inset: 16px 0 0;
   overflow: hidden;
   border-radius: var(--bottom-sheet-radius);
-  background: var(--bottom-backgrond);
+  background: var(--bottom-background);
   backdrop-filter: var(--blur-bottom-sheet);
   box-shadow: var(--bottom-sheet-shadow);
 }

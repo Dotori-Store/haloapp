@@ -1,0 +1,4 @@
+.map-sheet {
+  background: var(--map-sheet-background);
+  backdrop-filter: var(--map-sheet-backdrop);
+}

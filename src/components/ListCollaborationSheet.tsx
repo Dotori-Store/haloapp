@@ -5,6 +5,7 @@ import peopleIcon from '../assets/icons/icon-peoples.svg'
 import memberAvatarImage from '../assets/dummy/thumb-user.jpg'
 import memberAvatarImageAlt from '../assets/dummy/thumb-user-2.jpg'
 import { type LovedListItem } from './LovedListDetailPage'
+import { useTranslation } from 'react-i18next'
 import './ListCollaborationSheet.css'
 import './ExplorePage.css'
 
@@ -26,6 +27,8 @@ const members: CollaborationMember[] = [
 ]
 
 export function ListCollaborationSheet({ open, listItem, onClose }: ListCollaborationSheetProps) {
+  const { t } = useTranslation()
+
   useEffect(() => {
     if (!open) {
       return
@@ -38,14 +41,14 @@ export function ListCollaborationSheet({ open, listItem, onClose }: ListCollabor
 
   return (
     <div className="list-collaboration-sheet" role="presentation">
-      <button type="button" className="list-collaboration-sheet__backdrop" aria-label="Close collaboration sheet" onClick={onClose} />
+      <button type="button" className="list-collaboration-sheet__backdrop" aria-label={t('shared.close')} onClick={onClose} />
 
-      <section className="list-collaboration-sheet__panel" role="dialog" aria-modal="true" aria-label="Collaboration">
+      <section className="list-collaboration-sheet__panel" role="dialog" aria-modal="true" aria-label={t('list.collaboration')}>
         <header className="list-collaboration-sheet__header screen-header">
           <div className="screen-header__slot screen-header__slot--empty" aria-hidden="true" />
           <div className="screen-header__slot screen-header__slot--empty" aria-hidden="true" />
           <div className="screen-header__slot screen-header__slot--auto">
-            <button type="button" className="screen-header__button" aria-label="Close" onClick={onClose}>
+            <button type="button" className="screen-header__button" aria-label={t('shared.close')} onClick={onClose}>
               <img src={closeIcon} alt="" aria-hidden="true" />
             </button>
           </div>
@@ -63,24 +66,24 @@ export function ListCollaborationSheet({ open, listItem, onClose }: ListCollabor
             </div>
           </section>
 
-          <button type="button" className="list-collaboration-sheet__invite" aria-label="Share invite link">
+          <button type="button" className="list-collaboration-sheet__invite" aria-label={t('list.shareInviteLink')}>
             <span className="list-collaboration-sheet__invite-icon" aria-hidden="true">
               <img src={shareLinkIcon} alt="" aria-hidden="true" />
             </span>
-            <span>Share invite link</span>
+            <span>{t('list.shareInviteLink')}</span>
           </button>
 
-          <section className="list-collaboration-sheet__card" aria-label="Collaboration members">
+          <section className="list-collaboration-sheet__card" aria-label={t('list.collaboration')}>
             <header className="list-collaboration-sheet__section-header">
               <div className="list-collaboration-sheet__section-title">
                 <span className="list-collaboration-sheet__section-icon" aria-hidden="true">
                   <img src={peopleIcon} alt="" aria-hidden="true" />
                 </span>
-                <span>Collaboration</span>
+                <span>{t('list.collaboration')}</span>
               </div>
 
-              <button type="button" className="list-collaboration-sheet__stop" aria-label="Stop collaboration">
-                Stop
+              <button type="button" className="list-collaboration-sheet__stop" aria-label={t('list.stop')}>
+                {t('list.stop')}
               </button>
             </header>
 

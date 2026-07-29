@@ -15,6 +15,7 @@ import foodIcon from '../assets/icons/ico-cat-food.svg'
 import albumCoverLikeImage from '../assets/images/album-cover-like.png'
 import { LovedListImportSheet } from './LovedListImportSheet'
 import { RestaurantContextMenu } from './RestaurantContextMenu'
+import { useTranslation } from 'react-i18next'
 import './ExplorePage.css'
 import './LovedListDetailPage.css'
 
@@ -55,16 +56,16 @@ type SavedListToast = {
 const restaurants: LovedListRestaurant[] = [
   {
     id: 'loved-restaurant-1',
-    name: 'Ondal korean restaurant',
+    name: '온달 한식당',
     category: 'Restaurant',
-    address: '107, 1F, 2129-1, Jang-an-gu, Suwon-si',
+    address: '수원시 장안구 서부로 2129-1, 1층 107호',
     icon: foodIcon,
   },
   {
     id: 'loved-restaurant-2',
-    name: 'Dajunghan restaurant',
+    name: '다정한 식당',
     category: 'Restaurant',
-    address: '107, 1F, 2129-1, Jang-an-gu, Suwon-si',
+    address: '수원시 장안구 서부로 2129-1, 1층 107호',
     icon: foodIcon,
   },
 ]
@@ -73,6 +74,7 @@ const getIconBackground = (category: LovedListRestaurantCategory) =>
   category === 'Cafe' ? 'var(--color-point-cafe)' : 'var(--color-point-restaurant)'
 
 export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportIncorrect, onViewOnMap }: LovedListDetailPageProps) {
+  const { t } = useTranslation()
   const [isWishActive, setIsWishActive] = useState(false)
   const [isHeaderMenuOpen, setIsHeaderMenuOpen] = useState(false)
   const [openRestaurantMenuId, setOpenRestaurantMenuId] = useState<string | null>(null)
@@ -162,19 +164,19 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
     <div className="loved-list-detail-page popular-restaurant-page">
       <header className="loved-list-detail-page__header screen-header">
         <div className="screen-header__slot">
-          <button type="button" className="screen-header__button" aria-label="Back" onClick={onBack}>
+          <button type="button" className="screen-header__button" aria-label={t('shared.back')} onClick={onBack}>
             <img src={backArrowIcon} alt="" aria-hidden="true" />
           </button>
         </div>
 
         <div className="screen-header__actions">
-          <button type="button" className="screen-header__button" aria-label="Share">
+          <button type="button" className="screen-header__button" aria-label={t('shared.share')}>
             <img src={shareIconLg} alt="" aria-hidden="true" />
           </button>
           <button
             type="button"
             className="screen-header__button"
-            aria-label="More options"
+            aria-label={t('shared.moreOptions')}
             aria-expanded={isHeaderMenuOpen}
             onClick={() => {
               setOpenRestaurantMenuId(null)
@@ -199,7 +201,7 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
             <button
               type="button"
               className="loved-list-detail-page__wish"
-              aria-label={`${isWishActive ? 'Unlike' : 'Like'} ${listItem.title}`}
+              aria-label={`${isWishActive ? t('placeDetail.unlike') : t('placeDetail.like')} ${listItem.title}`}
               aria-pressed={isWishActive}
               onClick={() => setIsWishActive((current) => !current)}
             >
@@ -208,13 +210,13 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
 
             <button type="button" className="loved-list-detail-page__view-map" onClick={() => onViewOnMap?.(listItem)}>
               <img src={mapIcon} alt="" aria-hidden="true" />
-              <span>View on map</span>
+              <span>{t('shared.viewOnMap')}</span>
             </button>
 
             <button
               type="button"
               className="loved-list-detail-page__import"
-              aria-label="Get list"
+              aria-label={t('list.getList')}
               onClick={openImportSheet}
             >
               <img src={importListIcon} alt="" aria-hidden="true" />
@@ -222,7 +224,7 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
           </div>
         </section>
 
-        <section className="loved-list-detail-page__restaurants" aria-label="Restaurants">
+        <section className="loved-list-detail-page__restaurants" aria-label={t('listDetail.restaurants')}>
           <div className="explore-popular loved-list-detail-page__restaurant-list">
             {restaurants.map((item) => (
               <article className="explore-popular-item loved-list-detail-page__restaurant-item" key={item.id}>
@@ -235,7 +237,7 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
                 <div className="explore-popular-item__content">
                   <h3>{item.name}</h3>
                   <p>
-                    <span>{item.category}</span>
+                    <span>{item.category === 'Cafe' ? t('map.filters.cafe') : t('map.filters.food')}</span>
                     <span className="text-dot" aria-hidden="true" />
                     {item.address}
                   </p>
@@ -243,7 +245,7 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
                 <button
                   type="button"
                   className="explore-popular-item__more"
-                  aria-label={`More actions for ${item.name}`}
+                  aria-label={t('listDetail.moreActionsFor', { name: item.name })}
                   aria-expanded={openRestaurantMenuId === item.id}
                   onClick={(event) => {
                     event.stopPropagation()
@@ -278,11 +280,11 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
           <button
             type="button"
             className="loved-list-detail-page__header-menu-backdrop"
-            aria-label="Close more options"
+            aria-label={t('list.closeListMenu')}
             onClick={() => setIsHeaderMenuOpen(false)}
           />
 
-          <div className="loved-list-detail-page__header-menu" role="menu" aria-label={`${listItem.title} options`}>
+          <div className="loved-list-detail-page__header-menu" role="menu" aria-label={t('listDetail.listOptions', { title: listItem.title })}>
             <button
               type="button"
               className="loved-list-detail-page__header-menu-item"
@@ -292,7 +294,7 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
               <span className="loved-list-detail-page__header-menu-icon" aria-hidden="true">
                 <img src={headerImportIcon} alt="" aria-hidden="true" />
               </span>
-              <span>Get List</span>
+              <span>{t('list.getList')}</span>
             </button>
             <button
               type="button"
@@ -306,7 +308,7 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
               <span className="loved-list-detail-page__header-menu-icon" aria-hidden="true">
                 <img src={reportIcon} alt="" aria-hidden="true" />
               </span>
-              <span>Report List</span>
+              <span>{t('shared.report')}</span>
             </button>
           </div>
         </>
@@ -316,7 +318,7 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
         <button
           type="button"
           className="explore-popular-item__backdrop"
-          aria-label={`Close actions for ${openRestaurantMenuItem.name}`}
+          aria-label={t('listDetail.closeActionsFor', { name: openRestaurantMenuItem.name })}
           onClick={() => setOpenRestaurantMenuId(null)}
         />
       )}
@@ -332,13 +334,13 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
           type="button"
           className={`saved-list-toast saved-list-toast--${savedListToast.phase}`}
           onClick={closeToast}
-          aria-label="Open saved list"
+          aria-label={t('shared.openSavedList')}
         >
           <span className="saved-list-toast__thumb">
             <img src={savedListToast.image} alt="" aria-hidden="true" />
           </span>
           <span className="saved-list-toast__copy">
-            <span className="saved-list-toast__eyebrow">{savedListToast.count} item added</span>
+            <span className="saved-list-toast__eyebrow">{t('list.itemAdded', { count: savedListToast.count })}</span>
             <span className="saved-list-toast__title">{savedListToast.title}</span>
           </span>
           <img src={rightArrowIcon} alt="" aria-hidden="true" className="saved-list-toast__arrow" />

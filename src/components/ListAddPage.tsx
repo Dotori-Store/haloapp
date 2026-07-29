@@ -2,6 +2,7 @@ import { useState } from 'react'
 import backArrowIcon from '../assets/icons/ico-back-arrow.svg'
 import topCheckIcon from '../assets/icons/ico-top-check.svg'
 import whiteCameraIcon from '../assets/icons/ico-white-camera.svg'
+import { useTranslation } from 'react-i18next'
 import './ExplorePage.css'
 import './RestaurantAddPage.css'
 import './MyPage.css'
@@ -12,6 +13,7 @@ type ListAddPageProps = {
 }
 
 export function ListAddPage({ onClose }: ListAddPageProps) {
+  const { t } = useTranslation()
   const [listName, setListName] = useState('')
   const [isPublished, setIsPublished] = useState(true)
 
@@ -21,20 +23,20 @@ export function ListAddPage({ onClose }: ListAddPageProps) {
     <div className="list-add-page">
       <header className="list-add-page__header screen-header">
         <div className="screen-header__slot">
-          <button type="button" className="screen-header__button" aria-label="Back" onClick={onClose}>
+          <button type="button" className="screen-header__button" aria-label={t('shared.back')} onClick={onClose}>
             <img src={backArrowIcon} alt="" aria-hidden="true" />
           </button>
         </div>
 
         <div className="screen-header__title">
-          <h1 className="head-title">New List</h1>
+          <h1 className="head-title">{t('list.newList')}</h1>
         </div>
 
         <div className="screen-header__slot">
           <button
             type="button"
             className={`screen-header__button add-restaurant-page__confirm ${canSave ? 'is-active' : ''}`}
-            aria-label="Save list"
+            aria-label={t('shared.save')}
             disabled={!canSave}
             onClick={onClose}
           >
@@ -44,7 +46,7 @@ export function ListAddPage({ onClose }: ListAddPageProps) {
       </header>
 
       <main className="list-add-page__content">
-        <button type="button" className="list-add-page__cover-button" aria-label="Add list cover photo">
+        <button type="button" className="list-add-page__cover-button" aria-label={t('list.addCoverPhoto')}>
           <img className="list-add-page__cover-icon" src={whiteCameraIcon} alt="" aria-hidden="true" />
         </button>
 
@@ -52,18 +54,18 @@ export function ListAddPage({ onClose }: ListAddPageProps) {
           <input
             type="text"
             value={listName}
-            placeholder="Enter list name"
+            placeholder={t('list.enterListName')}
             onChange={(event) => setListName(event.target.value)}
           />
         </label>
 
-        <section className="list-add-page__settings" aria-label="Publish list">
+        <section className="list-add-page__settings" aria-label={t('list.publishList')}>
           <div className="my-edit__row list-add-page__row">
-            <span>Publish list</span>
+            <span>{t('list.publishList')}</span>
             <button
               type="button"
               className={`my-edit__switch ${isPublished ? 'is-on' : ''}`}
-              aria-label="Publish list"
+              aria-label={t('list.publishList')}
               aria-pressed={isPublished}
               onClick={() => setIsPublished((current) => !current)}
             >
