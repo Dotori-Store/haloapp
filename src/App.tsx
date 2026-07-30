@@ -43,7 +43,7 @@ import './components/MapSheet.css'
 
 type Category = 'all' | 'food' | 'cafe' | 'prayer'
 type SheetMode = 'collapsed' | 'expanded' | 'search'
-type ListMapMode = 'summary' | 'expanded' | 'search'
+type ListMapMode = 'summary' | 'expanded'
 type ListMapReturnTarget = 'list' | 'explore' | 'my'
 
 const DRAG_START_THRESHOLD = 24
@@ -140,16 +140,6 @@ function App() {
   }, [sheetMode])
 
   useEffect(() => {
-    if (listMapMode !== 'search') {
-      return
-    }
-
-    window.requestAnimationFrame(() => {
-      searchInputRef.current?.focus()
-    })
-  }, [listMapMode])
-
-  useEffect(() => {
     if (!savedListToast) {
       return
     }
@@ -228,6 +218,16 @@ function App() {
           : '450px'
   const stageStyle = { '--map-sheet-height': sheetHeight } as CSSProperties
 
+  useEffect(() => {
+    if (!isListMapPanelOpen) {
+      return
+    }
+
+    window.requestAnimationFrame(() => {
+      searchInputRef.current?.focus()
+    })
+  }, [isListMapPanelOpen, listMapItem?.id])
+
   const resetDrag = () => {
     dragStartY.current = null
     dragPointerId.current = null
@@ -294,14 +294,6 @@ function App() {
         setListMapMode('expanded')
       }
 
-      if (dragDistance > SHEET_SNAP_THRESHOLD && listMapMode === 'expanded') {
-        setListMapMode('search')
-      }
-
-      if (dragDistance < -SHEET_SNAP_THRESHOLD && listMapMode === 'search') {
-        setListMapMode('expanded')
-      }
-
       if (dragDistance < -SHEET_SNAP_THRESHOLD && listMapMode === 'expanded') {
         setIsListMapSummaryVisible(true)
         setListMapMode('summary')
@@ -328,9 +320,6 @@ function App() {
 
   const openSearch = () => {
     if (listMapItem) {
-      setSelectedPlaceId(null)
-      setIsDetailExpanded(false)
-      setListMapMode('search')
       window.requestAnimationFrame(() => {
         searchInputRef.current?.focus()
       })
@@ -348,9 +337,6 @@ function App() {
   const closeSearch = () => {
     if (listMapItem) {
       setListMapSearchQuery('')
-      setSelectedPlaceId(null)
-      setIsDetailExpanded(false)
-      setListMapMode('expanded')
       return
     }
 
@@ -857,7 +843,7 @@ function App() {
         />
       ) : (
         <section
-          className={`map-stage ${isSearch ? 'is-searching' : ''} ${isDetail ? 'is-detail' : ''} ${isListMap ? 'is-list-map' : ''} ${isListMapPanelOpen ? 'is-list-map-panel-open' : ''} ${listMapMode === 'search' ? 'is-list-map-searching' : ''}`}
+          className={`map-stage ${isSearch ? 'is-searching' : ''} ${isDetail ? 'is-detail' : ''} ${isListMap ? 'is-list-map' : ''} ${isListMapPanelOpen ? 'is-list-map-panel-open' : ''}`}
           aria-label={copy.title}
           style={stageStyle}
         >
@@ -976,7 +962,7 @@ function App() {
           )}
 
           <div
-            className={`map-sheet ${isSearch ? 'is-searching' : ''} ${isDetail ? 'is-detail' : ''} ${isDetailExpanded ? 'is-detail-expanded' : ''} ${isListMapPanelOpen ? 'is-list-map-sheet' : ''} ${listMapMode === 'search' ? 'is-list-map-searching' : ''}`}
+            className={`map-sheet ${isSearch ? 'is-searching' : ''} ${isDetail ? 'is-detail' : ''} ${isDetailExpanded ? 'is-detail-expanded' : ''} ${isListMapPanelOpen ? 'is-list-map-sheet' : ''}`}
             onPointerDown={startSheetDrag}
             onPointerMove={moveSheetDrag}
             onPointerUp={finishSheetDrag}
@@ -997,37 +983,30 @@ function App() {
                 />
               ) : isListMapPanelOpen && listMapItem ? (
                 <section className="list-map-sheet" aria-label={`${listMapItem.title} map list`}>
-                  {listMapMode === 'search' ? (
-                    <div className="map-search search-field list-map-sheet__search">
-                      <img src={glassIcon} alt="" aria-hidden="true" />
-                        <input
-                          ref={searchInputRef}
-                          aria-label={t('map.searchInList', { title: listMapItem.title })}
-                          className="search-input"
-                          type="search"
-                          value={listMapSearchQuery}
-                          onChange={(event) => setListMapSearchQuery(event.target.value)}
-                        />
-                        {listMapSearchQuery && (
-                          <button
-                            type="button"
-                            className="search-clear"
-                            aria-label={t('restaurantAdd.clearSearch')}
-                            onClick={(event) => {
-                              event.stopPropagation()
-                              setListMapSearchQuery('')
-                            }}
-                          >
-                            <img src={deleteTextIcon} alt="" aria-hidden="true" />
-                          </button>
-                        )}
-                    </div>
-                  ) : (
-                    <button type="button" className="map-search list-map-sheet__search" onClick={openSearch}>
-                      <img src={glassIcon} alt="" aria-hidden="true" />
-                      <span>{copy.searchPlaceholder}</span>
-                    </button>
-                  )}
+                  <label className="map-search search-field list-map-sheet__search" aria-label={t('map.searchInList', { title: listMapItem.title })}>
+                    <img src={glassIcon} alt="" aria-hidden="true" />
+                    <input
+                      ref={searchInputRef}
+                      className="search-input"
+                      type="search"
+                      value={listMapSearchQuery}
+                      onChange={(event) => setListMapSearchQuery(event.target.value)}
+                      placeholder={copy.searchPlaceholder}
+                    />
+                    {listMapSearchQuery && (
+                      <button
+                        type="button"
+                        className="search-clear"
+                        aria-label={t('restaurantAdd.clearSearch')}
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          setListMapSearchQuery('')
+                        }}
+                      >
+                        <img src={deleteTextIcon} alt="" aria-hidden="true" />
+                      </button>
+                    )}
+                  </label>
 
                   <div className="list-map-sheet__meta">
                     <p>
