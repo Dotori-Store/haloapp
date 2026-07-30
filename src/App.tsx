@@ -46,8 +46,8 @@ type SheetMode = 'collapsed' | 'expanded' | 'search'
 type ListMapMode = 'summary' | 'expanded'
 type ListMapReturnTarget = 'list' | 'explore' | 'my'
 
-const DRAG_START_THRESHOLD = 24
-const SHEET_SNAP_THRESHOLD = 140
+const DRAG_START_THRESHOLD = 12
+const SHEET_SNAP_THRESHOLD = 100
 
 const savedLists = [
   { id: 'list-1', title: 'Rainy Day Cafe' },
@@ -218,16 +218,6 @@ function App() {
           ? '168px'
           : '450px'
   const stageStyle = { '--map-sheet-height': sheetHeight } as CSSProperties
-
-  useEffect(() => {
-    if (!isListMapPanelOpen) {
-      return
-    }
-
-    window.requestAnimationFrame(() => {
-      searchInputRef.current?.focus()
-    })
-  }, [isListMapPanelOpen, listMapItem?.id])
 
   const resetDrag = () => {
     dragStartY.current = null
