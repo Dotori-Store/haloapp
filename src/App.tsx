@@ -206,6 +206,13 @@ function App() {
   const isExpanded = sheetMode === 'expanded'
   const isSearch = sheetMode === 'search' && !isDetail && !isListMapPanelOpen
   const hasSearchQuery = searchQuery.trim().length > 0
+  const visibleNearbyPlaces = useMemo(() => {
+    if (activeFilter === 'all') {
+      return nearbyPlaces.slice(0, 4)
+    }
+
+    return nearbyPlaces.filter((place) => getNearbyPlaceCategory(place) === activeFilter)
+  }, [activeFilter])
   const detailSheetHeight = selectedPlace?.photoUrl ? '480px' : '430px'
   const sheetHeight = isDetail
     ? detailSheetHeight
@@ -519,6 +526,36 @@ function App() {
     return 'map-marker-food'
   }
 
+  function getNearbyPlaceCategory(place: NearbyPlace): Exclude<Category, 'all'> {
+    if (place.id === 'nearby-4' || place.id === 'nearby-5') {
+      return 'cafe'
+    }
+
+    if (place.id === 'nearby-6' || place.id === 'nearby-7') {
+      return 'prayer'
+    }
+
+    return 'food'
+  }
+
+  function getNearbyPlaceIcon(place: NearbyPlace) {
+    return getMapPlaceIcon(getNearbyPlaceCategory(place))
+  }
+
+  function getNearbyPlaceIconBackground(place: NearbyPlace) {
+    const category = getNearbyPlaceCategory(place)
+
+    if (category === 'cafe') {
+      return 'var(--color-point-cafe)'
+    }
+
+    if (category === 'prayer') {
+      return 'var(--color-point-prayer)'
+    }
+
+    return 'var(--color-point-restaurant)'
+  }
+
   const getListMapDetailPlaceId = (place: ListMapPlace) => {
     if (place.detailType === 1) {
       return 'nearby-1'
@@ -591,9 +628,7 @@ function App() {
   }
 
   const handlePlaceClick = (place: NearbyPlace) => {
-    if (place.id === 'nearby-1' || place.id === 'nearby-2' || place.id === 'nearby-3') {
-      openPlaceDetail(place.id)
-    }
+    openPlaceDetail(place.id)
   }
 
   const renderKeepButton = (place: NearbyPlace) => (
@@ -684,20 +719,20 @@ function App() {
 
   const renderNearbyItem = (place: NearbyPlace) => (
     <article
-      className={`nearby-item ${place.id === 'nearby-1' || place.id === 'nearby-2' || place.id === 'nearby-3' ? 'is-clickable' : ''}`}
+      className="nearby-item is-clickable"
       key={place.id}
-      role={place.id === 'nearby-1' || place.id === 'nearby-2' || place.id === 'nearby-3' ? 'button' : undefined}
-      tabIndex={place.id === 'nearby-1' || place.id === 'nearby-2' || place.id === 'nearby-3' ? 0 : undefined}
+      role="button"
+      tabIndex={0}
       onClick={() => handlePlaceClick(place)}
       onKeyDown={(event) => {
-        if ((place.id === 'nearby-1' || place.id === 'nearby-2' || place.id === 'nearby-3') && (event.key === 'Enter' || event.key === ' ')) {
+        if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault()
           openPlaceDetail(place.id)
         }
       }}
     >
-      <span className="nearby-item__icon" style={{ '--place-icon-bg': getPlaceIconBackground() } as CSSProperties}>
-        <img src={foodIcon} alt="" aria-hidden="true" />
+      <span className="nearby-item__icon" style={{ '--place-icon-bg': getNearbyPlaceIconBackground(place) } as CSSProperties}>
+        <img src={getNearbyPlaceIcon(place)} alt="" aria-hidden="true" />
       </span>
       <div className="nearby-item__content">
         <h3>{getPlaceName(place)}</h3>
@@ -1086,7 +1121,7 @@ function App() {
                   {isExpanded && (
                     <section className="nearby-places" aria-label={copy.nearbyTitle}>
                       <h2 className="section-title">{copy.nearbyTitle}</h2>
-                      <div className="nearby-list">{nearbyPlaces.slice(0, 4).map(renderNearbyItem)}</div>
+                      <div className="nearby-list">{visibleNearbyPlaces.map(renderNearbyItem)}</div>
                     </section>
                   )}
                 </>

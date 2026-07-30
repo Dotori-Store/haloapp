@@ -56,14 +56,12 @@ export function OnboardingScreen({ visible, onFinish }: OnboardingScreenProps) {
   const currentSlide = onboardingSlides[step] ?? onboardingSlides[0]
 
   const handleContinue = () => {
-    setStep((currentStep) => {
-      if (currentStep < onboardingSlides.length - 1) {
-        return currentStep + 1
-      }
+    if (step < onboardingSlides.length - 1) {
+      setStep((currentStep) => currentStep + 1)
+      return
+    }
 
-      onFinish()
-      return currentStep
-    })
+    onFinish()
   }
 
   const isLastSlide = step >= onboardingSlides.length - 1
