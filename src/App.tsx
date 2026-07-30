@@ -63,7 +63,8 @@ function App() {
   const [isSplashVisible, setIsSplashVisible] = useState(true)
   const [isOnboardingVisible, setIsOnboardingVisible] = useState(true)
   const [activeTab, setActiveTab] = useState<BottomNavTab>('map')
-  const [activeFilter, setActiveFilter] = useState<Category>('all')
+  const [mapFilter, setMapFilter] = useState<Category>('all')
+  const [listMapFilter, setListMapFilter] = useState<Category>('all')
   const [sheetMode, setSheetMode] = useState<SheetMode>('collapsed')
   const [listMapMode, setListMapMode] = useState<ListMapMode>('summary')
   const [listMapItem, setListMapItem] = useState<LovedListItem | null>(null)
@@ -111,6 +112,8 @@ function App() {
   const getPlaceName = (place: NearbyPlace | ListMapPlace | (typeof appMapPlaces)[number]) =>
     getLocalizedPlaceName(i18n.language, place)
   const getPlaceAddress = (place: NearbyPlace | ListMapPlace) => getLocalizedPlaceAddress(i18n.language, place)
+  const activeFilter = listMapItem ? listMapFilter : mapFilter
+  const setActiveFilter = listMapItem ? setListMapFilter : setMapFilter
 
   useEffect(() => {
     document.documentElement.lang = i18n.language.startsWith('ko') ? 'ko' : 'en'
@@ -201,10 +204,10 @@ function App() {
 
   const visibleListMapPlaces = useMemo(() => {
     const filteredPlaces =
-      activeFilter === 'all' ? listMapPlaces : listMapPlaces.filter((place) => place.category === activeFilter)
+      listMapFilter === 'all' ? listMapPlaces : listMapPlaces.filter((place) => place.category === listMapFilter)
 
     return listMapSearchQuery.trim() ? filteredPlaces.slice(0, 2) : filteredPlaces
-  }, [activeFilter, listMapSearchQuery])
+  }, [listMapFilter, listMapSearchQuery])
 
   const selectedPlace = nearbyPlaces.find((place) => place.id === selectedPlaceId) ?? null
   const isDetail = selectedPlace !== null
