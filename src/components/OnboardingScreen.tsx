@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import boardingHero01 from '../assets/images/boarding-01-hero.png'
 import boardingHero02 from '../assets/images/boarding-02-hero.png'
@@ -48,6 +48,30 @@ const onboardingSlides: OnboardingSlide[] = [
 export function OnboardingScreen({ visible, onFinish }: OnboardingScreenProps) {
   const { t } = useTranslation()
   const [step, setStep] = useState(0)
+  const [isComplete, setIsComplete] = useState(false)
+
+  useEffect(() => {
+    if (!visible) {
+      return
+    }
+
+    setStep(0)
+    setIsComplete(false)
+  }, [visible])
+
+  useEffect(() => {
+    if (!isComplete) {
+      return
+    }
+
+    const finishTimer = window.setTimeout(() => {
+      onFinish()
+    }, 0)
+
+    return () => {
+      window.clearTimeout(finishTimer)
+    }
+  }, [isComplete, onFinish])
 
   if (!visible) {
     return null
@@ -61,7 +85,7 @@ export function OnboardingScreen({ visible, onFinish }: OnboardingScreenProps) {
       return
     }
 
-    onFinish()
+    setIsComplete(true)
   }
 
   const isLastSlide = step >= onboardingSlides.length - 1

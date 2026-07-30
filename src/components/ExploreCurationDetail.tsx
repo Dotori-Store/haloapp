@@ -4,6 +4,7 @@ import backArrowIcon from '../assets/icons/ico-back-arrow.svg'
 import moreDotsIcon from '../assets/icons/ico-more-dots.svg'
 import curationSlideImage2 from '../assets/dummy/photo-cover.jpg'
 import { RestaurantContextMenu } from './RestaurantContextMenu'
+import { getLocalizedPlaceAddress, getLocalizedPlaceName } from '../data/mapPlaces'
 import { useTranslation } from 'react-i18next'
 import './ExplorePage.css'
 import './ExploreCurationDetail.css'
@@ -51,7 +52,7 @@ const getIconBackground = (category: MentionedRestaurant['category']) =>
   category === 'Cafe' ? 'var(--color-point-cafe)' : 'var(--color-point-restaurant)'
 
 export function ExploreCurationDetail({ card, onBack, onAddToList, onReportIncorrect }: ExploreCurationDetailProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const slides = useMemo(() => [card.image, curationSlideImage2, card.image], [card.image])
   const sliderRef = useRef<HTMLDivElement | null>(null)
   const rafRef = useRef<number | null>(null)
@@ -61,6 +62,21 @@ export function ExploreCurationDetail({ card, onBack, onAddToList, onReportIncor
     () => mentionedRestaurants.find((item) => item.id === openMenuId) ?? null,
     [openMenuId],
   )
+  const getMentionedRestaurantName = (item: MentionedRestaurant) => {
+    switch (item.id) {
+      case 'mentioned-1':
+        return i18n.language.startsWith('ko') ? '다정한 식당' : 'Dajunghan Korean Restaurant'
+      case 'mentioned-2':
+        return i18n.language.startsWith('ko') ? '온달 한식당' : 'Ondal Korean Restaurant'
+      default:
+        return item.name
+    }
+  }
+  const getMentionedRestaurantAddress = () => {
+    return i18n.language.startsWith('ko')
+      ? '수원시 장안구 서부로 2129-1, 1층 107호'
+      : '107, 1F, 2129-1, Seobu-ro, Jangan-gu'
+  }
 
   useEffect(() => {
     return () => {
@@ -149,17 +165,17 @@ export function ExploreCurationDetail({ card, onBack, onAddToList, onReportIncor
                   <img src={item.icon} alt="" aria-hidden="true" />
                 </span>
                 <div className="explore-popular-item__content">
-                  <h3>{item.name}</h3>
+                  <h3>{getMentionedRestaurantName(item)}</h3>
                   <p>
                     <span>{item.category === 'Cafe' ? t('map.filters.cafe') : t('map.filters.food')}</span>
                     <span className="text-dot" aria-hidden="true" />
-                    {item.address}
+                    {getMentionedRestaurantAddress()}
                   </p>
                 </div>
                 <button
                   type="button"
                   className="explore-popular-item__more"
-                  aria-label={t('listDetail.moreActionsFor', { name: item.name })}
+                  aria-label={t('listDetail.moreActionsFor', { name: getMentionedRestaurantName(item) })}
                   aria-expanded={openMenuId === item.id}
                   onClick={(event) => {
                     event.stopPropagation()
@@ -171,7 +187,7 @@ export function ExploreCurationDetail({ card, onBack, onAddToList, onReportIncor
 
                 {openMenuId === item.id && (
                   <RestaurantContextMenu
-                    itemName={item.name}
+                    itemName={getMentionedRestaurantName(item)}
                     onAdd={() => {
                       setOpenMenuId(null)
                       onAddToList()
@@ -192,7 +208,7 @@ export function ExploreCurationDetail({ card, onBack, onAddToList, onReportIncor
         <button
           type="button"
           className="explore-popular-item__backdrop"
-          aria-label={t('listDetail.closeActionsFor', { name: openMenuItem.name })}
+          aria-label={t('listDetail.closeActionsFor', { name: getMentionedRestaurantName(openMenuItem) })}
           onClick={() => setOpenMenuId(null)}
         />
       )}

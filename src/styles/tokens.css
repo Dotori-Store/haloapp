@@ -32,7 +32,7 @@
   --color-surface-glass: var(--color-glass-blur);
 
   --bottom-background: rgba(255, 255, 255, 0.92);
-  --map-sheet-background: rgba(232, 232, 232, 0.5);
+  --map-sheet-background: rgba(240, 240, 240, 0.5);
   --map-sheet-backdrop: blur(10px);
   --bottom-sheet-backdrop: rgba(0 0 0 / 20%);
   --bottom-sheet-radius: 24px 24px 0 0;

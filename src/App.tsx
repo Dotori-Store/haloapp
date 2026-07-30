@@ -207,13 +207,6 @@ function App() {
   const isSearch = sheetMode === 'search' && !isDetail && !isListMapPanelOpen
   const hasSearchQuery = searchQuery.trim().length > 0
   const isNumericSearchQuery = /^\d+$/.test(searchQuery.trim())
-  const visibleNearbyPlaces = useMemo(() => {
-    if (activeFilter === 'all') {
-      return nearbyPlaces.slice(0, 4)
-    }
-
-    return nearbyPlaces.filter((place) => getNearbyPlaceCategory(place) === activeFilter)
-  }, [activeFilter])
   const detailSheetHeight = selectedPlace?.photoUrl ? '480px' : '430px'
   const sheetHeight = isDetail
     ? detailSheetHeight
@@ -556,6 +549,14 @@ function App() {
 
     return 'var(--color-point-restaurant)'
   }
+
+  const visibleNearbyPlaces = useMemo(() => {
+    if (activeFilter === 'all') {
+      return nearbyPlaces.slice(0, 4)
+    }
+
+    return nearbyPlaces.filter((place) => getNearbyPlaceCategory(place) === activeFilter)
+  }, [activeFilter])
 
   const getListMapDetailPlaceId = (place: ListMapPlace) => {
     if (place.detailType === 1) {

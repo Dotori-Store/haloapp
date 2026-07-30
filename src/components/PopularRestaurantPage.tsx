@@ -39,9 +39,37 @@ const getIconBackground = (category: RestaurantCategory) =>
   category === 'Cafe' ? 'var(--color-point-cafe)' : 'var(--color-point-restaurant)'
 
 export function PopularRestaurantPage({ onBack, onAddToList, onReportIncorrect }: PopularRestaurantPageProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const openMenuItem = useMemo(() => restaurants.find((item) => item.id === openMenuId) ?? null, [openMenuId])
+  const isKorean = i18n.language.startsWith('ko')
+
+  const getRestaurantName = (item: PopularRestaurantItem) => {
+    switch (item.id) {
+      case 'popular-1':
+        return isKorean ? item.name : 'Oozy Coffee'
+      case 'popular-2':
+        return isKorean ? item.name : 'Dajunghan Korean Restaurant'
+      case 'popular-3':
+        return isKorean ? item.name : 'Betterday Coffee'
+      case 'popular-4':
+        return isKorean ? item.name : 'Ondal Korean Restaurant'
+      case 'popular-5':
+        return isKorean ? item.name : 'Jisoo Korean Restaurant'
+      case 'popular-6':
+        return isKorean ? item.name : 'Andong Galbi Korean Restaurant'
+      case 'popular-7':
+        return isKorean ? item.name : 'Betterday Coffee'
+      case 'popular-8':
+        return isKorean ? item.name : 'Jeong Korean Restaurant'
+      default:
+        return item.name
+    }
+  }
+
+  const getRestaurantAddress = (item: PopularRestaurantItem) => {
+    return isKorean ? item.address : '107, 1F, 2129-1, Seobu-ro, Jangan-gu'
+  }
 
   return (
     <div className="popular-restaurant-page">
@@ -65,17 +93,17 @@ export function PopularRestaurantPage({ onBack, onAddToList, onReportIncorrect }
                 <img src={item.icon} alt="" aria-hidden="true" />
               </span>
               <div className="explore-popular-item__content">
-                <h3>{item.name}</h3>
+                <h3>{getRestaurantName(item)}</h3>
                 <p>
-                    <span>{item.category === 'Cafe' ? t('map.filters.cafe') : t('map.filters.food')}</span>
+                  <span>{item.category === 'Cafe' ? t('map.filters.cafe') : t('map.filters.food')}</span>
                   <span className="text-dot" aria-hidden="true" />
-                  {item.address}
+                  {getRestaurantAddress(item)}
                 </p>
               </div>
               <button
                 type="button"
                 className="explore-popular-item__more"
-                aria-label={t('listDetail.moreActionsFor', { name: item.name })}
+                aria-label={t('listDetail.moreActionsFor', { name: getRestaurantName(item) })}
                 aria-expanded={openMenuId === item.id}
                 onClick={(event) => {
                   event.stopPropagation()
@@ -87,7 +115,7 @@ export function PopularRestaurantPage({ onBack, onAddToList, onReportIncorrect }
 
               {openMenuId === item.id && (
                 <RestaurantContextMenu
-                  itemName={item.name}
+                  itemName={getRestaurantName(item)}
                   onAdd={() => {
                     setOpenMenuId(null)
                     onAddToList()
@@ -107,7 +135,7 @@ export function PopularRestaurantPage({ onBack, onAddToList, onReportIncorrect }
         <button
           type="button"
           className="explore-popular-item__backdrop"
-          aria-label={t('listDetail.closeActionsFor', { name: openMenuItem.name })}
+          aria-label={t('listDetail.closeActionsFor', { name: getRestaurantName(openMenuItem) })}
           onClick={() => setOpenMenuId(null)}
         />
       )}

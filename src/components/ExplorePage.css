@@ -17,7 +17,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0;
-  height: 60px;
+  height: 64px;
 }
 
 .screen-header__slot {
@@ -168,7 +168,7 @@
   inset: auto 0 0;
   display: grid;
   gap: 4px;
-  padding: 16px 14px 14px;
+  padding: 32px 14px 14px;
   background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(16, 16, 18, 0.72) 100%);
 }
 
@@ -212,7 +212,7 @@
 .explore-popular-item {
   position: relative;
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) 24px;
+  grid-template-columns: 42px minmax(0, 1fr) 24px;
   align-items: center;
   gap: 12px;
   min-height: 68px;
@@ -227,8 +227,8 @@
 .explore-popular-item__icon {
   display: grid;
   place-items: center;
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   background: var(--place-icon-bg, var(--color-point-restaurant));
 }

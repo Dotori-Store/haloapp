@@ -153,6 +153,10 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+:lang(ko) .filter-group button {
+  padding: 0 12px;
+}
+
 .filter-group button:first-child {
   min-width: 43px;
 }
@@ -459,6 +463,11 @@
   white-space: nowrap;
 }
 
+:lang(ko) .nearby-item__content p {
+  font-size: 12px;
+  letter-spacing: -0.02em;
+}
+
 .nearby-item__content .is-open {
   color: var(--color-point-primary);
 }
@@ -721,8 +730,8 @@
 }
 
 .list-map-place-item__arrow img {
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
 }
 
 .photo-modal-backdrop {
@@ -907,18 +916,18 @@
 .add-list-sheet__close {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border: 0;
   border-radius: 50%;
   padding: 0;
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--color-stroke);
   cursor: pointer;
 }
 
 .add-list-sheet__close img {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
 }
 
 .add-list-sheet__list {

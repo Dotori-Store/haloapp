@@ -259,16 +259,16 @@
 .list-detail-page__add-restaurant-icon {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   background: var(--color-stroke);
-  flex: 0 0 36px;
+
 }
 
 .list-detail-page__add-restaurant-icon img {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
 }
 
 .list-detail-page__recommend {

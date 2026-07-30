@@ -13,6 +13,7 @@ import { LovedListDetailPage, type LovedListItem } from './LovedListDetailPage'
 import { LovedListPage } from './LovedListPage'
 import { PopularRestaurantPage } from './PopularRestaurantPage'
 import { RestaurantContextMenu } from './RestaurantContextMenu'
+import { getLocalizedPlaceAddress, getLocalizedPlaceName } from '../data/mapPlaces'
 import { useTranslation } from 'react-i18next'
 import './ExplorePage.css'
 
@@ -28,8 +29,10 @@ type CurationCard = {
 type PopularRestaurant = {
   id: string
   name: string
+  nameKo?: string
   category: PopularCategory
   address: string
+  addressKo?: string
   icon: string
 }
 
@@ -139,7 +142,7 @@ export function ExplorePage({
   restoreListItem,
   onRestoreListItemHandled,
 }: ExplorePageProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [selectedCurationId, setSelectedCurationId] = useState<string | null>(null)
   const [selectedPopularScreen, setSelectedPopularScreen] = useState(false)
   const [selectedLovedListScreen, setSelectedLovedListScreen] = useState(false)
@@ -152,6 +155,25 @@ export function ExplorePage({
     () => popularRestaurants.find((item) => item.id === openMenuId) ?? null,
     [openMenuId],
   )
+  const getPopularRestaurantName = (item: PopularRestaurant) => {
+    switch (item.id) {
+      case 'popular-1':
+        return i18n.language.startsWith('ko') ? '오지커피' : 'Oozy Coffee'
+      case 'popular-2':
+        return i18n.language.startsWith('ko') ? '다정한 식당' : 'Dajunghan Korean Restaurant'
+      case 'popular-3':
+        return i18n.language.startsWith('ko') ? '베러데이 커피' : 'Betterday Coffee'
+      case 'popular-4':
+        return i18n.language.startsWith('ko') ? '온달 한식당' : 'Ondal Korean Restaurant'
+      default:
+        return item.name
+    }
+  }
+  const getPopularRestaurantAddress = (item: PopularRestaurant) => {
+    return i18n.language.startsWith('ko')
+      ? '수원시 장안구 서부로 2129-1, 1층 107호'
+      : '107, 1F, 2129-1, Seobu-ro, Jangan-gu'
+  }
 
   useEffect(() => {
     const isRootScreen =
@@ -302,17 +324,17 @@ export function ExplorePage({
                   <img src={item.icon} alt="" aria-hidden="true" />
                 </span>
                 <div className="explore-popular-item__content">
-                  <h3>{item.name}</h3>
+                  <h3>{getPopularRestaurantName(item)}</h3>
                   <p>
                     <span>{item.category === 'Cafe' ? t('map.filters.cafe') : t('map.filters.food')}</span>
                     <span className="text-dot" aria-hidden="true" />
-                    {item.address}
+                    {getPopularRestaurantAddress(item)}
                   </p>
                 </div>
                 <button
                   type="button"
                   className="explore-popular-item__more"
-                  aria-label={t('listDetail.moreActionsFor', { name: item.name })}
+                  aria-label={t('listDetail.moreActionsFor', { name: getPopularRestaurantName(item) })}
                   aria-expanded={openMenuId === item.id}
                   onClick={(event) => {
                     event.stopPropagation()
@@ -324,7 +346,7 @@ export function ExplorePage({
 
                 {openMenuId === item.id && (
                   <RestaurantContextMenu
-                    itemName={item.name}
+                    itemName={getPopularRestaurantName(item)}
                     onAdd={() => {
                       setOpenMenuId(null)
                       onAddToList()
@@ -399,7 +421,7 @@ export function ExplorePage({
         <button
           type="button"
           className="explore-popular-item__backdrop"
-          aria-label={t('listDetail.closeActionsFor', { name: openMenuItem.name })}
+          aria-label={t('listDetail.closeActionsFor', { name: getPopularRestaurantName(openMenuItem) })}
           onClick={() => setOpenMenuId(null)}
         />
       )}
