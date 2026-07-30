@@ -197,7 +197,10 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
 
       <div className="popular-restaurant-page__content loved-list-detail-page__content">
         <section className="loved-list-detail-page__hero" aria-label={listItem.title}>
-          <img className="loved-list-detail-page__cover" src={albumCoverLikeImage} alt="" aria-hidden="true" />
+          <div className="loved-list-detail-page__cover-wrap">
+            <img className="loved-list-detail-page__cover" src={albumCoverLikeImage} alt="" aria-hidden="true" />
+            <span className="my-list-card__count loved-list-detail-page__cover-count">{listItem.count}</span>
+          </div>
           <div className="loved-list-detail-page__title-block">
             <h1 className="loved-list-detail-page__title">{listItem.title}</h1>
             <p className="loved-list-detail-page__owner">{listItem.owner}</p>

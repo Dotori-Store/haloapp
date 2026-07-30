@@ -12,8 +12,8 @@
   align-items: center;
   justify-content: space-between;
   flex: 0 0 auto;
-  height: 60px;
-  padding: 8px 16px;
+  height: 64px;
+  padding: 12px 12px 12px 16px;
 }
 
 .my-page__header-actions {

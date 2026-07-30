@@ -180,7 +180,10 @@ export function ListDetailPage({ listItem, onBack, onAddRestaurant, onAddToList,
 
       <main className="popular-restaurant-page__content list-detail-page__content">
         <section className="list-detail-page__hero" aria-label={listItem.title}>
-          <img className="list-detail-page__cover" src={listItem.image} alt="" aria-hidden="true" />
+          <div className="list-detail-page__cover-wrap">
+            <img className="list-detail-page__cover" src={listItem.image} alt="" aria-hidden="true" />
+            <span className="my-list-card__count list-detail-page__cover-count">{listItem.count}</span>
+          </div>
           <div className="list-detail-page__title-block">
             <h1 className="list-detail-page__title">{listItem.title}</h1>
             <p className="list-detail-page__owner">{listItem.owner}</p>

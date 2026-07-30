@@ -100,12 +100,22 @@
   padding: 6px 0 4px;
 }
 
-.loved-list-detail-page__cover {
+.loved-list-detail-page__cover-wrap {
+  position: relative;
   width: 208px;
   height: 208px;
+}
+
+.loved-list-detail-page__cover {
+  width: 100%;
+  height: 100%;
   border-radius: 8px;
   object-fit: cover;
   box-shadow: 0 10px 22px rgba(18, 18, 18, 0.12);
+}
+
+.loved-list-detail-page__cover-count {
+  z-index: 1;
 }
 
 .loved-list-detail-page__title-block {
