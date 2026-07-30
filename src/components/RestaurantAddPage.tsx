@@ -13,6 +13,7 @@ import rightArrowIcon from '../assets/icons/ico-right-arrow.svg'
 import foodPhoto from '../assets/dummy/photo-food.jpg'
 import coverPhoto from '../assets/dummy/photo-cover.jpg'
 import albumCover from '../assets/dummy/album-cover.jpg'
+import { getLocalizedPlaceAddress, getLocalizedPlaceName } from '../data/mapPlaces'
 import { useTranslation } from 'react-i18next'
 import './ExplorePage.css'
 import './RestaurantAddPage.css'
@@ -24,8 +25,10 @@ type RegisterStep = 'question' | 'list' | 'complete'
 type RestaurantResult = {
   id: string
   name: string
+  nameKo?: string
   category: 'Restaurant' | 'Cafe'
   address: string
+  addressKo?: string
   icon: string
 }
 
@@ -44,16 +47,20 @@ type RestaurantAddPageProps = {
 const restaurantResults: RestaurantResult[] = [
   {
     id: 'restaurant-add-1',
-    name: '다정한 식당',
+    name: 'Dajunghan Korean Restaurant',
+    nameKo: '다정한 식당',
     category: 'Restaurant',
-    address: '수원시 장안구 서부로 2129-1, 1층 107호',
+    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
+    addressKo: '수원시 장안구 서부로 2129-1, 1층 107호',
     icon: restaurantIcon,
   },
   {
     id: 'restaurant-add-2',
-    name: '김밥집',
+    name: 'Gimbap House',
+    nameKo: '김밥집',
     category: 'Restaurant',
-    address: '수원시 장안구 서부로 2129-1, 1층 107호',
+    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
+    addressKo: '수원시 장안구 서부로 2129-1, 1층 107호',
     icon: restaurantIcon,
   },
 ]
@@ -61,16 +68,20 @@ const restaurantResults: RestaurantResult[] = [
 const cafeResults: RestaurantResult[] = [
   {
     id: 'cafe-add-1',
-    name: '오지 커피',
+    name: 'Oozy Coffee',
+    nameKo: '오지 커피',
     category: 'Cafe',
-    address: '수원시 장안구 서부로 2129-1, 1층 107호',
+    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
+    addressKo: '수원시 장안구 서부로 2129-1, 1층 107호',
     icon: cafeIcon,
   },
   {
     id: 'cafe-add-2',
-    name: '모닝빈',
+    name: 'Morning Bean',
+    nameKo: '모닝빈',
     category: 'Cafe',
-    address: '수원시 장안구 서부로 2129-1, 1층 107호',
+    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
+    addressKo: '수원시 장안구 서부로 2129-1, 1층 107호',
     icon: cafeIcon,
   },
 ]
@@ -85,7 +96,7 @@ const savedLists: SavedList[] = [
 const samplePhotos = [foodPhoto, coverPhoto, albumCover]
 
 export function RestaurantAddPage({ onClose }: RestaurantAddPageProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [activeCategory, setActiveCategory] = useState<RestaurantCategory>('restaurant')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedRestaurant, setSelectedRestaurant] = useState<RestaurantResult | null>(null)
@@ -356,11 +367,11 @@ export function RestaurantAddPage({ onClose }: RestaurantAddPageProps) {
                 <img src={item.icon} alt="" aria-hidden="true" />
               </span>
               <span className="add-restaurant-page__result-content">
-                <span className="add-restaurant-page__result-title">{item.name}</span>
+                <span className="add-restaurant-page__result-title">{getLocalizedPlaceName(i18n.language, item)}</span>
                 <span className="add-restaurant-page__result-meta">
                   <span>{item.category === 'Restaurant' ? t('restaurantAdd.restaurant') : t('restaurantAdd.cafe')}</span>
                   <span className="text-dot" aria-hidden="true" />
-                  {item.address}
+                  {getLocalizedPlaceAddress(i18n.language, item)}
                 </span>
               </span>
               <img src={rightArrowIcon} alt="" aria-hidden="true" className="add-restaurant-page__result-arrow" />
@@ -373,15 +384,17 @@ export function RestaurantAddPage({ onClose }: RestaurantAddPageProps) {
 }
 
 function RestaurantSummary({ restaurant }: { restaurant: RestaurantResult }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const restaurantName = getLocalizedPlaceName(i18n.language, restaurant)
+  const restaurantAddress = getLocalizedPlaceAddress(i18n.language, restaurant)
 
   return (
-    <section className="add-restaurant-page__register-hero" aria-label={restaurant.name}>
+    <section className="add-restaurant-page__register-hero" aria-label={restaurantName}>
       <p className="add-restaurant-page__register-category">
         {restaurant.category === 'Restaurant' ? t('restaurantAdd.restaurant') : t('restaurantAdd.cafe')}
       </p>
-      <h1 className="page-title add-restaurant-page__register-title">{restaurant.name}</h1>
-      <p className="add-restaurant-page__register-address">서울 성북구 삼성동 12길 82</p>
+      <h1 className="page-title add-restaurant-page__register-title">{restaurantName}</h1>
+      <p className="add-restaurant-page__register-address">{restaurantAddress}</p>
     </section>
   )
 }

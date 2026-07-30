@@ -29,6 +29,8 @@ import { MyPage } from './components/MyPage'
 import { PlaceDetailSheet } from './components/PlaceDetailSheet'
 import { type LovedListItem } from './components/LovedListDetailPage'
 import {
+  getLocalizedPlaceAddress,
+  getLocalizedPlaceName,
   listMapPlaces,
   mapPlaces as appMapPlaces,
   nearbyPlacesData as nearbyPlaces,
@@ -106,6 +108,9 @@ function App() {
     nearbyTitle: t('map.nearbyTitle'),
     recommend: t('map.recommend'),
   }
+  const getPlaceName = (place: NearbyPlace | ListMapPlace | (typeof appMapPlaces)[number]) =>
+    getLocalizedPlaceName(i18n.language, place)
+  const getPlaceAddress = (place: NearbyPlace | ListMapPlace) => getLocalizedPlaceAddress(i18n.language, place)
 
   useEffect(() => {
     document.documentElement.lang = i18n.language.startsWith('ko') ? 'ko' : 'en'
@@ -606,7 +611,7 @@ function App() {
     <button
       type="button"
       className="nearby-item__keep"
-      aria-label={t('listDetail.addToList', { name: place.name })}
+      aria-label={t('listDetail.addToList', { name: getPlaceName(place) })}
       aria-haspopup="dialog"
       onClick={(event) => {
         event.stopPropagation()
@@ -623,17 +628,17 @@ function App() {
         <img src={foodIcon} alt="" aria-hidden="true" />
       </span>
       <div className="nearby-item__content">
-        <h3>{place.name}</h3>
+        <h3>{getPlaceName(place)}</h3>
         <p>
           <span className={place.status === 'Open' ? 'is-open' : 'is-closed'}>{place.status === 'Open' ? t('map.openStatus') : t('map.closedStatus')}</span>
           <span className="text-dot" aria-hidden="true" />
-          {place.address}
+          {getPlaceAddress(place)}
         </p>
       </div>
       <button
         type="button"
         className="nearby-item__keep"
-        aria-label={t('listDetail.addToList', { name: place.name })}
+        aria-label={t('listDetail.addToList', { name: getPlaceName(place) })}
         aria-haspopup="dialog"
         onClick={(event) => {
           event.stopPropagation()
@@ -675,11 +680,11 @@ function App() {
         <img src={getMapPlaceIcon(place.category)} alt="" aria-hidden="true" />
       </span>
       <div className="nearby-item__content">
-        <h3>{place.name}</h3>
+        <h3>{getPlaceName(place)}</h3>
         <p>
           <span className={place.status === 'Open' ? 'is-open' : 'is-closed'}>{place.status === 'Open' ? t('map.openStatus') : t('map.closedStatus')}</span>
           <span className="text-dot" aria-hidden="true" />
-          {place.address}
+          {getPlaceAddress(place)}
         </p>
       </div>
       <span className="list-map-place-item__arrow" aria-hidden="true">
@@ -706,11 +711,11 @@ function App() {
         <img src={foodIcon} alt="" aria-hidden="true" />
       </span>
       <div className="nearby-item__content">
-        <h3>{place.name}</h3>
+        <h3>{getPlaceName(place)}</h3>
         <p>
           <span className={place.status === 'Open' ? 'is-open' : 'is-closed'}>{place.status === 'Open' ? t('map.openStatus') : t('map.closedStatus')}</span>
           <span className="text-dot" aria-hidden="true" />
-          {place.address}
+          {getPlaceAddress(place)}
         </p>
       </div>
       {renderKeepButton(place)}
@@ -862,7 +867,7 @@ function App() {
                 type="button"
                 className={`map-marker ${getMapPlaceIconClass(place.category)}`}
                 style={{ left: `${place.x}%`, top: `${place.y}%` }}
-                aria-label={place.name}
+                aria-label={getPlaceName(place)}
                 onClick={() =>
                   openPlaceDetail('detailPlaceId' in place ? place.detailPlaceId : getListMapDetailPlaceId(place))
                 }

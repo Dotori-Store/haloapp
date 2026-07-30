@@ -8,6 +8,7 @@ import coverLikeImage from '../assets/images/album-cover-like.png'
 import albumCover from '../assets/dummy/album-cover.jpg'
 import curationCoverImage from '../assets/dummy/photo-cover.jpg'
 import curationFoodImage from '../assets/dummy/photo-food.jpg'
+import { getLocalizedPlaceAddress, getLocalizedPlaceName } from '../data/mapPlaces'
 import { useTranslation } from 'react-i18next'
 import './LovedListImportSheet.css'
 import './ExplorePage.css'
@@ -29,8 +30,10 @@ type DestinationList = {
 type ImportRestaurant = {
   id: string
   name: string
+  nameKo?: string
   category: 'Cafe' | 'Restaurant'
   address: string
+  addressKo?: string
 }
 
 const destinationLists: DestinationList[] = [
@@ -43,21 +46,27 @@ const destinationLists: DestinationList[] = [
 const importRestaurants: ImportRestaurant[] = [
   {
     id: 'import-1',
-    name: '다정한 식당',
+    name: 'Dajunghan Korean Restaurant',
+    nameKo: '다정한 식당',
     category: 'Restaurant',
-    address: '수원시 장안구 서부로 2129-1, 1층 107호',
+    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
+    addressKo: '수원시 장안구 서부로 2129-1, 1층 107호',
   },
   {
     id: 'import-2',
-    name: 'Hankuk restaurant',
+    name: 'Hankuk Restaurant',
+    nameKo: '한국식당',
     category: 'Restaurant',
-    address: '수원시 장안구 서부로 2129-1, 1층 107호',
+    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
+    addressKo: '수원시 장안구 서부로 2129-1, 1층 107호',
   },
   {
     id: 'import-3',
-    name: 'Seoul Korean restaurant',
+    name: 'Seoul Korean Restaurant',
+    nameKo: '서울 한식당',
     category: 'Restaurant',
-    address: '수원시 장안구 서부로 2129-1, 1층 107호',
+    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
+    addressKo: '수원시 장안구 서부로 2129-1, 1층 107호',
   },
 ]
 
@@ -65,7 +74,7 @@ const getIconBackground = (category: ImportRestaurant['category']) =>
   category === 'Cafe' ? 'var(--color-point-cafe)' : 'var(--color-point-restaurant)'
 
 export function LovedListImportSheet({ open, onClose, onComplete }: LovedListImportSheetProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [step, setStep] = useState<'destination' | 'import'>('destination')
   const [selectedDestinationId, setSelectedDestinationId] = useState<string | null>(null)
   const [selectedImportIds, setSelectedImportIds] = useState<string[]>([])
@@ -223,6 +232,8 @@ export function LovedListImportSheet({ open, onClose, onComplete }: LovedListImp
                 <div className="loved-list-import-sheet__items">
                   {importRestaurants.map((item) => {
                     const isSelected = selectedImportIds.includes(item.id)
+                    const itemName = getLocalizedPlaceName(i18n.language, item)
+                    const itemAddress = getLocalizedPlaceAddress(i18n.language, item)
 
                     return (
                       <button
@@ -242,11 +253,11 @@ export function LovedListImportSheet({ open, onClose, onComplete }: LovedListImp
                           <img src={foodIcon} alt="" aria-hidden="true" />
                         </span>
                         <span className="loved-list-import-sheet__item-content">
-                          <span className="loved-list-import-sheet__item-title">{item.name}</span>
+                          <span className="loved-list-import-sheet__item-title">{itemName}</span>
                           <span className="loved-list-import-sheet__item-meta">
                             <span>{item.category === 'Cafe' ? t('map.filters.cafe') : t('map.filters.food')}</span>
                             <span className="text-dot" aria-hidden="true" />
-                            {item.address}
+                            {itemAddress}
                           </span>
                         </span>
                       </button>

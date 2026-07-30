@@ -15,6 +15,7 @@ import foodIcon from '../assets/icons/ico-cat-food.svg'
 import albumCoverLikeImage from '../assets/images/album-cover-like.png'
 import { LovedListImportSheet } from './LovedListImportSheet'
 import { RestaurantContextMenu } from './RestaurantContextMenu'
+import { getLocalizedPlaceAddress, getLocalizedPlaceName } from '../data/mapPlaces'
 import { useTranslation } from 'react-i18next'
 import './ExplorePage.css'
 import './LovedListDetailPage.css'
@@ -41,8 +42,10 @@ type LovedListDetailPageProps = {
 type LovedListRestaurant = {
   id: string
   name: string
+  nameKo?: string
   category: LovedListRestaurantCategory
   address: string
+  addressKo?: string
   icon: string
 }
 
@@ -56,16 +59,20 @@ type SavedListToast = {
 const restaurants: LovedListRestaurant[] = [
   {
     id: 'loved-restaurant-1',
-    name: '온달 한식당',
+    name: 'Ondal Korean Restaurant',
+    nameKo: '온달 한식당',
     category: 'Restaurant',
-    address: '수원시 장안구 서부로 2129-1, 1층 107호',
+    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
+    addressKo: '수원시 장안구 서부로 2129-1, 1층 107호',
     icon: foodIcon,
   },
   {
     id: 'loved-restaurant-2',
-    name: '다정한 식당',
+    name: 'Dajunghan Korean Restaurant',
+    nameKo: '다정한 식당',
     category: 'Restaurant',
-    address: '수원시 장안구 서부로 2129-1, 1층 107호',
+    address: '107, 1F, 2129-1, Seobu-ro, Jangan-gu',
+    addressKo: '수원시 장안구 서부로 2129-1, 1층 107호',
     icon: foodIcon,
   },
 ]
@@ -74,7 +81,7 @@ const getIconBackground = (category: LovedListRestaurantCategory) =>
   category === 'Cafe' ? 'var(--color-point-cafe)' : 'var(--color-point-restaurant)'
 
 export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportIncorrect, onViewOnMap }: LovedListDetailPageProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [isWishActive, setIsWishActive] = useState(false)
   const [isHeaderMenuOpen, setIsHeaderMenuOpen] = useState(false)
   const [openRestaurantMenuId, setOpenRestaurantMenuId] = useState<string | null>(null)
@@ -227,6 +234,11 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
         <section className="loved-list-detail-page__restaurants" aria-label={t('listDetail.restaurants')}>
           <div className="explore-popular loved-list-detail-page__restaurant-list">
             {restaurants.map((item) => (
+              (() => {
+                const itemName = getLocalizedPlaceName(i18n.language, item)
+                const itemAddress = getLocalizedPlaceAddress(i18n.language, item)
+
+                return (
               <article className="explore-popular-item loved-list-detail-page__restaurant-item" key={item.id}>
                 <span
                   className="explore-popular-item__icon"
@@ -235,17 +247,17 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
                   <img src={item.icon} alt="" aria-hidden="true" />
                 </span>
                 <div className="explore-popular-item__content">
-                  <h3>{item.name}</h3>
+                  <h3>{itemName}</h3>
                   <p>
                     <span>{item.category === 'Cafe' ? t('map.filters.cafe') : t('map.filters.food')}</span>
                     <span className="text-dot" aria-hidden="true" />
-                    {item.address}
+                    {itemAddress}
                   </p>
                 </div>
                 <button
                   type="button"
                   className="explore-popular-item__more"
-                  aria-label={t('listDetail.moreActionsFor', { name: item.name })}
+                  aria-label={t('listDetail.moreActionsFor', { name: itemName })}
                   aria-expanded={openRestaurantMenuId === item.id}
                   onClick={(event) => {
                     event.stopPropagation()
@@ -258,7 +270,7 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
 
                 {openRestaurantMenuId === item.id && (
                   <RestaurantContextMenu
-                    itemName={item.name}
+                    itemName={itemName}
                     onAdd={() => {
                       setOpenRestaurantMenuId(null)
                       onAddToList()
@@ -270,6 +282,8 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
                   />
                 )}
               </article>
+                )
+              })()
             ))}
           </div>
         </section>
@@ -315,12 +329,12 @@ export function LovedListDetailPage({ listItem, onBack, onAddToList, onReportInc
       )}
 
       {openRestaurantMenuItem && (
-        <button
-          type="button"
-          className="explore-popular-item__backdrop"
-          aria-label={t('listDetail.closeActionsFor', { name: openRestaurantMenuItem.name })}
-          onClick={() => setOpenRestaurantMenuId(null)}
-        />
+          <button
+            type="button"
+            className="explore-popular-item__backdrop"
+            aria-label={t('listDetail.closeActionsFor', { name: getLocalizedPlaceName(i18n.language, openRestaurantMenuItem) })}
+            onClick={() => setOpenRestaurantMenuId(null)}
+          />
       )}
 
       <LovedListImportSheet

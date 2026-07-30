@@ -7,6 +7,7 @@ import alignIcon from '../assets/icons/ico-align.svg'
 import deleteIcon from '../assets/icons/ico-context-delete.svg'
 import coverImage from '../assets/images/album-cover-like.png'
 import { type LovedListItem } from './LovedListDetailPage'
+import { getLocalizedPlaceAddress, getLocalizedPlaceName } from '../data/mapPlaces'
 import { useTranslation } from 'react-i18next'
 import './ExplorePage.css'
 import './MyPage.css'
@@ -17,8 +18,10 @@ type ListEditRestaurantCategory = 'Cafe' | 'Restaurant'
 export type ListEditRestaurant = {
   id: string
   name: string
+  nameKo?: string
   category: ListEditRestaurantCategory
   address: string
+  addressKo?: string
   icon: string
 }
 
@@ -54,7 +57,7 @@ const moveItem = (items: ListEditRestaurant[], draggedId: string, targetId: stri
 }
 
 export function ListEditSheet({ open, listItem, restaurants, onClose, onSave }: ListEditSheetProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [draftTitle, setDraftTitle] = useState(listItem.title)
   const [isTitleEditing, setIsTitleEditing] = useState(false)
   const [isPublished, setIsPublished] = useState(true)
@@ -315,6 +318,8 @@ export function ListEditSheet({ open, listItem, restaurants, onClose, onSave }: 
             <div className="list-edit-sheet__items">
               {draftRestaurants.map((item) => {
                 const isSelected = selectedRestaurantIds.includes(item.id)
+                const itemName = getLocalizedPlaceName(i18n.language, item)
+                const itemAddress = getLocalizedPlaceAddress(i18n.language, item)
 
                 return (
                   <article
@@ -345,17 +350,17 @@ export function ListEditSheet({ open, listItem, restaurants, onClose, onSave }: 
                       <img src={item.icon} alt="" aria-hidden="true" />
                     </span>
                     <span className="list-edit-sheet__item-content">
-                      <span className="list-edit-sheet__item-title">{item.name}</span>
+                      <span className="list-edit-sheet__item-title">{itemName}</span>
                       <span className="list-edit-sheet__item-meta">
-                      <span>{item.category === 'Cafe' ? t('map.filters.cafe') : t('map.filters.food')}</span>
+                        <span>{item.category === 'Cafe' ? t('map.filters.cafe') : t('map.filters.food')}</span>
                         <span className="text-dot" aria-hidden="true" />
-                        {item.address}
+                        {itemAddress}
                       </span>
                     </span>
                     <button
                       type="button"
                       className="list-edit-sheet__item-sort"
-                      aria-label={t('list.reorderRestaurant', { name: item.name })}
+                      aria-label={t('list.reorderRestaurant', { name: itemName })}
                       data-drag-handle-for={item.id}
                       onPointerDown={(event) => startPointerDrag(event, item.id)}
                       onPointerMove={updatePointerDrag}

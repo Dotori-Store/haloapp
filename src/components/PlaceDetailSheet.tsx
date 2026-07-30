@@ -9,6 +9,7 @@ import wishHeartActiveIcon from '../assets/icons/ico-wish-heart-active.svg'
 import commentUserThumb from '../assets/dummy/thumb-user-2.jpg'
 import thumbUser from '../assets/dummy/thumb-user.jpg'
 import type { NearbyPlace } from '../data/mapPlaces'
+import { getLocalizedPlaceAddress, getLocalizedPlaceName } from '../data/mapPlaces'
 import { useTranslation } from 'react-i18next'
 import './PlaceDetailSheet.css'
 
@@ -33,12 +34,14 @@ export function PlaceDetailSheet({
   onAddToList,
   onReportIncorrect,
 }: PlaceDetailSheetProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const placeName = getLocalizedPlaceName(i18n.language, place)
+  const placeAddress = getLocalizedPlaceAddress(i18n.language, place)
   const showCommentThread = place.detailType === 2 || (place.detailType === 1 && isExpanded)
   const showCommentComposer = place.detailType !== 1 || isExpanded
 
   return (
-    <section className="place-detail" aria-label={`${place.name} detail`}>
+    <section className="place-detail" aria-label={`${placeName} detail`}>
       <button type="button" className="place-detail__close" aria-label={t('shared.close')} onClick={onClose}>
         <img src={closeIcon} alt="" aria-hidden="true" />
       </button>
@@ -48,17 +51,17 @@ export function PlaceDetailSheet({
           <img src={foodIcon} alt="" aria-hidden="true" />
         </span>
         <div className="place-detail__title-block">
-          <h2>{place.name}</h2>
+          <h2>{placeName}</h2>
           <p>
             <span>{place.status === 'Open' ? t('map.openStatus') : t('map.closedStatus')}</span>
             <span className="text-dot" aria-hidden="true" />
-            {place.address}
+            {placeAddress}
           </p>
         </div>
       </header>
 
       <div className="place-detail__scroll">
-        {place.photoUrl ? <img className="place-detail__photo" src={place.photoUrl} alt={place.name} /> : null}
+        {place.photoUrl ? <img className="place-detail__photo" src={place.photoUrl} alt={placeName} /> : null}
 
         <div className="place-detail__actions">
           <button type="button" className="place-detail__map-button place-detail__map-button--naver">
@@ -77,7 +80,7 @@ export function PlaceDetailSheet({
             <button
               type="button"
               className="place-detail__icon-button"
-              aria-label={`${isWished ? t('placeDetail.unlike') : t('placeDetail.like')} ${place.name}`}
+              aria-label={`${isWished ? t('placeDetail.unlike') : t('placeDetail.like')} ${placeName}`}
               aria-pressed={isWished}
               onClick={onToggleWish}
             >
@@ -86,7 +89,7 @@ export function PlaceDetailSheet({
             <button
               type="button"
               className="place-detail__icon-button"
-              aria-label={`${t('shared.add')} ${place.name} to list`}
+              aria-label={`${t('shared.add')} ${placeName} to list`}
               aria-haspopup="dialog"
               onClick={onAddToList}
             >
