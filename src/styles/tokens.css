@@ -36,7 +36,7 @@
   --map-sheet-backdrop: blur(10px);
   --bottom-sheet-backdrop: rgba(0 0 0 / 20%);
   --bottom-sheet-radius: 24px 24px 0 0;
-  --bottom-sheet-shadow: 0 -18px 40px rgba(18, 18, 18, 0.14);
+  --bottom-sheet-shadow: 0 -6px 16px rgba(18, 18, 18, 0.2);
   --bottom-sheet-handle: rgba(18, 18, 18, 0.2);
   --bottom-sheet-top: 16px;
   --bottom-sheet-enter-duration: 160ms;

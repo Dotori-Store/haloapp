@@ -6,7 +6,8 @@
   place-items: center;
   width: min(100%, 480px);
   margin: 0 auto;
-  background: radial-gradient(circle at 50% 40%, #01cb81 0%, #01bb77 60%);
+  /* background: radial-gradient(circle at 50% 40%, #01cb81 0%, #01bb77 60%); */
+  background-color: var(--color-primary);
 }
 
 .splash-screen img {

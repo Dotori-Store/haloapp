@@ -86,7 +86,7 @@ function App() {
   const [pendingMyListDetail, setPendingMyListDetail] = useState<LovedListItem | null>(null)
   const [reportComment, setReportComment] = useState('')
   const [selectedListId, setSelectedListId] = useState<string>('')
-  const [savedListToast, setSavedListToast] = useState<{ title: string; phase: 'enter' | 'visible' | 'exit' } | null>(null)
+  const [savedListToast, setSavedListToast] = useState<{ id: string; title: string; phase: 'enter' | 'visible' | 'exit' } | null>(null)
   const dragStartY = useRef<number | null>(null)
   const dragPointerId = useRef<number | null>(null)
   const didDragSheet = useRef(false)
@@ -421,7 +421,7 @@ function App() {
 
     confirmListTimerRef.current = window.setTimeout(() => {
       confirmListTimerRef.current = null
-      setSavedListToast({ title: listTitle, phase: 'enter' })
+      setSavedListToast({ id: listId, title: listTitle, phase: 'enter' })
       setIsAddToListOpen(false)
       setSelectedListId('')
     }, 140)
@@ -488,6 +488,23 @@ function App() {
       window.clearTimeout(toastExitTimerRef.current)
       toastExitTimerRef.current = null
     }
+  }
+
+  const openSavedListToastDetail = () => {
+    if (!savedListToast) {
+      return
+    }
+
+    setPendingMyListDetail({
+      id: savedListToast.id,
+      title: savedListToast.title,
+      owner: 'halo',
+      date: '2026.07.30',
+      count: 1,
+      image: albumCover,
+    })
+    setActiveTab('my')
+    closeSavedListToast()
   }
 
   const toggleWishedPlace = (placeId: string) => {
@@ -1250,7 +1267,7 @@ function App() {
           <button
             type="button"
             className={`saved-list-toast saved-list-toast--${savedListToast.phase}`}
-            onClick={closeSavedListToast}
+            onClick={openSavedListToastDetail}
             aria-label={t('shared.openSavedList')}
           >
             <span className="saved-list-toast__thumb">
