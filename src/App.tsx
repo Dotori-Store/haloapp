@@ -206,6 +206,7 @@ function App() {
   const isExpanded = sheetMode === 'expanded'
   const isSearch = sheetMode === 'search' && !isDetail && !isListMapPanelOpen
   const hasSearchQuery = searchQuery.trim().length > 0
+  const isNumericSearchQuery = /^\d+$/.test(searchQuery.trim())
   const visibleNearbyPlaces = useMemo(() => {
     if (activeFilter === 'all') {
       return nearbyPlaces.slice(0, 4)
@@ -1085,7 +1086,12 @@ function App() {
                   </div>
                   {hasSearchQuery && (
                     <div className="search-results">
-                      {searchResultPlaces.length > 0 ? (
+                      {isNumericSearchQuery ? (
+                        <div className="no-results" role="status">
+                          <img src={unhappyIcon} alt="" aria-hidden="true" />
+                          <p>{t('map.noResult')}</p>
+                        </div>
+                      ) : searchResultPlaces.length > 0 ? (
                         <div className="nearby-list nearby-list--search">{searchResultPlaces.map(renderSearchResultItem)}</div>
                       ) : (
                         <div className="no-results" role="status">
