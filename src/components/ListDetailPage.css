@@ -247,6 +247,10 @@
   height: 18px;
 }
 
+.list-detail-page__restaurant-menu-icon.red + span {
+  color: #ef4d55;
+}
+
 .list-detail-page__add-restaurant {
   display: flex;
   align-items: center;

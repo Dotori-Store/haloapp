@@ -312,11 +312,16 @@
 }
 
 .list-edit-sheet__trash:disabled {
-  opacity: 0.45;
+  background-color: var(--color-gray-200);
   cursor: default;
 }
 
 .list-edit-sheet__trash img {
   width: 28px;
   height: 28px;
+}
+
+.list-edit-sheet__trash:disabled img {
+  opacity: .5;
+  filter: grayscale(100%);
 }

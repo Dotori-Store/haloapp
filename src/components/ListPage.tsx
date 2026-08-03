@@ -206,6 +206,14 @@ export function ListPage({
     )
   }
 
+  const handleDeleteList = (listId: string) => {
+    setMyLists((currentLists) => currentLists.filter((item) => item.id !== listId))
+
+    if (selectedListId === listId) {
+      setSelectedListId(null)
+    }
+  }
+
   const enterEditMode = (listId: string, event: PointerEvent<HTMLElement>) => {
     event.preventDefault()
     event.stopPropagation()
@@ -317,6 +325,7 @@ export function ListPage({
         onAddToList={onAddToList}
         onViewOnMap={onViewListOnMap}
         onSaveList={handleSaveList}
+        onDeleteList={handleDeleteList}
       />
     )
   }

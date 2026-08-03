@@ -160,15 +160,20 @@
   border: none;
   background-color: transparent;
   padding: 0;
+  border: 1px solid var(--color-dark);
+  border-radius: 50%;
   cursor: pointer;
+}
+
+.loved-list-detail-page__wish[aria-pressed="true"] {
+  background-color: var(--color-dark);
 }
 
 .loved-list-detail-page__wish img,
 .loved-list-detail-page__import img {
-  width: 32px;
-  height: 32px;
+  width: 14px;
+  height: 14px;
 }
-
 
 .loved-list-detail-page__view-map {
   display: inline-flex;

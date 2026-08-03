@@ -8,8 +8,11 @@
 }
 
 .explore-page__header {
+  display: flex;
+  align-items: center;
   flex: 0 0 auto;
   padding: 12px 16px;
+  height: 64px;
 }
 
 .screen-header {

@@ -14,7 +14,9 @@ import foodPhoto from '../assets/dummy/photo-food.jpg'
 import coverPhoto from '../assets/dummy/photo-cover.jpg'
 import albumCover from '../assets/dummy/album-cover.jpg'
 import { getLocalizedPlaceAddress, getLocalizedPlaceName } from '../data/mapPlaces'
+import { ConfirmationModal } from './ConfirmationModal'
 import { useTranslation } from 'react-i18next'
+import { type CSSProperties } from 'react'
 import './ExplorePage.css'
 import './RestaurantAddPage.css'
 
@@ -103,6 +105,7 @@ export function RestaurantAddPage({ onClose }: RestaurantAddPageProps) {
   const [registerStep, setRegisterStep] = useState<RegisterStep>('question')
   const [porkFreeAnswer, setPorkFreeAnswer] = useState<PorkFreeAnswer | null>(null)
   const [selectedListId, setSelectedListId] = useState<string | null>(null)
+  const [isPorkFreeNoticeOpen, setIsPorkFreeNoticeOpen] = useState(false)
 
   const results = useMemo(() => {
     if (!searchQuery.trim()) {
@@ -117,6 +120,7 @@ export function RestaurantAddPage({ onClose }: RestaurantAddPageProps) {
     setRegisterStep('question')
     setPorkFreeAnswer(null)
     setSelectedListId(null)
+    setIsPorkFreeNoticeOpen(false)
   }
 
   if (selectedRestaurant && registerStep === 'complete') {
@@ -211,7 +215,6 @@ export function RestaurantAddPage({ onClose }: RestaurantAddPageProps) {
 
   if (selectedRestaurant) {
     const isSure = porkFreeAnswer === 'sure'
-    const isAnswered = porkFreeAnswer !== null
 
     return (
       <div className="add-restaurant-page">
@@ -225,15 +228,16 @@ export function RestaurantAddPage({ onClose }: RestaurantAddPageProps) {
           <div className="screen-header__slot screen-header__slot--empty" aria-hidden="true" />
 
           <div className="screen-header__slot">
-            <button
-              type="button"
-              className={`screen-header__button add-restaurant-page__confirm ${isAnswered ? 'is-active' : ''}`}
-              aria-label="Confirm restaurant information"
-              disabled={!isAnswered}
-              onClick={() => setRegisterStep('list')}
-            >
-              <img src={topCheckIcon} alt="" aria-hidden="true" />
-            </button>
+            {isSure && (
+              <button
+                type="button"
+                className="screen-header__button add-restaurant-page__confirm is-active"
+                aria-label="Confirm restaurant information"
+                onClick={() => setRegisterStep('list')}
+              >
+                <img src={topCheckIcon} alt="" aria-hidden="true" />
+              </button>
+            )}
           </div>
         </header>
 
@@ -250,7 +254,10 @@ export function RestaurantAddPage({ onClose }: RestaurantAddPageProps) {
                 role="tab"
                 aria-selected={porkFreeAnswer === 'not-sure'}
                 className={`add-restaurant-page__answer ${porkFreeAnswer === 'not-sure' ? 'is-active' : ''}`}
-                onClick={() => setPorkFreeAnswer('not-sure')}
+                onClick={() => {
+                  setPorkFreeAnswer('not-sure')
+                  setIsPorkFreeNoticeOpen(true)
+                }}
               >
                 {t('restaurantAdd.notSure')}
               </button>
@@ -259,7 +266,10 @@ export function RestaurantAddPage({ onClose }: RestaurantAddPageProps) {
                 role="tab"
                 aria-selected={porkFreeAnswer === 'sure'}
                 className={`add-restaurant-page__answer ${porkFreeAnswer === 'sure' ? 'is-active' : ''}`}
-                onClick={() => setPorkFreeAnswer('sure')}
+                onClick={() => {
+                  setPorkFreeAnswer('sure')
+                  setIsPorkFreeNoticeOpen(false)
+                }}
               >
                 {t('restaurantAdd.yesImSure')}
               </button>
@@ -293,6 +303,19 @@ export function RestaurantAddPage({ onClose }: RestaurantAddPageProps) {
             </section>
           )}
         </div>
+
+        <ConfirmationModal
+          open={isPorkFreeNoticeOpen}
+          message={t('restaurantAdd.porkFreeNotice')}
+          confirmLabel={t('shared.confirm')}
+          closeLabel={t('shared.close')}
+          onConfirm={() => {
+            setIsPorkFreeNoticeOpen(false)
+          }}
+          onClose={() => {
+            setIsPorkFreeNoticeOpen(false)
+          }}
+        />
       </div>
     )
   }
@@ -320,6 +343,7 @@ export function RestaurantAddPage({ onClose }: RestaurantAddPageProps) {
             role="tab"
             aria-selected={activeCategory === 'restaurant'}
             className={`add-restaurant-page__chip ${activeCategory === 'restaurant' ? 'is-active' : ''}`}
+            style={{ '--color-point': 'var(--color-point-restaurant)' } as CSSProperties}
             onClick={() => setActiveCategory('restaurant')}
           >
             {t('restaurantAdd.restaurant')}
@@ -329,6 +353,7 @@ export function RestaurantAddPage({ onClose }: RestaurantAddPageProps) {
             role="tab"
             aria-selected={activeCategory === 'cafe'}
             className={`add-restaurant-page__chip ${activeCategory === 'cafe' ? 'is-active' : ''}`}
+            style={{ '--color-point': 'var(--color-point-cafe)' } as CSSProperties}
             onClick={() => setActiveCategory('cafe')}
           >
             {t('restaurantAdd.cafe')}

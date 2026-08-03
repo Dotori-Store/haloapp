@@ -1,0 +1,65 @@
+.confirmation-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.confirmation-modal {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 28px;
+  width: min(352px, 100%);
+  padding: 62px 24px 24px 24px;
+  border-radius: 24px;
+  background: var(--color-white);
+  box-shadow: 0 6px 18px rgba(44, 44, 44, 0.16);
+}
+
+.confirmation-modal__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+}
+
+.confirmation-modal__close img {
+  width: 20px;
+  height: 20px;
+}
+
+.confirmation-modal__message {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.45;
+  text-align: center;
+  white-space: pre-line;
+}
+
+.confirmation-modal__confirm {
+  min-width: 110px;
+  min-height: 48px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}

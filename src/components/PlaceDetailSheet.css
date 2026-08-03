@@ -156,7 +156,7 @@
   justify-content: space-between;
   gap: 16px;
   flex: 0 0 auto;
-  padding: 6px 2px 0 8px;
+  padding: 8px 4px;
 }
 
 .place-detail__footer p,
@@ -182,22 +182,33 @@
 .place-detail__icon-button {
   display: grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border: 0;
   padding: 0;
   background: transparent;
+  border-radius: 50%;
   cursor: pointer;
+  border: 1px solid var(--color-dark);
 }
 
 .place-detail__icon-button img {
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
+}
+
+.place-detail__icon-button.like[aria-pressed="true"] {
+  background-color: var(--color-dark);
+}
+
+.place-detail__icon-button.like img {
+  width: 12px;
+  height: 12px;
 }
 
 .place-detail__community {
   display: grid;
-  gap: 12px;
+  gap: 18px;
   flex: 0 0 auto;
   padding-top: 2px;
 }
@@ -252,14 +263,14 @@
   flex-direction: column;
   gap: 16px;
   flex: 0 0 auto;
-  padding-top: 8px;
+  padding-top: 16px;
   padding-bottom: 16px;
 }
 
 .place-detail__meta-list {
   display: grid;
-  gap: 12px;
-  margin: 2px 0 8px;
+  gap: 6px;
+  margin-bottom: 8px;
 }
 
 .place-detail__meta-list div {
@@ -270,6 +281,8 @@
 
 .place-detail__meta-list dt,
 .place-detail__meta-list dd {
+  color: var(--color-gray-500);
+  font-size: 13px;
   margin: 0;
 }
 

@@ -5,6 +5,8 @@ import peopleIcon from '../assets/icons/icon-peoples.svg'
 import memberAvatarImage from '../assets/dummy/thumb-user.jpg'
 import memberAvatarImageAlt from '../assets/dummy/thumb-user-2.jpg'
 import { type LovedListItem } from './LovedListDetailPage'
+import { ConfirmationModal } from './ConfirmationModal'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import './ListCollaborationSheet.css'
 import './ExplorePage.css'
@@ -28,12 +30,8 @@ const members: CollaborationMember[] = [
 
 export function ListCollaborationSheet({ open, listItem, onClose }: ListCollaborationSheetProps) {
   const { t } = useTranslation()
-
-  useEffect(() => {
-    if (!open) {
-      return
-    }
-  }, [open])
+  const [isRemoveMemberOpen, setIsRemoveMemberOpen] = useState(false)
+  const [pendingRemoveMemberId, setPendingRemoveMemberId] = useState<string | null>(null)
 
   if (!open) {
     return null
@@ -81,10 +79,6 @@ export function ListCollaborationSheet({ open, listItem, onClose }: ListCollabor
                 </span>
                 <span>{t('list.collaboration')}</span>
               </div>
-
-              <button type="button" className="list-collaboration-sheet__stop" aria-label={t('list.stop')}>
-                {t('list.stop')}
-              </button>
             </header>
 
             <div className="list-collaboration-sheet__members">
@@ -92,12 +86,42 @@ export function ListCollaborationSheet({ open, listItem, onClose }: ListCollabor
                 <div className="list-collaboration-sheet__member" key={member.id}>
                   <img className="list-collaboration-sheet__member-avatar" src={member.image} alt="" aria-hidden="true" />
                   <span className="list-collaboration-sheet__member-name">{member.name}</span>
+                  {member.id !== 'owner' && (
+                    <button
+                      type="button"
+                      className="list-collaboration-sheet__member-remove"
+                      aria-label={t('list.removeCollaborator', { name: member.name })}
+                      onClick={() => {
+                        setPendingRemoveMemberId(member.id)
+                        setIsRemoveMemberOpen(true)
+                      }}
+                    >
+                      <span aria-hidden="true" />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
           </section>
         </div>
       </section>
+
+      <ConfirmationModal
+        open={isRemoveMemberOpen}
+        message={t('list.removeCollaboratorConfirm')}
+        confirmLabel={t('shared.confirm')}
+        closeLabel={t('shared.close')}
+        onConfirm={() => {
+          void pendingRemoveMemberId
+          setPendingRemoveMemberId(null)
+          setIsRemoveMemberOpen(false)
+        }}
+        onClose={() => {
+          void pendingRemoveMemberId
+          setPendingRemoveMemberId(null)
+          setIsRemoveMemberOpen(false)
+        }}
+      />
     </div>
   )
 }

@@ -1,5 +1,5 @@
 :root {
-  --color-primary: #01e47d;
+  --color-primary: #01FF00;
   --color-green-500: #00bb77;
   --color-dark: #2c2c2c;
   --color-stroke: #ebebeb;
@@ -23,6 +23,7 @@
   --color-point-restaurant: var(--color-restaurant);
   --color-point-gold: var(--color-gold);
   --color-point-prayer: var(--color-prayer);
+  --color-point: var(--color-point-primary);
 
   --color-text-primary: var(--color-dark);
   --color-text-secondary: var(--color-gray-500);

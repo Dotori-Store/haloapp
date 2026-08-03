@@ -6,6 +6,7 @@ import naverMapIcon from '../assets/icons/ico-naver-map.svg'
 import photoIcon from '../assets/icons/ico-photo-light.svg'
 import wishHeartIcon from '../assets/icons/ico-wish-heart.svg'
 import wishHeartActiveIcon from '../assets/icons/ico-wish-heart-active.svg'
+import wishKeepIcon from '../assets/icons/ico-add-to.svg'
 import commentUserThumb from '../assets/dummy/thumb-user-2.jpg'
 import thumbUser from '../assets/dummy/thumb-user.jpg'
 import type { NearbyPlace } from '../data/mapPlaces'
@@ -79,7 +80,7 @@ export function PlaceDetailSheet({
           <div className="place-detail__icon-actions">
             <button
               type="button"
-              className="place-detail__icon-button"
+              className="place-detail__icon-button like"
               aria-label={`${isWished ? t('placeDetail.unlike') : t('placeDetail.like')} ${placeName}`}
               aria-pressed={isWished}
               onClick={onToggleWish}
@@ -93,7 +94,7 @@ export function PlaceDetailSheet({
               aria-haspopup="dialog"
               onClick={onAddToList}
             >
-              <img src={keepIcon} alt="" aria-hidden="true" />
+              <img src={wishKeepIcon} alt="" aria-hidden="true" />
             </button>
           </div>
         </footer>

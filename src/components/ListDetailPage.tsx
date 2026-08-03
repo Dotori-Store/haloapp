@@ -2,7 +2,7 @@
 import backArrowIcon from '../assets/icons/ico-back-arrow.svg'
 import shareIconLg from '../assets/icons/ico-share-lg.svg'
 import moreDotsIconLg from '../assets/icons/ico-more-dots-lg.svg'
-import headerInviteIcon from '../assets/icons/ico-context-share.svg'
+import headerInviteIcon from '../assets/icons/ico-collabo.svg'
 import headerEditIcon from '../assets/icons/ico-context-edit.svg'
 import headerDeleteIcon from '../assets/icons/ico-context-delete.svg'
 import mapIcon from '../assets/icons/ico-nav-map.svg'
@@ -17,6 +17,7 @@ import moreDotsIcon from '../assets/icons/ico-more-dots.svg'
 import { type LovedListItem } from './LovedListDetailPage'
 import { ListCollaborationSheet } from './ListCollaborationSheet'
 import { ListEditSheet, type ListEditRestaurant } from './ListEditSheet'
+import { ConfirmationModal } from './ConfirmationModal'
 import { getLocalizedPlaceAddress, getLocalizedPlaceName } from '../data/mapPlaces'
 import { useTranslation } from 'react-i18next'
 import './ExplorePage.css'
@@ -29,6 +30,7 @@ type ListDetailPageProps = {
   onAddToList: () => void
   onViewOnMap: (listItem: LovedListItem) => void
   onSaveList: (listItem: LovedListItem) => void
+  onDeleteList: (listId: string) => void
 }
 
 const initialRestaurants: ListEditRestaurant[] = [
@@ -76,12 +78,23 @@ const recommendPlaces: ListEditRestaurant[] = [
 const getIconBackground = (category: ListEditRestaurant['category']) =>
   category === 'Cafe' ? 'var(--color-point-cafe)' : 'var(--color-point-restaurant)'
 
-export function ListDetailPage({ listItem, onBack, onAddRestaurant, onAddToList, onViewOnMap, onSaveList }: ListDetailPageProps) {
+export function ListDetailPage({
+  listItem,
+  onBack,
+  onAddRestaurant,
+  onAddToList,
+  onViewOnMap,
+  onSaveList,
+  onDeleteList,
+}: ListDetailPageProps) {
   const { t, i18n } = useTranslation()
   const [isHeaderMenuOpen, setIsHeaderMenuOpen] = useState(false)
   const [openRestaurantMenuId, setOpenRestaurantMenuId] = useState<string | null>(null)
   const [isCollaborationSheetOpen, setIsCollaborationSheetOpen] = useState(false)
   const [isEditSheetOpen, setIsEditSheetOpen] = useState(false)
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
+  const [isRestaurantDeleteConfirmOpen, setIsRestaurantDeleteConfirmOpen] = useState(false)
+  const [pendingDeleteRestaurantId, setPendingDeleteRestaurantId] = useState<string | null>(null)
   const [restaurants, setRestaurants] = useState<ListEditRestaurant[]>(initialRestaurants)
 
   const openRestaurantMenuItem = useMemo(
@@ -95,6 +108,9 @@ export function ListDetailPage({ listItem, onBack, onAddRestaurant, onAddToList,
     setOpenRestaurantMenuId(null)
     setIsCollaborationSheetOpen(false)
     setIsEditSheetOpen(false)
+    setIsDeleteConfirmOpen(false)
+    setIsRestaurantDeleteConfirmOpen(false)
+    setPendingDeleteRestaurantId(null)
   }, [listItem.id])
 
   return (
@@ -164,7 +180,10 @@ export function ListDetailPage({ listItem, onBack, onAddRestaurant, onAddToList,
                     type="button"
                     className="list-detail-page__menu-item list-detail-page__menu-item--danger"
                     role="menuitem"
-                    onClick={() => setIsHeaderMenuOpen(false)}
+                    onClick={() => {
+                      setIsHeaderMenuOpen(false)
+                      setIsDeleteConfirmOpen(true)
+                    }}
                   >
                     <span className="list-detail-page__menu-icon" aria-hidden="true">
                       <img src={headerDeleteIcon} alt="" aria-hidden="true" />
@@ -237,8 +256,17 @@ export function ListDetailPage({ listItem, onBack, onAddRestaurant, onAddToList,
 
                 {openRestaurantMenuItem?.id === item.id && (
                   <div className="list-detail-page__restaurant-menu" role="menu" aria-label={t('listDetail.listItemActions', { name: itemName })}>
-                    <button type="button" className="list-detail-page__restaurant-menu-item" role="menuitem" onClick={() => setOpenRestaurantMenuId(null)}>
-                      <span className="list-detail-page__restaurant-menu-icon" aria-hidden="true">
+                    <button
+                      type="button"
+                      className="list-detail-page__restaurant-menu-item"
+                      role="menuitem"
+                      onClick={() => {
+                        setOpenRestaurantMenuId(null)
+                        setPendingDeleteRestaurantId(item.id)
+                        setIsRestaurantDeleteConfirmOpen(true)
+                      }}
+                    >
+                      <span className="list-detail-page__restaurant-menu-icon red" aria-hidden="true">
                         <img src={itemDeleteIcon} alt="" aria-hidden="true" />
                       </span>
                       <span>{t('listDetail.delete')}</span>
@@ -316,7 +344,42 @@ export function ListDetailPage({ listItem, onBack, onAddRestaurant, onAddToList,
       />
 
       <ListCollaborationSheet open={isCollaborationSheetOpen} listItem={listItem} onClose={() => setIsCollaborationSheetOpen(false)} />
+
+      <ConfirmationModal
+        open={isDeleteConfirmOpen}
+        message={t('listDetail.deleteListConfirm')}
+        confirmLabel={t('shared.confirm')}
+        closeLabel={t('shared.close')}
+        onConfirm={() => {
+          setIsDeleteConfirmOpen(false)
+          onDeleteList(listItem.id)
+          onBack()
+        }}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+      />
+
+      <ConfirmationModal
+        open={isRestaurantDeleteConfirmOpen}
+        message={t('listDetail.deletePlaceConfirm')}
+        confirmLabel={t('shared.confirm')}
+        closeLabel={t('shared.close')}
+        onConfirm={() => {
+          if (!pendingDeleteRestaurantId) {
+            setIsRestaurantDeleteConfirmOpen(false)
+            return
+          }
+
+          setRestaurants((currentRestaurants) =>
+            currentRestaurants.filter((restaurant) => restaurant.id !== pendingDeleteRestaurantId),
+          )
+          setPendingDeleteRestaurantId(null)
+          setIsRestaurantDeleteConfirmOpen(false)
+        }}
+        onClose={() => {
+          setPendingDeleteRestaurantId(null)
+          setIsRestaurantDeleteConfirmOpen(false)
+        }}
+      />
     </div>
   )
 }
-

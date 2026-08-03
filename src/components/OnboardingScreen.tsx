@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import boardingHero01 from '../assets/images/boarding-01-hero.png'
-import boardingHero02 from '../assets/images/boarding-02-hero.png'
-import boardingHero03 from '../assets/images/boarding-03-hero.png'
-import boardingHero04 from '../assets/images/boarding-04-hero.png'
+import boardingHero01 from '../assets/images/boarding-01-hero_v2.png'
+import boardingHero02 from '../assets/images/boarding-02-hero_v2.png'
+import boardingHero03 from '../assets/images/boarding-03-hero_v2.png'
+import boardingHero04 from '../assets/images/boarding-04-hero_v2.png'
 import './Onboarding.css'
 
 type OnboardingSlide = {

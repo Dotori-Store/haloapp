@@ -25,7 +25,6 @@
   object-fit: cover;
   object-position: center top;
   flex: 0 0 auto;
-  border-radius: 28px 28px 0 0;
 }
 
 .onboarding-slide__content {

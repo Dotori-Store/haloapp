@@ -57,7 +57,7 @@
 }
 
 .add-restaurant-page__chip.is-active {
-  background: var(--color-primary);
+  background: var(--color-point, var(--color-primary));
   color: var(--color-text-primary);
 }
 

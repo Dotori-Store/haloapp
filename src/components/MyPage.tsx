@@ -564,11 +564,6 @@ export function MyPage({
           </span>
           <img src={goldArrow} alt="" aria-hidden="true" className="my-page__qibla-arrow" />
         </button>
-
-        <button type="button" className="my-page__find-users">
-          <img src={peoplesIcon} alt="" aria-hidden="true" />
-          <span>{t('my.findMoreUsers')}</span>
-        </button>
       </main>
 
       {isSettingsOpen && (

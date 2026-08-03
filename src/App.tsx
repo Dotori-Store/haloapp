@@ -58,6 +58,22 @@ const savedLists = [
 
 const getPlaceIconBackground = () => 'var(--color-point-restaurant)'
 
+const getFilterPointColor = (category: Category) => {
+  if (category === 'food') {
+    return 'var(--color-point-restaurant)'
+  }
+
+  if (category === 'cafe') {
+    return 'var(--color-point-cafe)'
+  }
+
+  if (category === 'prayer') {
+    return 'var(--color-point-prayer)'
+  }
+
+  return 'var(--color-point-primary)'
+}
+
 function App() {
   const { t, i18n } = useTranslation()
   const [isSplashVisible, setIsSplashVisible] = useState(true)
@@ -919,6 +935,7 @@ function App() {
                 role="tab"
                 aria-selected={activeFilter === 'all'}
                 className={activeFilter === 'all' ? 'is-active' : ''}
+                style={{ '--color-point': getFilterPointColor('all') } as CSSProperties}
                 onClick={() => setActiveFilter('all')}
               >
                 {copy.filters.all}
@@ -928,6 +945,7 @@ function App() {
                 role="tab"
                 aria-selected={activeFilter === 'food'}
                 className={activeFilter === 'food' ? 'is-active' : ''}
+                style={{ '--color-point': getFilterPointColor('food') } as CSSProperties}
                 onClick={() => setActiveFilter('food')}
               >
                 <img src={foodIcon} alt="" aria-hidden="true" />
@@ -938,6 +956,7 @@ function App() {
                 role="tab"
                 aria-selected={activeFilter === 'cafe'}
                 className={activeFilter === 'cafe' ? 'is-active' : ''}
+                style={{ '--color-point': getFilterPointColor('cafe') } as CSSProperties}
                 onClick={() => setActiveFilter('cafe')}
               >
                 <img src={cafeIcon} alt="" aria-hidden="true" />
@@ -948,6 +967,7 @@ function App() {
                 role="tab"
                 aria-selected={activeFilter === 'prayer'}
                 className={activeFilter === 'prayer' ? 'is-active' : ''}
+                style={{ '--color-point': getFilterPointColor('prayer') } as CSSProperties}
                 onClick={() => setActiveFilter('prayer')}
               >
                 <img src={prayerIcon} alt="" aria-hidden="true" />
@@ -1197,7 +1217,6 @@ function App() {
                 className="report-modal__field"
                 type="text"
                 aria-label={t('map.leaveComment')}
-                placeholder={t('map.leaveComment')}
                 value={reportComment}
                 onChange={(event) => setReportComment(event.target.value)}
               />

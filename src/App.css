@@ -162,8 +162,8 @@
 }
 
 .filter-group button.is-active {
-  background: var(--color-primary);
-  box-shadow: 0 0 0 1px var(--color-primary), var(--shadow-label);
+  background: var(--color-point, var(--color-primary));
+  box-shadow: 0 0 0 1px var(--color-point, var(--color-primary)), var(--shadow-label);
 }
 
 .filter-group button:focus {
@@ -171,7 +171,7 @@
 }
 
 .filter-group button:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-point, var(--color-primary));
   outline-offset: 2px;
 }
 
@@ -926,8 +926,8 @@
 }
 
 .add-list-sheet__close img {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
 .add-list-sheet__list {
