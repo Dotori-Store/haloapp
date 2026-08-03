@@ -68,7 +68,8 @@
   height: 58px;
   border: 0;
   border-radius: 999px;
-  background: linear-gradient(90deg, #01cb81 0%, #01bb77 80%);
+  background: linear-gradient(90deg, #01FF00 0%, #2cd30b 80%);
+  
   color: #fff;
   font-family: var(--font-sans);
   font-size: 18px;
