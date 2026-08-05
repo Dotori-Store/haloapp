@@ -1,4 +1,4 @@
-.confirmation-modal__backdrop {
+﻿.confirmation-modal__backdrop {
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -50,16 +50,37 @@
   white-space: pre-line;
 }
 
-.confirmation-modal__confirm {
+.confirmation-modal__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.confirmation-modal__actions--split .confirmation-modal__secondary,
+.confirmation-modal__actions--split .confirmation-modal__confirm {
   min-width: 110px;
+}
+
+.confirmation-modal__secondary,
+.confirmation-modal__confirm {
   min-height: 48px;
   border: 0;
   border-radius: 999px;
-  background: var(--color-primary);
-  color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 15px;
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
+}
+
+.confirmation-modal__secondary {
+  background: #e9e9e9;
+  color: var(--color-text-primary);
+}
+
+.confirmation-modal__confirm {
+  background: var(--color-primary);
+  color: var(--color-text-primary);
 }

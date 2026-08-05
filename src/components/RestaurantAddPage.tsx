@@ -309,6 +309,7 @@ export function RestaurantAddPage({ onClose }: RestaurantAddPageProps) {
           message={t('restaurantAdd.porkFreeNotice')}
           confirmLabel={t('shared.confirm')}
           closeLabel={t('shared.close')}
+          hideCloseButton={true}
           onConfirm={() => {
             setIsPorkFreeNoticeOpen(false)
           }}
@@ -423,3 +424,4 @@ function RestaurantSummary({ restaurant }: { restaurant: RestaurantResult }) {
     </section>
   )
 }
+

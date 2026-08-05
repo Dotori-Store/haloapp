@@ -348,8 +348,10 @@ export function ListDetailPage({
       <ConfirmationModal
         open={isDeleteConfirmOpen}
         message={t('listDetail.deleteListConfirm')}
-        confirmLabel={t('shared.confirm')}
+        confirmLabel="YES"
         closeLabel={t('shared.close')}
+          hideCloseButton={true}
+          secondaryLabel="NO"
         onConfirm={() => {
           setIsDeleteConfirmOpen(false)
           onDeleteList(listItem.id)
@@ -361,8 +363,10 @@ export function ListDetailPage({
       <ConfirmationModal
         open={isRestaurantDeleteConfirmOpen}
         message={t('listDetail.deletePlaceConfirm')}
-        confirmLabel={t('shared.confirm')}
+        confirmLabel="YES"
         closeLabel={t('shared.close')}
+          hideCloseButton={true}
+          secondaryLabel="NO"
         onConfirm={() => {
           if (!pendingDeleteRestaurantId) {
             setIsRestaurantDeleteConfirmOpen(false)
@@ -383,3 +387,8 @@ export function ListDetailPage({
     </div>
   )
 }
+
+
+
+
+

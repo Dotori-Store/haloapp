@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+﻿import { useEffect } from 'react'
 import closeIcon from '../assets/icons/ico-close-xs.svg'
 import shareLinkIcon from '../assets/icons/ico-context-share.svg'
 import peopleIcon from '../assets/icons/icon-peoples.svg'
@@ -109,8 +109,10 @@ export function ListCollaborationSheet({ open, listItem, onClose }: ListCollabor
       <ConfirmationModal
         open={isRemoveMemberOpen}
         message={t('list.removeCollaboratorConfirm')}
-        confirmLabel={t('shared.confirm')}
+        confirmLabel="YES"
         closeLabel={t('shared.close')}
+        hideCloseButton={true}
+        secondaryLabel="NO"
         onConfirm={() => {
           void pendingRemoveMemberId
           setPendingRemoveMemberId(null)

@@ -1,5 +1,8 @@
-﻿import closeIcon from '../assets/icons/ico-close-xs.svg'
+﻿import { useState } from 'react'
+import closeIcon from '../assets/icons/ico-close-xs.svg'
 import foodIcon from '../assets/icons/ico-cat-food.svg'
+import arrowUpIcon from '../assets/icons/ico-arrow-up.svg'
+import deleteIcon from '../assets/icons/ico-delete-xs.svg'
 import googleMapIcon from '../assets/icons/ico-google-map.svg'
 import keepIcon from '../assets/icons/ico-keep.svg'
 import naverMapIcon from '../assets/icons/ico-naver-map.svg'
@@ -36,10 +39,13 @@ export function PlaceDetailSheet({
   onReportIncorrect,
 }: PlaceDetailSheetProps) {
   const { t, i18n } = useTranslation()
+  const [commentText, setCommentText] = useState('')
+  const [hasComment, setHasComment] = useState(true)
   const placeName = getLocalizedPlaceName(i18n.language, place)
   const placeAddress = getLocalizedPlaceAddress(i18n.language, place)
-  const showCommentThread = place.detailType === 2 || (place.detailType === 1 && isExpanded)
+  const showCommentThread = hasComment && (place.detailType === 2 || (place.detailType === 1 && isExpanded))
   const showCommentComposer = place.detailType !== 1 || isExpanded
+  const canSubmitComment = commentText.trim().length > 0
 
   return (
     <section className="place-detail" aria-label={`${placeName} detail`}>
@@ -104,12 +110,22 @@ export function PlaceDetailSheet({
             {showCommentThread && (
               <article className="place-detail__comment">
                 <img src={commentUserThumb} alt="" aria-hidden="true" />
-                <div>
-                  <p className="place-detail__comment-meta">
-                    <span>{t('placeDetail.commentAuthor')}</span>
-                    <span className="text-dot" aria-hidden="true" />
-                    <span>{t('placeDetail.commentTime')}</span>
-                  </p>
+                <div className="place-detail__comment-body">
+                  <div className="place-detail__comment-head">
+                    <p className="place-detail__comment-meta">
+                      <span>{t('placeDetail.commentAuthor')}</span>
+                      <span className="text-dot" aria-hidden="true" />
+                      <span>{t('placeDetail.commentTime')}</span>
+                    </p>
+                    <button
+                      type="button"
+                      className="place-detail__comment-delete"
+                      aria-label={t('shared.delete')}
+                      onClick={() => setHasComment(false)}
+                    >
+                      <img src={deleteIcon} alt="" aria-hidden="true" />
+                    </button>
+                  </div>
                   <p className="place-detail__comment-text">{t('placeDetail.commentText')}</p>
                 </div>
               </article>
@@ -118,7 +134,20 @@ export function PlaceDetailSheet({
             {showCommentComposer && (
               <div className="place-detail__comment-input">
                 <img src={thumbUser} alt="" aria-hidden="true" />
-                <input type="text" aria-label={t('placeDetail.leaveComment')} placeholder={t('placeDetail.leaveComment')} />
+                <div className="place-detail__comment-field">
+                  <input
+                    type="text"
+                    aria-label={t('placeDetail.leaveComment')}
+                    placeholder={t('placeDetail.leaveComment')}
+                    value={commentText}
+                    onChange={(event) => setCommentText(event.target.value)}
+                  />
+                  {canSubmitComment && (
+                    <button type="button" className="place-detail__comment-submit" aria-label={t('shared.confirm')}>
+                      <img src={arrowUpIcon} alt="" aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </section>
