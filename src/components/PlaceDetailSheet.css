@@ -63,7 +63,7 @@
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.2;
   letter-spacing: 0;
   text-overflow: ellipsis;
@@ -129,7 +129,7 @@
   padding: 0 14px;
   font-family: var(--font-sans);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
   letter-spacing: 0;
   cursor: pointer;

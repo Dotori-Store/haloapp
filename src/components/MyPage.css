@@ -89,7 +89,7 @@
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.2;
 }
 
@@ -228,7 +228,7 @@
 
 .my-page__prayer-list div.is-active {
   color: var(--color-text-primary);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .my-page__expand {
@@ -313,7 +313,7 @@
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
   cursor: pointer;
 }
@@ -502,7 +502,7 @@
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.2;
 }
 
@@ -757,7 +757,7 @@
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.2;
 }
 
@@ -862,7 +862,7 @@
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
 }
 
@@ -876,7 +876,7 @@
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.2;
 }
 

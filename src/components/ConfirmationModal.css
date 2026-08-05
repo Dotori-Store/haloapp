@@ -44,7 +44,7 @@
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.45;
   text-align: center;
   white-space: pre-line;
@@ -70,7 +70,7 @@
   border-radius: 999px;
   font-family: var(--font-sans);
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
   cursor: pointer;
 }
@@ -83,4 +83,5 @@
 .confirmation-modal__confirm {
   background: var(--color-primary);
   color: var(--color-text-primary);
+  padding: 0 24px;
 }

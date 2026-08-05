@@ -167,7 +167,7 @@
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.2;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -226,6 +226,7 @@
   font-size: 26px;
   font-weight: 800;
   line-height: 1.2;
+  text-align: center;
 }
 
 .add-restaurant-page__register-address {
@@ -454,7 +455,7 @@
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
 }
 
@@ -487,7 +488,7 @@
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.2;
 }
 

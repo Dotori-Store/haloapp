@@ -25,6 +25,7 @@ import { ListPage } from './components/ListPage'
 import { OnboardingScreen } from './components/OnboardingScreen'
 import { SplashScreen } from './components/SplashScreen'
 import { RestaurantAddPage } from './components/RestaurantAddPage'
+import { ListAddRestaurantPage } from './components/ListAddRestaurantPage'
 import { MyPage } from './components/MyPage'
 import { PlaceDetailSheet } from './components/PlaceDetailSheet'
 import { type LovedListItem } from './components/LovedListDetailPage'
@@ -94,6 +95,7 @@ function App() {
   const [isAddToListOpen, setIsAddToListOpen] = useState(false)
   const [isReportModalOpen, setIsReportModalOpen] = useState(false)
   const [isRestaurantAddOpen, setIsRestaurantAddOpen] = useState(false)
+  const [isListAddRestaurantOpen, setIsListAddRestaurantOpen] = useState(false)
   const [isBottomNavVisible, setIsBottomNavVisible] = useState(true)
   const [restaurantAddReturnListId, setRestaurantAddReturnListId] = useState<string | null>(null)
   const [pendingListDetailId, setPendingListDetailId] = useState<string | null>(null)
@@ -472,8 +474,30 @@ function App() {
     setIsRestaurantAddOpen(true)
   }
 
+  const openListAddRestaurantPage = (returnListId: string) => {
+    setIsPhotoModalOpen(false)
+    setIsAddToListOpen(false)
+    setIsReportModalOpen(false)
+    setSavedListToast(null)
+    setRestaurantAddReturnListId(returnListId)
+    setIsBottomNavVisible(false)
+    setIsListAddRestaurantOpen(true)
+  }
+
+  const closeListAddRestaurantPage = () => {
+    setIsListAddRestaurantOpen(false)
+    if (restaurantAddReturnListId) {
+      setActiveTab('list')
+      setPendingListDetailId(restaurantAddReturnListId)
+      setIsBottomNavVisible(false)
+      return
+    }
+
+    setIsBottomNavVisible(true)
+  }
   const closeRestaurantAddPage = () => {
     setIsRestaurantAddOpen(false)
+    setIsListAddRestaurantOpen(false)
     if (restaurantAddReturnListId) {
       setActiveTab('list')
       setPendingListDetailId(restaurantAddReturnListId)
@@ -840,6 +864,7 @@ function App() {
 
   const handleBottomNavChange = (tab: BottomNavTab) => {
     setIsRestaurantAddOpen(false)
+    setIsListAddRestaurantOpen(false)
 
     if (listMapItem && tab === 'list') {
       collapseListMapNav()
@@ -874,6 +899,8 @@ function App() {
 
       {isRestaurantAddOpen ? (
         <RestaurantAddPage onClose={closeRestaurantAddPage} />
+      ) : isListAddRestaurantOpen ? (
+        <ListAddRestaurantPage onBack={closeListAddRestaurantPage} onAddToList={openListSheet} />
       ) : activeTab === 'explore' ? (
         <ExplorePage
           onAddToList={openListSheet}
@@ -885,7 +912,7 @@ function App() {
         />
       ) : activeTab === 'list' ? (
       <ListPage
-          onAddRestaurant={openRestaurantAddPage}
+          onAddRestaurant={openListAddRestaurantPage}
           onAddToList={openListSheet}
           onViewListOnMap={(listItem) => openListOnMap(listItem, 'list')}
           onBottomNavVisibilityChange={setIsBottomNavVisible}
@@ -1164,7 +1191,7 @@ function App() {
           </div>
         </section>
       )}
-          {isBottomNavVisible && !isRestaurantAddOpen && (
+          {isBottomNavVisible && !isRestaurantAddOpen && !isListAddRestaurantOpen && (
         <BottomNav
           activeTab={isListMap ? 'list' : activeTab}
           variant={isListMap && !isDetail && listMapMode === 'summary' && isListMapSummaryVisible ? 'compactList' : 'default'}
@@ -1294,3 +1321,6 @@ function App() {
 }
 
 export default App
+
+
+
