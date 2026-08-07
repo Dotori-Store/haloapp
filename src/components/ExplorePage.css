@@ -441,7 +441,8 @@
 .explore-friends__rail {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  gap: 24px;
+  padding: 6px 6px
 }
 
 .explore-friend {
@@ -451,8 +452,8 @@
 }
 
 .explore-friend__avatar {
-  width: 106px;
-  height: 106px;
+  width: 100%;
+  aspect-ratio: 1/1;
   border-radius: 50%;
   object-fit: cover;
   box-shadow: 0 8px 20px rgba(18, 18, 18, 0.1);
